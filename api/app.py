@@ -19,7 +19,6 @@ def main():
         return { 'error': 'Error' }
 
 
-@app.route('/path', methods=['POST'])
+@app.route('/')
 def path():
-
-    pass
+    return 'Online!'

@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as ET
 import requests
+from flask import Flask
+
 
 # ROBO's URL's
 
@@ -42,17 +44,15 @@ def make_call(url):
             return unpack_and_interpret(r.content)
     except TypeError:
         print('Some Error occured')
-        return {'error': 'something went wrong with the type of call'}
+        return {'error': 'got a type error'}
 
 
 # Deside
 def atrrib_or_text(elem):
     if elem.text and elem.attrib:
-        
         data = elem.attrib
         data[elem.tag] = elem.text
         return data
-
     elif elem.text is not None and len(elem.findall('*')) <= 0:
         return str(elem.text)
     elif elem.attrib != None and len(elem.attrib) != 0:
@@ -60,7 +60,11 @@ def atrrib_or_text(elem):
     elif len(elem.findall('*')) > 1:
         return get_elems(elem)
     else:
-        return {}
+        if elem.text is not None and len(elem.text) > 0:
+            return elem.text
+        else:
+            return 'TBD'
+
 
 
 # Take XML data and return a python dictiony
@@ -88,13 +92,25 @@ def init_dictionary(data):
 # Take byte data from api call and convert it then return a XML tree
 def unpack_and_interpret(payload):
     if isinstance(payload, bytes):
-        data = ET.fromstring(payload)  # Convert data to from XML tree
+        data = ET.fromstring(payload)
         return data
     else:
         print('type of not byte', payload)
         return {'error': 'input not bytes'}
 
 
-# print(init_dictionary(unpack_and_interpret(make_call(generate_api(u_data, asset_url)))))
-# print( len({1:4}) == True )
+                # ROUTES BEGIN #
 
+
+app = Flask(__name__)
+
+
+@app.route('/test', methods=['GET', 'POST'])
+def index():
+    return '<h1> Online! </h1>'
+
+@app.route('/', methods=['GET'])
+def path():
+    superman = init_dictionary(unpack_and_interpret(make_call(generate_api(u_data, asset_url))))
+
+    return superman
