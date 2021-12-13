@@ -98,7 +98,6 @@ def unpack_and_interpret(payload):
         print('type of not byte', payload)
         return {'error': 'input not bytes'}
 
-
                 # ROUTES BEGIN #
 
 
