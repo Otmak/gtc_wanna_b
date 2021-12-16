@@ -28,22 +28,34 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function SignIn(props) {
 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
+    const mydata = {
+      account: data.get('email'),
+      password: data.get('password'),
+      user : 'zonar'
+    }
     console.log({
-      email: data.get('email'),
+      account: data.get('email'),
       password: data.get('password'),
     });
-    const fetchData = await fetch('/test');
+    const fetchData = await fetch('/test', {
+      method : 'POST',
+      headers: {
+      'Content-Type': 'application/json'
+      },
+      body : JSON.stringify(mydata)
+    });
     const response = await fetchData.json();
     console.log(response)
 
   };
+  console.log(props.handleLogin)
 
   return (
     <ThemeProvider theme={theme}>

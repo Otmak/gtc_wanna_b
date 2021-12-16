@@ -13,6 +13,12 @@ export default class App extends Component {
 
   }
 
+  handleLogin(e){
+    console.log('Logging from Main....', e)
+    this.setState({'isLoggedIn' : true})
+
+  }
+
   render(){
     console.log('online')
     const { isLoggedIn } = this.state;
@@ -20,7 +26,8 @@ export default class App extends Component {
 
     return (
       <div>
-        { isLoggedIn === false && <SignIn/> }
+        { isLoggedIn === false && <SignIn handleLogin={this.handleLogin()}/> }
+        { isLoggedIn === true && 'data is here..'}
       </div>
 
       )
