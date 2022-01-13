@@ -13,7 +13,6 @@ gps_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&passwo
 
 # Generate API
 def generate_api(user, api):
-
     split_api = api.split('=')  # split the Link or string, separating it by '='
     fully_built_api = ''
 
@@ -33,19 +32,21 @@ def generate_api(user, api):
     return fully_built_api[:-1]
 
 
-# Takes a api url as argument and returns byte data if call is successful 
+# takes a api url as argument and returns byte data
 def make_call(url):
-
     try:
         r = requests.get(url)
+
         if r.ok:
             return r.content
         else:
             return r.content
     except TypeError:
+        # code to handle exception
         return {'error': 'something went wrong with the type of call'}
 
 
+# takes XML element and returns text
 def atrrib_or_text(elem):
     '''
     filter: nothing,
@@ -54,7 +55,6 @@ def atrrib_or_text(elem):
             text & Attrib,
             more childs
     '''
-
     if elem.text == None and len(elem.attrib) < 1: # checking for tag with no data
       return None
 
@@ -71,9 +71,8 @@ def atrrib_or_text(elem):
       return get_elems(elem)
 
 
-# Takes XML data and returns a python dictiony/ for elems without sub elems
+# takes XML data and returns a python dictiony/ for elems without sub elems
 def get_elems(root):
-
     main_data = {}
     for child in root.findall('*'):
         main_data[child.tag] = atrrib_or_text(child)
@@ -81,9 +80,8 @@ def get_elems(root):
     return main_data
 
 
-# takes XML or dict data and if type is XML convert to dict only needed if elem has sub elems
-def init_dictionary(data):
-
+# takes main XML data from API and returns a python dictionary
+def create_dictionary(data):
     if isinstance(data, dict):
       return data
 
@@ -99,9 +97,8 @@ def init_dictionary(data):
     return main_data
 
 
-# takes byte data from api call and converts it and returns a XML tree 
+# takes byte data from api call and returns a XML tree 
 def unpack_bytes(payload):
-
     if isinstance(payload, bytes):
       data = ET.fromstring(payload)  # Convert data to from XML tree
       return data
@@ -117,18 +114,12 @@ def index():
     return 'Success!'
 
 
-@app.route('/dash')
-def dash():
-    return {'online':200}
-
-
 @app.route('/test', methods=['POST'])
 def test():
-
     print('Post request received.')
     # print('data:', dir(request))
-    print('data:', request.get_json())
-
-    superman = init_dictionary(unpack_and_interpret(make_call(generate_api(request.get_json(), asset_url))))
+    #print('data:', request.get_json())
+    superman = create_dictionary(unpack_bytes(make_call(generate_api(request.get_json(), asset_url))))
     return {'data' : superman }
+
 
