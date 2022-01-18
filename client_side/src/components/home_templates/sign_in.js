@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
+// import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
@@ -31,31 +31,26 @@ const theme = createTheme();
 export default function SignIn(props) {
 
 
-  const handleSubmit = async (event) => {
+
+  // const [loginInfo, setLoginInfo] = React.useState(0);
+
+
+  let {message} = props;
+
+
+  const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
+
     const mydata = {
       account: data.get('email'),
       password: data.get('password'),
       user : 'zonar'
-    }
-    console.log({
-      account: data.get('email'),
-      password: data.get('password'),
-    });
-    const fetchData = await fetch('/test', {
-      method : 'POST',
-      headers: {
-      'Content-Type': 'application/json'
-      },
-      body : JSON.stringify(mydata)
-    });
-    const response = await fetchData.json();
-    console.log(response)
+    };
+    console.log('loggin pros',props);
+    props.handleSubmit(mydata);
 
   };
-  console.log(props.handleLogin)
 
   return (
     <ThemeProvider theme={theme}>
@@ -110,6 +105,10 @@ export default function SignIn(props) {
             </Button>
           </Box>
         </Box>
+           <Typography >
+           {message}
+          </Typography>
+
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>

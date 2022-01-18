@@ -6,20 +6,21 @@ app = Flask(__name__)
 
 # ROBO's URL's
 
-asset_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showassets&format=xml'
-path_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showposition&operation=path&reqtype=dbid&target=191&version=2&starttime=1189321200&endtime=1189493940&logvers=3&format=xml'
-gps_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showgps&format=xml'
+# asset_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showassets&format=xml'
+# path_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showposition&operation=path&reqtype=dbid&target=191&version=2&starttime=1189321200&endtime=1189493940&logvers=3&format=xml'
+# gps_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showgps&format=xml'
 
 
 # Generate API
 def generate_api(user, api):
+    print( 'Starting api......')
     split_api = api.split('=')  # split the Link or string, separating it by '='
     fully_built_api = ''
 
     for i in split_api:
         try:
             if len(i) == 51:
-                fully_built_api = i + '=' + user['companyid']
+                fully_built_api = i + '=' + user['account']
             elif i == '&password':
                 fully_built_api += i + '=' + user['password']
             elif i == '&username':
@@ -27,13 +28,16 @@ def generate_api(user, api):
             else:
                 fully_built_api += i + '='
         except:
+            # print('An Error in generating api')
             return 'Encoutered some Error'
+
 
     return fully_built_api[:-1]
 
 
 # takes a api url as argument and returns byte data
 def make_call(url):
+    print( 'Starting making call........', url)
     try:
         r = requests.get(url)
 
@@ -43,6 +47,7 @@ def make_call(url):
             return r.content
     except TypeError:
         # code to handle exception
+        print(' AN error occured while making call.')
         return {'error': 'something went wrong with the type of call'}
 
 
@@ -82,6 +87,7 @@ def get_elems(root):
 
 # takes main XML data from API and returns a python dictionary
 def create_dictionary(data):
+    print('starting dictionary.....')
     if isinstance(data, dict):
       return data
 
@@ -99,6 +105,8 @@ def create_dictionary(data):
 
 # takes byte data from api call and returns a XML tree 
 def unpack_bytes(payload):
+
+    print( 'Starting unpacking call.....')
     if isinstance(payload, bytes):
       data = ET.fromstring(payload)  # Convert data to from XML tree
       return data
@@ -106,20 +114,25 @@ def unpack_bytes(payload):
       return {'massage' : 'input not bytes', 'data': payload}
 
 
-# print(  init_dictionary( unpack_bytes(make_call(generate_api(u_data, asset_url))) ) ) 
-
 
 @app.route('/')
 def index():
     return 'Success!'
 
 
-@app.route('/test', methods=['POST'])
-def test():
-    print('Post request received.')
-    # print('data:', dir(request))
-    #print('data:', request.get_json())
-    superman = create_dictionary(unpack_bytes(make_call(generate_api(request.get_json(), asset_url))))
-    return {'data' : superman }
+@app.route('/asset', methods=['POST'])
+def asset():
+    try:
+        asset_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showassets&format=xml'
+        superman = create_dictionary( unpack_bytes( make_call( generate_api( request.get_json(), asset_url ))))
+        if superman.get('code') == None: # data did not return error
+            return { 'data' : superman, 'code' : 200 }
+        else: # data returned error
+            return {'data' : superman }
+    except :
+        return {'error' :{'message' : 'some error more info later...'}}
+
+
+
 
 
