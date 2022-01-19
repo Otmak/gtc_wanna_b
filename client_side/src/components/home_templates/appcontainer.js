@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import AppBar from '@mui/material/AppBar';
+import TabMaster from '../tabmaster/tabmaster.js';
 
 
-export default class MainBar extends Component {
+export default class AppContainer extends Component {
 	constructor (){
 		super()
 		this.state = {}
@@ -11,9 +12,14 @@ export default class MainBar extends Component {
 	render(){
 
 		return(
+			<div>
 				<AppBar>
 					<p> menu </p>
 				</AppBar>
+				<TabMaster>
+					<p>some tabs</p>
+				</TabMaster>
+			</div>
 			)
 	}
 }

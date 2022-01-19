@@ -30,24 +30,16 @@ const theme = createTheme();
 
 export default function SignIn(props) {
 
-
-
-  // const [loginInfo, setLoginInfo] = React.useState(0);
-
-
   let {message} = props;
-
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
     const mydata = {
       account: data.get('email'),
       password: data.get('password'),
       user : 'zonar'
     };
-    console.log('loggin pros',props);
+    // console.log('loggin pros',props);
     props.handleSubmit(mydata);
 
   };
