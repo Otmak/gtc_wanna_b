@@ -9,7 +9,7 @@ export default class TabMaster extends Component {
 	}
 
 	render(){
-		console.log('tab master is working!')
+		console.log('tab master is online!')
 
 		return(
 			<div>
