@@ -20,34 +20,36 @@ export default class TabMaster extends Component {
   render(){
 
     const { assetData } = this.state;
-    const parseTabs = (data)=>
-    {
+
+    const parseTabs = (data)=> {
       const listOfTabs = [];
+
       for ( let i in data ){
         listOfTabs.push( 
           <Tab key={i} >
             <List className='tabItem'>
               <ListItem>
-                <ListItemText primary={ data[i].child.fleet } />
+                <ListItemText primary={ data[i].child.fleet } secondary={data[i].child.type.type} />
               </ListItem>
               <Divider component="li" />
             </List>
           </Tab>
-        );
-      }
+        )};
+
       return listOfTabs;
     }
 
-    const parseTabPanels = (data) =>
-    {
+
+    const parseTabPanels = (data) => {
       const listOfTabPanels = [];
+
       for ( let i in data ){
         listOfTabPanels.push(
           <TabPanel key={i} className='tab-panel'>
-             <p>{ data[i].child.fleet } </p>
+             <p> { data[i].child.fleet } </p>
           </TabPanel>
-        );
-      }
+        )};
+
       return listOfTabPanels;
     }
 
