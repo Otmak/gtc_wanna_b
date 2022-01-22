@@ -114,6 +114,7 @@ def unpack_bytes(payload):
       return {'massage' : 'input not bytes', 'data': payload}
 
 
+
 @app.route('/')
 def index():
     return 'Success!'
@@ -123,13 +124,23 @@ def index():
 def asset():
     try:
         asset_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showassets&format=xml'
-        superman = create_dictionary( unpack_bytes( make_call( generate_api( request.get_json(), asset_url ))))
-        if superman.get('code') == None: # data did not return error
-            return { 'data' : superman, 'code' : 200 }
+        asset_data = create_dictionary( unpack_bytes( make_call( generate_api( request.get_json(), asset_url ))))
+        if asset_data.get('code') == None: # data did not return error
+            return { 'data' : asset_data, 'code' : 200 }
         else: # data returned error
-            return {'data' : superman }
+            return {'data' : asset_data }
     except :
-        return {'error' :{'message' : 'some error more info later...'}}
+        return {'error' :{ 'message' : 'some error more info later...'}}
+
+
+@app.route('/gps', methods=['POST'])
+def gps():
+    try:
+        gps_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showgps&format=xml'
+        gps_data = create_dictionary( unpack_bytes( make_call( generate_api( request.get_json(), asset_url ))))
+        return {'data' : gps_data }
+    except:
+        return {'error' : { 'message' : 'exception occurred'}}
 
 
 

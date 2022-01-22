@@ -6,6 +6,7 @@ export default class App extends Component {
   constructor(props){
     super(props)
     this.state = {
+      assetData :'',
       isLoggedIn : false,
       isNotLoggedIn: true,
       message_from_server: '',
@@ -31,9 +32,10 @@ export default class App extends Component {
 
     if (response.code == 200) 
     {
-      console.log('Success');
-      this.setState({'isLoggedIn' : true});
-      console.log('Login state changed', this);
+      console.log('Success', response);
+      this.setState({'isLoggedIn' : true,  'assetData' : response.data});
+
+      // console.log('Login state changed', this);
 
     }else{
       if (response.error)
@@ -50,14 +52,13 @@ export default class App extends Component {
 
   render(){
     console.log(this);
-    const { isLoggedIn, message_from_server, loginInfo } = this.state;
+    const { assetData, isLoggedIn, message_from_server, loginInfo } = this.state;
 
     return (
       <div>
         { isLoggedIn === false && <SignIn message={message_from_server} handleSubmit={this.handleLogin} /> }
-        { isLoggedIn === true && <AppContainer/> }
+        { isLoggedIn === true && <AppContainer mainData={assetData}/> }
       </div>
-
       )
   }
 }

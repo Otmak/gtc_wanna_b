@@ -1,0 +1,82 @@
+.solid-tab-container > div {
+    top:auto;
+}
+
+/*.tabs-container-main-div {
+	margin-bottom: 80px;
+}*/
+div .tabs-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+}
+.tabItem-container {
+    width: 20vw;
+    list-style: none;
+    border: 1px solid #bdbdbd59;
+    height: 91vh;
+    overflow: auto;
+    float: left;
+
+}
+
+/*.asset-list-text {
+    color: #4598DC;
+}
+.asset-list-text > p {
+    color: #4598DC;
+}*/
+/*  .appBar: {
+    top: 'auto';
+    bottom: 0;
+  }*/
+  .grow: {
+    flex-grow: 1;
+  }
+/*  .fabButton: {
+    position: 'absolute';
+    z-index: 1;
+    top: -30;
+    left: 0;
+    right: 0;
+    margin: '0 auto';
+  }*/
+/*.tabs-container {
+    display: flex;
+    flex-direction: column;
+    
+}*/
+.tabItem:hover{
+	background-color: #bdbdbd59;
+    cursor: pointer;
+}
+.react-tabs__tab--selected {
+    background-color: #bdbdbd59;
+}
+ul .tabItem {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+div .active-assetList-avatar{
+    color: #29d28b;
+    background-color: transparent;
+    box-shadow: 0 0 0 0.3px #59D771;
+    /*bdbdbd*/
+
+}
+div .inactive-assetList-avatar{
+    color: #E21189;
+    background-color: transparent;
+    box-shadow: 0 0 0 0.3px #E21189;
+
+}
+.search-textfield {
+    width: 100%;
+    position: fixed;
+}
+.tab-panel{
+	display: none;
+}
+.react-tabs__tab-panel--selected{
+    display: block;
+}
