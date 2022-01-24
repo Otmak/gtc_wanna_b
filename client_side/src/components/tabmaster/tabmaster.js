@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import './tabmaster.css'
+import './tabmaster.css';
+import AssetContainer from '../asset_contents/asset_contents_container/asset_contents_container.js';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TextField from '@mui/material/TextField';
 import List from '@mui/material/List';
@@ -20,39 +21,6 @@ export default class TabMaster extends Component {
   render(){
 
     const { assetData } = this.state;
-
-    // const parseTabs = (data)=> {
-    //   const listOfTabs = [];
-
-    //   for ( let i in data ){
-    //     listOfTabs.push( 
-    //       <Tab key={i} >
-    //         <List className='tabItem'>
-    //           <ListItem>
-    //             <ListItemText primary={ data[i].child.fleet } secondary={data[i].child.type.type} />
-    //           </ListItem>
-    //           <Divider component="li" />
-    //         </List>
-    //       </Tab>
-    //     )};
-
-    //   return listOfTabs;
-    // }
-
-
-    // const parseTabPanels = (data) => {
-    //   const listOfTabPanels = [];
-
-    //   for ( let i in data ){
-    //     listOfTabPanels.push(
-    //       <TabPanel key={i} className='tab-panel'>
-    //          <p> { data[i].child.fleet } </p>
-    //       </TabPanel>
-    //     )};
-
-    //   return listOfTabPanels;
-    // }
-
     const creation = (data, type) => {
 
       const mainArray = [];
@@ -61,7 +29,7 @@ export default class TabMaster extends Component {
         for ( let i in data ){
           listOfTabPanels.push(
             <TabPanel key={i} className='tab-panel'>
-               <p> { data[i].child.fleet } </p>
+               <AssetContainer data={data[i].child.fleet} id={i}/>
             </TabPanel>
           )};
           return listOfTabPanels;

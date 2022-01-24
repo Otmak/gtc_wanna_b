@@ -5,13 +5,14 @@
 	margin: 0;
 }
 
-/*.tabs-container-main-div {
-	margin-bottom: 80px;
-}*/
+.tabs-container-main-div {
+	margin-top: 80px;
+}
 div .tabs-container{
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;
+    width: 100vw;
 }
 .tabItem-container {
     width: 20vw;
@@ -79,6 +80,7 @@ div .inactive-assetList-avatar{
 }
 .tab-panel{
 	display: none;
+    width: 80vw;
 }
 .react-tabs__tab-panel--selected{
     display: block;

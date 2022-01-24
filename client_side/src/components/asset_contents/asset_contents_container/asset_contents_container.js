@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import './assetcontainer.css'
+import './asset_contents_container.css';
+import Path from '../path/path.js';
+import Location from '../location/location.js';
 
 
 export default class AssetContainer extends Component {
@@ -10,6 +12,15 @@ export default class AssetContainer extends Component {
     }
   }
   render(){ 
+    // console.log(this.props)
 
-    return ()
+    const { assetData } = this.state; 
+
+    return (
+      <div className="asset_conatiner">
+        <Path data={assetData}/>
+        <Location />
+      </div>
+      )
   }
+}

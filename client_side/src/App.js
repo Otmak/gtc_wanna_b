@@ -10,61 +10,68 @@ export default class App extends Component {
       assetData :'',
       isLoggedIn : false,
       isNotLoggedIn: true,
-      LoginInfo: {
-        account : localStorage.getItem('secreteAccount'),
-        password : localStorage.getItem('secretePass')
-      },
+      LoginInfo: {},
       whatsTheWord: 'mandelbrot_set',
       LoginErrorMessage : '',
     }
   }
 
   convertStrToB64 (str) {
-    if (str === undefined ){
-      return str
-    }
-    else {
+
+    if ( this.validate(str) ){
       let strEnc = str + '_' + this.state.whatsTheWord;
       return window.btoa(unescape(encodeURIComponent( strEnc )));
+    }else{
+      return str
     }
   }
 
-  convertB64ToStr (str) {
-    console.log( 'to be converted', str)
-    if ( str === undefined ){
-      return str;
-    }
-    else{
-      return decodeURIComponent(escape(window.atob( str )))
-    }  
+  validate (value) {
+    return value === '' || value === undefined || value === null ? false : true;
   }
 
-  componentDidMount(){
 
-    const validate = (value) =>  value === '' || value === undefined || value === null ? false : true;
+  decodeLocalStorage (){
     const decodeLocalStorageAccount = this.convertB64ToStr( localStorage.getItem('secreteAccount'));
     const decodeLocalStoragePasskey = this.convertB64ToStr( localStorage.getItem('secretePass'));
-    const payload = {}
+    const payload = {};
+    // return decodedLocalStorage;
 
-    if ( validate(decodeLocalStorageAccount) && validate(decodeLocalStoragePasskey) ){
+    if ( this.validate(decodeLocalStorageAccount) && this.validate(decodeLocalStoragePasskey) ){
       payload['account'] = decodeLocalStorageAccount.split('_')[0];
       payload['password'] = decodeLocalStoragePasskey.split('_')[0];
       payload['user'] = 'zonar';
 
-      return this.handleLogin(payload);
+      return payload;
     }
+
+  }
+
+  convertB64ToStr (str) {
+    if ( this.validate(str)){
+      return decodeURIComponent(escape(window.atob( str )));
+    }
+    else{
+      return str;
+    }  
+  }
+
+  componentDidMount(){
+    const payload = this.decodeLocalStorage();
+    return this.handleLogin(payload);
   }
 
 
   handleLogin  = async (e) => {
 
-    const validate = (value) =>  value === '' || value === undefined || value === null ? false : true;
     let account = e['account'];
     let passKey = e['password'];
     let user = e['user'];
     const payload = {};
 
-    if ( validate(account) && validate(passKey) ) {
+    // console.log('playing tunes', e)
+
+    if ( this.validate(account) && this.validate(passKey) ) {
 
       payload['account'] = account;
       payload['password'] = passKey;
@@ -72,6 +79,7 @@ export default class App extends Component {
 
       localStorage.setItem('secreteAccount', this.convertStrToB64(account))
       localStorage.setItem('secretePass', this.convertStrToB64(passKey))
+      this.setState({ LoginInfo : payload})
 
     }else{
       const isEmptyMessage = 'Please Enter A Valid Account Code Or Password.'
@@ -93,9 +101,7 @@ export default class App extends Component {
     }else if (response.error)
       {
         this.setState( {'LoginErrorMessage' : response.error.message } );
-      }
-      else 
-      {
+      }else{
         this.setState( {'LoginErrorMessage' : response.data.message } );      
       }
     }
@@ -103,13 +109,12 @@ export default class App extends Component {
 
   render(){
 
-    const { assetData, isLoggedIn, LoginErrorMessage, whatsTheWord } = this.state;
-    const validate = (value)=> value === '' || value === undefined || value === null ? false : true; 
+    const { assetData, isLoggedIn, LoginErrorMessage, whatsTheWord, LoginInfo } = this.state;
 
     return (
       <div>
         { isLoggedIn === false && <SignIn message={LoginErrorMessage} handleSubmit={this.handleLogin} /> }
-        { isLoggedIn === true && <AppContainer mainData={assetData}/> }
+        { isLoggedIn === true && <AppContainer mainData={assetData} /> }
       </div>
       )
   }
