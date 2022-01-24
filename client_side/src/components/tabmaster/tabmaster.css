@@ -1,6 +1,9 @@
 .solid-tab-container > div {
     top:auto;
 }
+.listItem {
+	margin: 0;
+}
 
 /*.tabs-container-main-div {
 	margin-bottom: 80px;

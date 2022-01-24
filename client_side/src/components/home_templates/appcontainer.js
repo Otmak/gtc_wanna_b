@@ -24,7 +24,6 @@ export default class AppContainer extends Component {
 				</AppBar>
 				<div className='space'/>
 				<TabMaster data={assetData}/>
-
 			</div>
 			)
 	}

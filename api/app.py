@@ -130,7 +130,7 @@ def asset():
         else: # data returned error
             return {'data' : asset_data }
     except :
-        return {'error' :{ 'message' : 'some error more info later...'}}
+        return {'error' : { 'message' : 'exception occurred this message is from the server'}}
 
 
 @app.route('/gps', methods=['POST'])
@@ -138,9 +138,12 @@ def gps():
     try:
         gps_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showgps&format=xml'
         gps_data = create_dictionary( unpack_bytes( make_call( generate_api( request.get_json(), asset_url ))))
-        return {'data' : gps_data }
+        if asset_data.get('code') == None: # data did not return error
+            return { 'data' : asset_data, 'code' : 200 }
+        else: # data returned error
+            return {'data' : asset_data }
     except:
-        return {'error' : { 'message' : 'exception occurred'}}
+        return {'error' : { 'message' : 'exception occurred this message is from the server'}}
 
 
 
