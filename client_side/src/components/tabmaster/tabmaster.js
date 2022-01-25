@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './tabmaster.css';
-import AssetContainer from '../asset_contents/asset_contents_container/asset_contents_container.js';
+import AssetContainer from '../asset_contents/asset_container/asset_container.js';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TextField from '@mui/material/TextField';
 import List from '@mui/material/List';
@@ -29,7 +29,7 @@ export default class TabMaster extends Component {
         for ( let i in data ){
           listOfTabPanels.push(
             <TabPanel key={i} className='tab-panel'>
-               <AssetContainer data={data[i].child.fleet} id={i}/>
+               <AssetContainer data={data[i].child.fleet} id={i} gps={data[i].child.gps}/>
             </TabPanel>
           )};
           return listOfTabPanels;

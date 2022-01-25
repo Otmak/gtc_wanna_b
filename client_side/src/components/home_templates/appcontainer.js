@@ -38,7 +38,6 @@ export default class AppContainer extends Component {
 						</IconButton>
 					</Toolbar>
 				</AppBar>
-				<div className='space'/>
 				<TabMaster data={assetData}/>
 			</div>
 			)

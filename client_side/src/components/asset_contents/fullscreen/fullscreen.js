@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
+import OpenWithIcon from '@mui/icons-material/OpenWith';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -31,9 +32,7 @@ export default function FullScreen(props) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        { 'Expand '+ props.type}
-      </Button>
+      <OpenWithIcon onClick={handleClickOpen} />
       <Dialog
         fullScreen
         open={open}

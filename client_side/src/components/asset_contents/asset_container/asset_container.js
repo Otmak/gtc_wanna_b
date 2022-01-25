@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './asset_contents_container.css';
+import './asset_container.css';
 import Path from '../path/path.js';
 import Location from '../location/location.js';
 
@@ -12,13 +12,13 @@ export default class AssetContainer extends Component {
     }
   }
   render(){ 
-    // console.log(this.props)
+    console.log(this.props)
 
     const { assetData } = this.state; 
 
     return (
       <div className="asset_conatiner">
-        <Path data={assetData}/>
+        <Path data={assetData} id={this.props.id} gps={this.props.gps}/>
         <Location />
       </div>
       )
