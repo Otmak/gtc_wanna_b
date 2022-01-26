@@ -29,7 +29,7 @@ export default class TabMaster extends Component {
         for ( let i in data ){
           listOfTabPanels.push(
             <TabPanel key={i} className='tab-panel'>
-               <AssetContainer data={data[i].child.fleet} id={i} gps={data[i].child.gps}/>
+               <AssetContainer name={data[i].child.fleet} id={i} gps={data[i].child.gps} mainData={assetData}/>
             </TabPanel>
           )};
           return listOfTabPanels;

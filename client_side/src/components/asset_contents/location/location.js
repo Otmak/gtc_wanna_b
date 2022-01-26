@@ -20,7 +20,7 @@ export default class Location extends Component {
   // }
   
   render(){ 
-    // console.log(this.props)
+    console.log(this.props)
     return (
       <div>
         <Card sx={{ width: 445 }}>

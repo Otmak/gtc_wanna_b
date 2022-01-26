@@ -48,7 +48,7 @@ export default class App extends Component {
     if ( this.validate(localStorage.getItem('secreteAccount')) && this.validate(localStorage.getItem('secretePass')) ){
       const decodeLocalStorageAccount = this.convertB64ToStr( localStorage.getItem('secreteAccount'));
       const decodeLocalStoragePasskey = this.convertB64ToStr( localStorage.getItem('secretePass'));
-      payload['account'] = decodeLocalStorageAccount.split('_')[0];
+      payload['customer'] = decodeLocalStorageAccount.split('_')[0];
       payload['password'] = decodeLocalStoragePasskey.split('_')[0];
       payload['user'] = 'zonar';
 
@@ -69,13 +69,13 @@ export default class App extends Component {
 
   handleLogin  = async (e) => { 
 
-    let account = e['account'];
+    let account = e['customer'];
     let passKey = e['password'];
     const payload = {};
 
     if ( this.validate(account) && this.validate(passKey) ) { //Fix this 
 
-      payload['account'] = account;
+      payload['customer'] = account;
       payload['password'] = passKey;
       payload['user'] = 'zonar';
 

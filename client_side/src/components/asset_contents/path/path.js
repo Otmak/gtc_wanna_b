@@ -91,6 +91,48 @@ export default class Path extends Component {
        "distance_traveled": 0,
        "odometer": 209.2,
        "loadts": "2009-07-23 11:45:51.421893-07"
+      },
+      {
+       "lat": 26.106154,
+       "lng": -80.2592971,
+       "time": "2009-07-23 11:45:24-07",
+       "speed": "9.5",
+       "heading": "W",
+       "reasons": "12,10",
+       "distance_traveled": 0,
+       "odometer": 209.2,
+       "loadts": "2009-07-23 11:45:51.421893-07"
+      },
+            {
+       "lat": 26.106154,
+       "lng": -80.2592971,
+       "time": "2009-07-23 11:45:24-07",
+       "speed": "9.5",
+       "heading": "W",
+       "reasons": "12,10",
+       "distance_traveled": 0,
+       "odometer": 209.2,
+       "loadts": "2009-07-23 11:45:51.421893-07"
+      },      {
+       "lat": 26.106154,
+       "lng": -80.2592971,
+       "time": "2009-07-23 11:45:24-07",
+       "speed": "9.5",
+       "heading": "W",
+       "reasons": "12,10",
+       "distance_traveled": 0,
+       "odometer": 209.2,
+       "loadts": "2009-07-23 11:45:51.421893-07"
+      },      {
+       "lat": 26.106154,
+       "lng": -80.2592971,
+       "time": "2009-07-23 11:45:24-07",
+       "speed": "9.5",
+       "heading": "W",
+       "reasons": "12,10",
+       "distance_traveled": 0,
+       "odometer": 209.2,
+       "loadts": "2009-07-23 11:45:51.421893-07"
       }
       ]
 

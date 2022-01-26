@@ -14,12 +14,13 @@ export default class AssetContainer extends Component {
   render(){ 
     console.log(this.props)
 
+
     const { assetData } = this.state; 
 
     return (
       <div className="asset_conatiner">
-        <Path data={assetData} id={this.props.id} gps={this.props.gps}/>
-        <Location />
+        <Path data={assetData} id={this.props.id} gps={this.props.gps} />
+        <Location data={assetData} id={this.props.id} />
       </div>
       )
   }

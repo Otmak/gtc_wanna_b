@@ -14,25 +14,29 @@ app = Flask(__name__)
 # Generate API
 def generate_api(user, api):
     print( 'Starting api......')
-    split_api = api.split('=')  # split the Link or string, separating it by '='
-    fully_built_api = ''
+    split_api = api.split('=')
+    final_api = ''
+    cache = {}
 
-    for i in split_api:
-        try:
-            if len(i) == 51:
-                fully_built_api = i + '=' + user['account']
-            elif i == '&password':
-                fully_built_api += i + '=' + user['password']
-            elif i == '&username':
-                fully_built_api += i + '=' + user['user']
-            else:
-                fully_built_api += i + '='
-        except:
-            # print('An Error in generating api')
-            return 'Encoutered some Error'
+    def nothing():
+      pass
 
+    for url_part in split_api:
 
-    return fully_built_api[:-1]
+      for item in user:
+        if item in url_part:
+          final_api += url_part + '=' + user[item]
+          cache[url_part] = url_part
+        else:
+          nothing()
+          
+      if cache.get(url_part):
+        nothing()
+      else:
+        final_api += url_part + '='
+        
+    return final_api[:-1]
+
 
 
 # takes a api url as argument and returns byte data
