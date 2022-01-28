@@ -35,7 +35,7 @@ export default function SignIn(props) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const mydata = {
-      account: data.get('email'),
+      customer: data.get('customer'),
       password: data.get('password'),
       user : 'zonar'
     };
@@ -67,10 +67,9 @@ export default function SignIn(props) {
               margin="normal"
               required
               fullWidth
-              id="email"
+              id="customer"
               label="Account code"
-              name="email"
-              autoComplete="email"
+              name="customer"
               autoFocus
             />
             <TextField

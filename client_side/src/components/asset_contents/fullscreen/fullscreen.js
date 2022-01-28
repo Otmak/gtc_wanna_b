@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
+import Map from '../map/map.js';
 import OpenWithIcon from '@mui/icons-material/OpenWith';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -27,6 +28,11 @@ export default function FullScreen(props) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const getMap = (data) => {
+    return <Map location={data} />
+  }
+  
 
   // console.log(props)
 
@@ -55,6 +61,7 @@ export default function FullScreen(props) {
           </Toolbar>
         </AppBar>
         <List>
+
           <ListItem button>
             <ListItemText primary="some data" secondary="time" />
           </ListItem>

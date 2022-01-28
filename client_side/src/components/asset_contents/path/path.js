@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import FullScreen from '../fullscreen/fullscreen.js';
 import CustomTable from '../table/table.js';
@@ -8,144 +10,119 @@ import './path.css';
 
 
 export default class Path extends Component {
+  _isMounted = false
   constructor(props){
     super(props)
     this.state = {
       assetData : this.props,
+      tableData: '',
+      endTime : Date.now()/1000.0,
+      startTime :  Date.now()/1000.0 - 86400,
       pathData : [],
       ErrorMessage: '',
+      params: '',
     }
   }
 
-  handleApiCall = async (e) => {
 
-    let options = 
-    {
-      method : 'POST',
-      headers: {
-      'Content-Type': 'application/json'
-      },
-      body : JSON.stringify()
+  validate (value) {
+    return value === '' || value === undefined || value === null ? false : true;
+  }
+
+
+  convertB64ToStr (str) {
+    if ( this.validate(str)){
+      return decodeURIComponent(escape(window.atob( str )));
     }
-
-    const fetchData = await fetch('/asset', options);
-    const response = await fetchData.json();
-
-    if (response.code === 200) 
-    {
-      this.setState( { 'pathData' : response.data} );
-    }else if (response.error)
-    {
-      this.setState( {'ErrorMessage' : response.error.message } );
-    }else
-    {
-      this.setState( {'ErrorMessage' : response.data.message } );      
+    else{
+      return str;
     }
   }
 
+
+  decodeLocalStorage (){
+    const payload = {};
+
+    if ( this.validate(localStorage.getItem('secreteAccount')) && this.validate(localStorage.getItem('secretePass')) ){//dry
+      // const store = {};
+      const decodeLocalStorageAccount = this.convertB64ToStr( localStorage.getItem('secreteAccount'));
+      const decodeLocalStoragePasskey = this.convertB64ToStr( localStorage.getItem('secretePass'));
+      payload['customer'] = decodeLocalStorageAccount.split('_')[0];
+      payload['password'] = decodeLocalStoragePasskey.split('_')[0];
+      payload['user'] = 'zonar';
+
+      return payload;
+    }else{
+      return false;
+    }
+  }
+
+
+  componentDidMount(){
+    this._isMounted = true;
+    const { params, startTime, endTime } = this.state;
+    if (this.validate(params)){
+      console.log('Already have here:',params);
+    }
+    
+    const mainData = this.decodeLocalStorage();
+    mainData['target'] = this.props.id;
+    mainData['start'] = startTime.toString();
+    mainData['end'] = endTime.toString();
+    // console.log('No params', params,this.props, mainData)
+
+    this.setState({params: mainData });
+    this.handleApiCall(mainData);
+  }
+
+
+  componentWillUnmount(){
+    this._isMounted = false
+  }
+
+  getPath(res){
+    const path = res.data.pathevents.assets;
+    if (this.validate(path)){
+      return path[0].events;
+    }
+    // this.setState( {'isPath' : false})
+  }
+
+
+  handleApiCall = async (data) => {
+
+    if ( this._isMounted ){
+
+      const id = this.props.id;
+      const options = 
+      {
+        method : 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body : JSON.stringify(data)
+      }
+      const fetchData = await fetch('/path', options);
+      const response = await fetchData.json();
+      const gotError = 'No path data'
+      response.code === 200 ? this.setState({'pathData': this.getPath(response)}) : response.error ? this.setState({'ErrorMessage': gotError}) : this.setState({'ErrorMessage':gotError })
+    }
+  }
   
   render(){ 
-    console.log(this.state)
-        const table_data = [
- 
-      {
-       "lat": 26.1061566,
-       "lng": -80.2593472,
-       "time": "2009-07-23 11:14:03-07",
-       "speed": "0.0",
-       "heading": "N",
-       "reasons": "6,12,9",
-       "distance_traveled": 0,
-       "odometer": 209.2,
-       "loadts": "2009-07-23 11:21:01.708821-07"
-      },
-      {
-       "lat": 26.1061934,
-       "lng": -80.2592703,
-       "time": "2009-07-23 11:36:45-07",
-       "speed": "0.0",
-       "heading": "N",
-       "reasons": "12,9",
-       "distance_traveled": 0,
-       "odometer": 209.2,
-       "loadts": "2009-07-23 11:36:49.265859-07"
-      },
-      {
-       "lat": 26.1061886,
-       "lng": -80.2592818,
-       "time": "2009-07-23 11:43:04-07",
-       "speed": "0.0",
-       "heading": "N",
-       "reasons": "12,9",
-       "distance_traveled": 0,
-       "odometer": 209.2,
-       "loadts": "2009-07-23 11:45:51.421893-07"
-      },
-      {
-       "lat": 26.106154,
-       "lng": -80.2592971,
-       "time": "2009-07-23 11:45:24-07",
-       "speed": "9.5",
-       "heading": "W",
-       "reasons": "12,10",
-       "distance_traveled": 0,
-       "odometer": 209.2,
-       "loadts": "2009-07-23 11:45:51.421893-07"
-      },
-      {
-       "lat": 26.106154,
-       "lng": -80.2592971,
-       "time": "2009-07-23 11:45:24-07",
-       "speed": "9.5",
-       "heading": "W",
-       "reasons": "12,10",
-       "distance_traveled": 0,
-       "odometer": 209.2,
-       "loadts": "2009-07-23 11:45:51.421893-07"
-      },
-            {
-       "lat": 26.106154,
-       "lng": -80.2592971,
-       "time": "2009-07-23 11:45:24-07",
-       "speed": "9.5",
-       "heading": "W",
-       "reasons": "12,10",
-       "distance_traveled": 0,
-       "odometer": 209.2,
-       "loadts": "2009-07-23 11:45:51.421893-07"
-      },      {
-       "lat": 26.106154,
-       "lng": -80.2592971,
-       "time": "2009-07-23 11:45:24-07",
-       "speed": "9.5",
-       "heading": "W",
-       "reasons": "12,10",
-       "distance_traveled": 0,
-       "odometer": 209.2,
-       "loadts": "2009-07-23 11:45:51.421893-07"
-      },      {
-       "lat": 26.106154,
-       "lng": -80.2592971,
-       "time": "2009-07-23 11:45:24-07",
-       "speed": "9.5",
-       "heading": "W",
-       "reasons": "12,10",
-       "distance_traveled": 0,
-       "odometer": 209.2,
-       "loadts": "2009-07-23 11:45:51.421893-07"
-      }
-      ]
 
-
-    const { assetData, pathData } = this.state;
-    const headData = [ 'Source', 'Time', 'Speed', 'Reason' ]
+    const { assetData, pathData, tableData, params } = this.state;
+    const headData = [ 'Source', 'Time', 'Speed', 'Reason' ];
 
     return (
       <div>
         <Card className='path_container' sx={{ width: 445 , height : 340}}>
-        	<FullScreen type='path' data={this.props.data}/>    
-          <CustomTable head={headData} body={table_data} />
-          <CardActions position ='fixed'>
+          <CardHeader 
+            action={
+              <FullScreen type='path' data={this.props.data}/> 
+          }/>  
+          <CustomTable head={headData} body={pathData} fullpath={false} />
+          <CardActions onClick={()=>this.handleApiCall(params)} disableSpacing className="cardActions">
             <Button size="small">GET</Button>
           </CardActions>
         </Card>

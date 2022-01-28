@@ -45,7 +45,9 @@ export default class App extends Component {
   decodeLocalStorage (){
     const payload = {};
 
-    if ( this.validate(localStorage.getItem('secreteAccount')) && this.validate(localStorage.getItem('secretePass')) ){
+    if ( this.validate(localStorage.getItem('secreteAccount')) && this.validate(localStorage.getItem('secretePass')) ){//dry
+
+      // const store = {};
       const decodeLocalStorageAccount = this.convertB64ToStr( localStorage.getItem('secreteAccount'));
       const decodeLocalStoragePasskey = this.convertB64ToStr( localStorage.getItem('secretePass'));
       payload['customer'] = decodeLocalStorageAccount.split('_')[0];
@@ -72,6 +74,7 @@ export default class App extends Component {
     let account = e['customer'];
     let passKey = e['password'];
     const payload = {};
+    console.log('Starting Login...', e )
 
     if ( this.validate(account) && this.validate(passKey) ) { //Fix this 
 
@@ -84,6 +87,7 @@ export default class App extends Component {
       this.setState({ LoginInfo : payload});
 
     }else{
+      console.log('something up!', account, passKey )
       const isEmptyMessage = 'Please Enter A Valid Account Code Or Password.';
       return this.setState({'LoginErrorMessage' : isEmptyMessage});
     }
@@ -100,18 +104,21 @@ export default class App extends Component {
     const fetchData = await fetch('/asset', options);
     const response = await fetchData.json();
 
-    if (response.code === 200) 
-    { // fix this asap.
-      this.setState( {'isLoggedIn' : true,  'assetData' : response.data} );
-    }else if (response.error)
-    {
-      this.setState( {'LoginErrorMessage' : response.error.message } );
-    }else
-    {
-      this.setState( {'LoginErrorMessage' : response.data.message } );      
-    }
+    // if (response.code === 200) 
+    // { // fix this asap.
+    //   this.setState( {'isLoggedIn' : true,  'assetData' : response.data} );
+    // }else if (response.error)
+    // {
+    //   this.setState( {'LoginErrorMessage' : response.error.message } );
+    // }else
+    // {
+    //   this.setState( {'LoginErrorMessage' : response.data.message } );      
+    // }
+    // console.log('got data', this)
+    // const checkIf
+    console.log('Done calling...', response)
+    response.code === 200 ? this.setState({'isLoggedIn' : true,  'assetData' : response.data}) : response.error ? this.setState({'LoginErrorMessage':response.error.message}) : this.setState({'LoginErrorMessage':response.data.message })
   }
-
 
   render(){
     const { assetData, isLoggedIn, LoginErrorMessage, whatsTheWord, LoginInfo } = this.state;
