@@ -1,3 +1,10 @@
+.tab-list-container {
+    display: grid;
+    grid-template-areas:
+    'header'
+    'menu ';
+}
+
 .solid-tab-container > div {
     top:auto;
 }
@@ -14,7 +21,7 @@ div .tabs-container{
     grid-gap: 1rem;
     width: 100vw;
 }
-.tabItem-container {
+.tab-list-container {
     width: 20vw;
     list-style: none;
     border: 1px solid #bdbdbd59;
@@ -80,7 +87,7 @@ div .inactive-assetList-avatar{
 }
 .tab-panel{
 	display: none;
-    width: 80vw;
+    width: 75vw;
 }
 .react-tabs__tab-panel--selected{
     display: block;

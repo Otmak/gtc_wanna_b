@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './tabmaster.css';
+import Skeleton from '@mui/material/Skeleton';
 import AssetContainer from '../asset_contents/asset_container/asset_container.js';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TextField from '@mui/material/TextField';
@@ -11,7 +12,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 
 
-export default class TabMaster extends Component {
+export default class TabMaster extends Component {//rewrt
   constructor(props){
     super(props)
     this.state = {
@@ -29,7 +30,7 @@ export default class TabMaster extends Component {
         for ( let i in data ){
           listOfTabPanels.push(
             <TabPanel key={i} className='tab-panel'>
-               <AssetContainer name={data[i].child.fleet} id={i} gps={data[i].child.gps} mainData={assetData}/>
+               <AssetContainer name={data[i].child.fleet} id={i} gps={data[i].child.gps} data={assetData}/>
             </TabPanel>
           )};
           return listOfTabPanels;
@@ -59,11 +60,15 @@ export default class TabMaster extends Component {
       }
     }
 
+    // console.log('from Tab', assetData )
+
+    let filteredassetList;
+
     return (
       <div className='tabs-container-main-div'>
         <Tabs className='tabs-container'>
-          <TabList className='tabItem-container' >
-            <TextField position ='fixed' className='search-textfield' id="filled-search" label="Search" type="search" variant="filled" />
+          <TabList className='tab-list-container' >
+            <TextField className='search-textfield' id="filled-search" label="Search" type="search" variant="filled" />
             { creation( assetData, 't') }
           </TabList>
           { creation( assetData, 'p') }

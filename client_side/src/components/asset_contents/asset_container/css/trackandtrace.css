@@ -1,0 +1,66 @@
+
+.carousel_card {
+	width: 20rem;
+ 	max-width: 20rem;
+}
+
+#trackAndTraceWrapper {
+	width: 100%;
+	max-width: 100%;
+	/*height: ;*/
+	position: relative;
+}
+
+#carousel {
+	display: flex;
+	overflow: auto;
+	scroll-behavior: smooth;
+	scrollbar-width: none;
+
+}
+
+#carousel::-webkit-scrollbar {
+  height: 0;
+}
+
+
+#prev,
+#next {
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	background: white;
+	border: none;
+	padding: 8px;
+	border-radius: 50%;
+	outline: 0;
+	cursor: pointer;
+	position: absolute;
+}
+
+#prev {
+	top: 50%;
+	left: 0;
+	transform: translate(50%, -50%);
+	/*  display: none;*/
+}
+
+#next {
+	top: 50%;
+	right: 0;
+	transform: translate(-50%, -50%);
+}
+
+#content {
+	display: grid;
+	grid-gap: 16px;
+	grid-auto-flow: column;
+	margin: auto;
+	box-sizing: border-box;
+}
+
+#carousel > div {
+	margin: 1rem;
+	min-width :27rem;
+	max-height: 440px;
+}

@@ -1,8 +1,0 @@
-.asset_conatiner {
-	display: flex;
-	flex-direction: row;
-}
-
-.asset_conatiner > div {
-	margin: 1rem;
-}

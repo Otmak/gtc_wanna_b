@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './asset_container.css';
-import Path from '../path/path.js';
-import Location from '../location/location.js';
+import TrackAndTrace from './trackntrace.js';
 
 
 export default class AssetContainer extends Component {
@@ -11,16 +10,15 @@ export default class AssetContainer extends Component {
       assetData : this.props.data,
     }
   }
+
+
   render(){ 
-    console.log(this.props)
-
-
+    // console.log(this)
     const { assetData } = this.state; 
 
     return (
       <div className="asset_conatiner">
-        <Path data={assetData} id={this.props.id} gps={this.props.gps} />
-        <Location data={assetData} id={this.props.id} />
+        <TrackAndTrace data={assetData} id={this.props.id} />
       </div>
       )
   }

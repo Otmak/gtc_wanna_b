@@ -1,10 +1,16 @@
 import React, {Component} from 'react';
 import Card from '@mui/material/Card';
+import Skeleton from '@mui/material/Skeleton';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
+import Chip from '@mui/material/Chip';//change color on conditions
 import Map from '../map/map.js';
+import NoData from '../nodata/nodata.js';
 import './location.css';
 
 
@@ -16,7 +22,7 @@ export default class Location extends Component {
       assetData: this.props.data,
       params: '',
       locationData: '',
-      ErrorMessage:'',
+      errorMessage:'',
     }
   }
 
@@ -60,15 +66,16 @@ export default class Location extends Component {
     const { params } = this.state;
     if (this.validate(params)){
       // console.log('Already have here:',params);
-      console.log('Params found!')
       return;
     }
     
+
     const mainData = this.decodeLocalStorage()
     mainData['target'] = this.props.id
     this.setState({params: mainData })
     this.handleApiCall(mainData)
   }
+
 
   componentWillUnmount(){
     this._isMounted = false;
@@ -76,8 +83,10 @@ export default class Location extends Component {
 
 
   handleApiCall = async (data) => {
+
     if (this._isMounted){
 
+      this.setState({locationData:""});
       const id = this.props.id;
       const options = 
       {
@@ -90,9 +99,11 @@ export default class Location extends Component {
 
       const fetchData = await fetch('/location', options);
       const response = await fetchData.json();
-      const updateErrorMessage = 'No location info is available';
-      // console.log('Fetch results' , (response))
-      response.code === 200 ? this.setState({'locationData':response.data[id].child}) : response.error ? this.setState({'ErrorMessage':response.error.message}) : this.setState({'ErrorMessage': updateErrorMessage })
+      const updateErrorMessage = 'No data available';
+
+      if (this._isMounted ){
+        response.code === 200 ? this.setState({'locationData':response.data[id].child}) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
+        } 
     } 
   }
 
@@ -101,29 +112,42 @@ export default class Location extends Component {
     return <Map location={data} />
   }
 
+
+  isPast24Hours(date) {
+    const dateOfLocation = new Date(date).getTime()/1000.0;
+    const nowTime = Date.now()/1000.0;
+    const min24hourDate = nowTime - 86400; //24 hours from now
+    return dateOfLocation < min24hourDate ? "warning" : "default"
+
+  }
+
   
   render(){
-
-    const { params, locationData, ErrorMessage } = this.state;
-    // console.log('on render()', locationData )
+    // <Typography variant="caption" color="text.secondary"> {'Speed : '} <Chip label={locationData}/> </Typography>
+    const { params, locationData, errorMessage } = this.state;
     return (
-      <div>
-        <Card sx={{ width: 445 }}>
+        <Card sx={{ width: 800 , height : 440}}>
           <CardMedia
             height ="140"
+            component="map"
           >
             {this.validate(locationData) && this.getMap(locationData)}
           </CardMedia>
           <CardContent>
-            <h4> {'Location'} </h4>
-            <p> {'Last updated : '}{locationData.time} </p>
-            {<p> { this.validate(ErrorMessage) && ErrorMessage }</p>}
+
+            { !this.validate(errorMessage)
+              && 
+              <div>
+                <Typography variant="subtitle2" color="text.secondary"> {'Vehicle Status: '} <Chip color={ locationData.power === "on" ? "success" : "default"} label={locationData.power}/> </Typography>
+                <Typography variant="caption" color="text.secondary"> {'Last updated : '} <Chip color={ this.isPast24Hours(locationData.time)} label={locationData.time}/> </Typography> <br /> 
+              </div>
+            }
+            { this.validate(errorMessage) && <NoData message={ errorMessage }/>  }
           </CardContent>
           <CardActions onClick={()=>this.handleApiCall(params)}>
             <Button size="small">GET</Button>
           </CardActions>
         </Card>
-      </div>
       )
   }
 }

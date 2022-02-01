@@ -3,8 +3,11 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
+import Skeleton from '@mui/material/Skeleton';
 import Button from '@mui/material/Button';
 import FullScreen from '../fullscreen/fullscreen.js';
+import DefaultCard from '../regular/regular.js';
+import NoData from '../nodata/nodata.js';
 import CustomTable from '../table/table.js';
 import './path.css';
 
@@ -19,7 +22,7 @@ export default class Path extends Component {
       endTime : Date.now()/1000.0,
       startTime :  Date.now()/1000.0 - 86400,
       pathData : [],
-      ErrorMessage: '',
+      errorMessage: '',
       params: '',
     }
   }
@@ -34,9 +37,7 @@ export default class Path extends Component {
     if ( this.validate(str)){
       return decodeURIComponent(escape(window.atob( str )));
     }
-    else{
-      return str;
-    }
+    return str;
   }
 
 
@@ -59,12 +60,10 @@ export default class Path extends Component {
 
 
   componentDidMount(){
+
     this._isMounted = true;
-    const { params, startTime, endTime } = this.state;
-    if (this.validate(params)){
-      console.log('Already have here:',params);
-    }
-    
+
+    const { params, startTime, endTime } = this.state; 
     const mainData = this.decodeLocalStorage();
     mainData['target'] = this.props.id;
     mainData['start'] = startTime.toString();
@@ -93,6 +92,7 @@ export default class Path extends Component {
 
     if ( this._isMounted ){
 
+      this.setState({pathData:""});
       const id = this.props.id;
       const options = 
       {
@@ -104,29 +104,31 @@ export default class Path extends Component {
       }
       const fetchData = await fetch('/path', options);
       const response = await fetchData.json();
-      const gotError = 'No path data'
-      response.code === 200 ? this.setState({'pathData': this.getPath(response)}) : response.error ? this.setState({'ErrorMessage': gotError}) : this.setState({'ErrorMessage':gotError })
+      const gotError = 'No path data';
+      // console.log(response)
+      if ( this._isMounted){
+        response.code === 200 ? this.setState({'pathData': this.getPath(response)}) : response.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
+      } 
     }
   }
   
   render(){ 
 
-    const { assetData, pathData, tableData, params } = this.state;
+    const { assetData, pathData, tableData, params, errorMessage } = this.state;
     const headData = [ 'Source', 'Time', 'Speed', 'Reason' ];
 
     return (
-      <div>
-        <Card className='path_container' sx={{ width: 445 , height : 340}}>
+        <Card >
           <CardHeader 
-            action={
-              <FullScreen type='path' data={this.props.data}/> 
-          }/>  
-          <CustomTable head={headData} body={pathData} fullpath={false} />
-          <CardActions onClick={()=>this.handleApiCall(params)} disableSpacing className="cardActions">
+            action={ <FullScreen title={this.props.data[this.props.id].child.fleet} path={pathData} type='path' data={this.props.data}/> }
+          /> 
+
+          <CustomTable maxheight={350} head={headData} body={pathData} fulltable={false} />
+            { this.validate(errorMessage) && <NoData message={ errorMessage } /> }
+          <CardActions onClick={()=>this.handleApiCall(params)} className="cardActions">
             <Button size="small">GET</Button>
           </CardActions>
         </Card>
-      </div>
       )
   }
 }
