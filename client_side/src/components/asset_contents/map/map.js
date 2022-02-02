@@ -22,13 +22,12 @@ export default class Map extends React.Component {
 
   componentDidMount() {
     // console.log('mounted',this, this.map)
-    
 
     if (!this.map) {
       // instantiate a platform, default layers and a map as usual
       const { location } = this.props;
       // console.log(location)
-      if ( this.validate(location) ){
+      if ( this.validate(location) ){ //if location exsits
 
         let lat = location.lat;
         let lng = location.long;
@@ -46,10 +45,43 @@ export default class Map extends React.Component {
         );
 
         let behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-
         let locationMarker = new H.map.Marker({lat:lat, lng:lng});
         map.addObject(locationMarker);
-        
+        let ui = H.ui.UI.createDefault(map, layers);
+        this.map = map;
+      }
+
+
+      if ( this.validate(this.props.polyline) ) { //if polyline excists 
+
+        const polylineData = this.props.polyline;
+        let lat = polylineData[0].lat;
+        let lng =  polylineData[0].lng;
+
+        const platform = new H.service.Platform({
+          apikey: 'BWBsAh_xGfd6_BdguHOQLAyMl2cNm_loHRD6gemyQNE'
+        });
+        const layers = platform.createDefaultLayers();
+        const map = new H.Map(
+          this.ref.current,
+          layers.vector.normal.map,
+          {
+            center: {lat:lat, lng:lng},
+            zoom: 6.1,
+          },
+        );
+
+        let behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+        let lineString = new H.geo.LineString();
+
+        for ( let event = 0; event < polylineData.length; event ++ ) {
+          lineString.pushPoint({lat: polylineData[event].lat , lng: polylineData[event].lng});
+        }  
+
+        map.addObject(new H.map.Polyline(
+            lineString, { style: { lineWidth: 8 }}
+          ));
+      
         let ui = H.ui.UI.createDefault(map, layers);
         this.map = map;
       }
@@ -58,14 +90,10 @@ export default class Map extends React.Component {
 
 
   render() {
-    // console.log('rendering..', !this.map, this.map )
-    // if (this.validate())
     const { hasData } = this.state
-
     return (
-
           <div
-            style={{ height:'300px' }}
+            style={{ height:'300px', width: this.props.width }}
             ref={this.ref}
            />
     )

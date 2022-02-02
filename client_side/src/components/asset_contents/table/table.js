@@ -5,6 +5,8 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import Chip from '@mui/material/Chip';
+import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import './table.css';
 
@@ -20,9 +22,47 @@ export default class CustomTable extends Component {
 }
 
 
-validate (value) {
-return value === '' || value === undefined || value === null ? false : true;
+validate (value) { 
+	return value === '' || value === undefined || value === null ? false : true; 
+}
+
+
+checkForColdStarts(r){
+
+	const rSplit = r.split(',');
+	const pathReasons = {
+		0: 'Reserved and invalid',
+		1:	'Input 1 state change',
+		2:	'Input 2 state change',
+		3:	'Input 3 state change',
+		4:	'Input 4 state change',
+		5:	'Input 5 state change',
+		6:	'Cold Start',
+		7:	'Power Off',
+		8:	'Geofence',
+		9:	'Motion Stop',
+		10:	'Motion Start',
+		11:	'Standard Event',
+		12:	'Power On',
+		13:	'Panic'
 	}
+
+	const coloredReasons = {
+		6:"error",
+		12:"success",
+		7:"default"
+	}
+
+	for (let i = 0; i < rSplit.length; i++ ){
+		if ( rSplit[i] in coloredReasons ) {
+			return ( 	
+				<Tooltip key={i} title={ pathReasons[rSplit[i]] } followCursor>
+					<Chip key={i} color={ coloredReasons[ rSplit[i] ] } label={r} />
+				</Tooltip> 
+			)};
+		return r;
+	};
+}
 
 
 componentDidMount(){
@@ -30,59 +70,60 @@ componentDidMount(){
 }
 
 
-parseFullTable(data) {
-	let cache = {};
-	// let 
-	// for (let event in data ){
+parseCellOrNot(cont, data){
 
-	// 	if ()
-	// }
-
+	const cells = new Array();
+	for ( let i=0; i<cont.length; i++ ){
+		if ( cont[i] ==='reasons'){
+			cells.push( <TableCell key={i}> { this.checkForColdStarts( data[cont[i]] ) } </TableCell> );		
+		}else{
+			cells.push( <TableCell key={i}> {data[cont[i]]} </TableCell> );
+		}
+	}
+	return cells;
 }
 
 
-parseTableCell ( data ) {
-	const tableCell = new Array();
-	// console.log('TABLE data is:',data)
-	// const jj = [];
-	if (this._isMounted && this.validate(data))
-	{
-		// console.log('length is',data)
-		const lengthOfData =  5;//TO limit the number of rendered rows
-		for ( let item = 0; item < data.length ; item ++ ){
-			// console.log(data[item])
-	  		if ( this.validate(data[item].time) ) {
-	  			tableCell.push( 
-	  				<TableRow hover role="checkbox" tabIndex={-1} key={item} >
-	  					<TableCell > {data[item].source} </TableCell>
-	  					<TableCell > {data[item].time} </TableCell>
-	  					<TableCell > {data[item].speed} </TableCell>
-	  					<TableCell > {data[item].reasons} </TableCell>
+parseFullTable ( head, body, bodyContains){
+
+	if (this.validate(head) && this.validate(body)){
+
+		let headData = new Array();
+		let bodyData = new Array();
+		let fullTable = new Array();
+
+		for ( let i =0; i < head.length; i++ ) {
+			headData.push( <TableCell key={ i } align="left"> { head[i] } </TableCell> )
+		}
+
+		for ( let i =0; i < body.length; i++ ){// -_-
+			bodyData.push(
+		  	<TableRow hover role="checkbox" tabIndex={-1} key={i} >
+		  		{ this.parseCellOrNot( bodyContains, body[i] ) }
+				</TableRow>
+			 )
+		}
+		fullTable.push(
+			  <Table stickyHeader aria-label="sticky table">
+	  			<TableHead>
+	  				<TableRow>
+	  					{headData}
 	  				</TableRow>
-	  				)
-	  		}else{
-	  			tableCell.push ( <TableCell key={ item } align="right"> { data[item] } </TableCell> )
-	  		}
-	  	}
+	  			</TableHead>
+	  			<TableBody>
+	  				{bodyData}
+	  			</TableBody>
+	  		</Table>
+			);
+		return fullTable;
 	}
-	return tableCell;
 }
 
 
 render(){ 
-	// console.log(this.props)
 return (
   	<TableContainer sx={{ maxHeight: this.props.maxheight }} className="table-container" >
-  		<Table stickyHeader aria-label="sticky table">
-  			<TableHead>
-  				<TableRow>
-  					{ this.parseTableCell ( this.props.head)}
-  				</TableRow>
-  			</TableHead>
-  			<TableBody>
-  				{ this.parseTableCell( this.props.body )}
-  			</TableBody>
-  		</Table>
+  		{ this.parseFullTable( this.props.head, this.props.body, this.props.bodycount) }
   	</TableContainer>
   )
 }

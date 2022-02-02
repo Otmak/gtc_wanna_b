@@ -62,10 +62,8 @@ export default class Location extends Component {
 
   componentDidMount(){
     this._isMounted = true;
-    //check state
     const { params } = this.state;
     if (this.validate(params)){
-      // console.log('Already have here:',params);
       return;
     }
     
@@ -109,7 +107,7 @@ export default class Location extends Component {
 
 
   getMap(data){
-    return <Map location={data} />
+    return <Map width="" location={data} />
   }
 
 
@@ -134,7 +132,6 @@ export default class Location extends Component {
             {this.validate(locationData) && this.getMap(locationData)}
           </CardMedia>
           <CardContent>
-
             { !this.validate(errorMessage)
               && 
               <div>

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {Component} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import ListItemText from '@mui/material/ListItemText';
@@ -8,10 +8,10 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import CustomTable from '../table/table.js';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
-import CustomTable from '../table/table.js';
 import Slide from '@mui/material/Slide';
 import Map from '../map/map.js';
 import OpenWithIcon from '@mui/icons-material/OpenWith';
@@ -20,63 +20,72 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function FullScreen(props) {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const getMap = (data) => {
-    return <Map location={data} />
+export default class FullScreen extends Component {
+  constructor(props){
+    super(props)
+    this.state={
+      open: false,
+      side: false,
+    }
   }
+
+
+  validate (value) {
+    return value === '' || value === undefined || value === null ? false : true;
+  }
+
+  handleClickOpen = () =>{
+    this.setState({ open: true});
+  };
+
+  handleClose = () =>{
+    this.setState({open: false});
+  };
+
+  getMap (data) {
+    return <Map location={data} />
+  } 
+
   
+  render(){
+    const { open, side } = this.state;
+    const headData = [ 'Source', 'Time', 'Speed', 'Distance', 'Reason', 'Heading' ];
+    const bodyCount = ['source', 'time', 'speed', 'distance_traveled', 'reasons', 'heading'];
 
-  // console.log(props)
-
-  return (
-    <div>
-      <MoreVertIcon onClick={handleClickOpen} />
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        // TransitionComponent={Transition}
-      >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {props.title}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <List>
-
-          <ListItem >
-            <ListItemText primary="Map" secondary="data" />
-            { (props.type === "path") && <Map full={true} polyline={"test"}/>}
-          </ListItem>
-          <Divider />
-          <ListItem button>
-            <ListItemText
-              primary="Path table"
-              secondary="data"
-            />
-          </ListItem>
-        </List>
-      </Dialog>
-    </div>
-  );
+    return (
+      <div>
+        <MoreVertIcon onClick={this.handleClickOpen} />    
+        <Dialog
+          fullScreen
+          open={open}
+          onClose={this.handleClose}
+          // TransitionComponent={Transition}
+        >
+          <AppBar sx={{ position: 'relative' }}>
+            <Toolbar>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={this.handleClose}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                {this.props.title}
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <List>
+            <ListItem >
+              { <Map width={"100vw"} full={true} polyline={this.props.pathdata}/>}
+            </ListItem>
+            <Divider />
+            <ListItem button>
+              <CustomTable maxheight={500} head={headData} body={this.props.pathdata} bodycount={bodyCount}/> 
+            </ListItem>
+          </List>
+        </Dialog>
+      </div>
+    );}
 }

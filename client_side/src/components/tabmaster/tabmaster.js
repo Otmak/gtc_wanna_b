@@ -17,12 +17,14 @@ export default class TabMaster extends Component {//rewrt
     super(props)
     this.state = {
       assetData : this.props.data,
+      filteredAssetData:''
     }
   }
-  render(){
+
+
+  creation(data, type) {
 
     const { assetData } = this.state;
-    const creation = (data, type) => {
 
       const mainArray = [];
       if ( type === 'p'){
@@ -60,7 +62,12 @@ export default class TabMaster extends Component {//rewrt
       }
     }
 
-    // console.log('from Tab', assetData )
+
+  render(){
+
+    const { assetData, filteredAssetData } = this.state;
+
+    console.log('from Tab', assetData)
 
     let filteredassetList;
 
@@ -69,9 +76,9 @@ export default class TabMaster extends Component {//rewrt
         <Tabs className='tabs-container'>
           <TabList className='tab-list-container' >
             <TextField className='search-textfield' id="filled-search" label="Search" type="search" variant="filled" />
-            { creation( assetData, 't') }
+            { this.creation( assetData, 't') }
           </TabList>
-          { creation( assetData, 'p') }
+          { this.creation( assetData, 'p') }
         </Tabs>
       </div>
       )

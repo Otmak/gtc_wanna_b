@@ -1,14 +1,17 @@
 import React, {Component} from 'react';
 import Card from '@mui/material/Card';
+import Paper from '@mui/material/Paper';
 import CardActions from '@mui/material/CardActions';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
+import IconButton from '@mui/material/IconButton';
 import Skeleton from '@mui/material/Skeleton';
 import Button from '@mui/material/Button';
 import FullScreen from '../fullscreen/fullscreen.js';
 import DefaultCard from '../regular/regular.js';
 import NoData from '../nodata/nodata.js';
 import CustomTable from '../table/table.js';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import './path.css';
 
 
@@ -84,7 +87,7 @@ export default class Path extends Component {
     if (this.validate(path)){
       return path[0].events;
     }
-    // this.setState( {'isPath' : false})
+    this.setState( {'errorMessage' : 'No data available'})
   }
 
 
@@ -104,8 +107,10 @@ export default class Path extends Component {
       }
       const fetchData = await fetch('/path', options);
       const response = await fetchData.json();
-      const gotError = 'No path data';
-      // console.log(response)
+      const gotError = 'No data available';
+
+      console.log(response)
+
       if ( this._isMounted){
         response.code === 200 ? this.setState({'pathData': this.getPath(response)}) : response.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
       } 
@@ -116,14 +121,19 @@ export default class Path extends Component {
 
     const { assetData, pathData, tableData, params, errorMessage } = this.state;
     const headData = [ 'Source', 'Time', 'Speed', 'Reason' ];
+    const bodyCount = ['source', 'time', 'speed', 'reasons'];
 
     return (
-        <Card >
-          <CardHeader 
-            action={ <FullScreen title={this.props.data[this.props.id].child.fleet} path={pathData} type='path' data={this.props.data}/> }
+        <Card>
+          <CardHeader
+            action={ 
+              <FullScreen           
+                title={this.props.data[this.props.id].child.fleet} 
+                pathdata={pathData} 
+                type='path' 
+                data={this.props.data}/> }
           /> 
-
-          <CustomTable maxheight={350} head={headData} body={pathData} fulltable={false} />
+          <CustomTable maxheight={350} head={headData} body={pathData} bodycount={bodyCount} />
             { this.validate(errorMessage) && <NoData message={ errorMessage } /> }
           <CardActions onClick={()=>this.handleApiCall(params)} className="cardActions">
             <Button size="small">GET</Button>

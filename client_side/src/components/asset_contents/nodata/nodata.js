@@ -23,10 +23,7 @@ export default class NoData extends Component {
 
   
   render(){
-    // <Typography variant="caption" color="text.secondary"> {'Speed : '} <Chip label={locationData}/> </Typography>
-
     const { errorMessage } = this.state;
-    // console.log('on render()', locationData )
     return (
 		<Paper elevation={0} sx={{ height : 330, width: "inherit"}} >  
 			<AnnouncementOutlinedIcon sx={{ fontSize: 204, color: "rgb(229 227 227 / 60%)", marginLeft:"25%" }}/>
