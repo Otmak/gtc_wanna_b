@@ -77,12 +77,12 @@ export default class FullScreen extends Component {
             </Toolbar>
           </AppBar>
           <List>
-            <ListItem >
-              { <Map width={"100vw"} full={true} polyline={this.props.pathdata}/>}
+            <ListItem key={"full-map"} >
+              { <Map key={"full-map"} width={"100vw"} full={true} polyline={this.props.pathdata}/>}
             </ListItem>
             <Divider />
-            <ListItem button>
-              <CustomTable maxheight={500} head={headData} body={this.props.pathdata} bodycount={bodyCount}/> 
+            <ListItem key={"full-table"}>
+              <CustomTable key={"full-table"} maxheight={500} head={headData} body={this.props.pathdata} bodycount={bodyCount}/> 
             </ListItem>
           </List>
         </Dialog>

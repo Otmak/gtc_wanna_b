@@ -1,0 +1,9 @@
+.asset_conatiner {
+	margin: 1rem;
+	padding: 0.5rem;
+	background-color: #f5f4f4;
+}
+
+.asset_conatiner > h4 {
+	margin: 1rem;
+}

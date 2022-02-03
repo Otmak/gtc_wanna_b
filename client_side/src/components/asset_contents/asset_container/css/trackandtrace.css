@@ -61,6 +61,7 @@
 
 #carousel > div {
 	margin: 1rem;
+	min-height: 440px;
 	min-width :27rem;
 	max-height: 440px;
 }

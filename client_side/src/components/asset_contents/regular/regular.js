@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
 import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
+import MenuList from '@mui/material/MenuList';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemText from '@mui/material/ListItemText';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import './defaultcard.css';
 
@@ -10,84 +20,50 @@ export default class DefaultCard extends Component {
     this.state = {
       assetData :{},
       errorMessage : '',
+      params : '',
     }
   }
 
 
   validate (value) {
     return value === '' || value === undefined || value === null ? false : true;
-  } 
-
-
-  convertB64ToStr (str) {
-    if ( this.validate(str)){
-      return decodeURIComponent(escape(window.atob( str )));
-    }
-    else{
-      return str;
-    }
   }
 
 
-  decodeLocalStorage (){
-    const payload = {};
+  parseCardCells (data, jay ) {
 
-    if ( this.validate(localStorage.getItem('secreteAccount')) && this.validate(localStorage.getItem('secretePass')) ){//dry
-      // const store = {};
-      const decodeLocalStorageAccount = this.convertB64ToStr( localStorage.getItem('secreteAccount'));
-      const decodeLocalStoragePasskey = this.convertB64ToStr( localStorage.getItem('secretePass'));
-      payload['customer'] = decodeLocalStorageAccount.split('_')[0];
-      payload['password'] = decodeLocalStoragePasskey.split('_')[0];
-      payload['user'] = 'zonar';
+    if (this.validate(data)){
+      const cardCells = new Array();
 
-      return payload;
-    }else{
-      return false;
-    }
-  }
-
-
-  // componentDidMount () {
-  //   if (this.decodeLocalStorage()){
-  //     const payload = this.decodeLocalStorage();
-  //     return this.handleLogin(payload);
-  //   }
-  // }
-
-
-  fixData (data) {
-    return data;
-  }
-
-
-  handleApiCall = async (data) => {
-
-    if ( this._isMounted ){
-
-      const id = this.props.id;
-      const options = 
-      {
-        method : 'POST',
-        headers: {
-        'Content-Type': 'application/json'
-        },
-        body : JSON.stringify(data)
+      for (let cell in data ){
+        const capitalizedCell = cell;
+        cardCells.push(
+          <MenuItem>
+            <ListItemText primary={capitalizedCell} secondary={""}/>
+            <Typography variant="body2" color="text.secondary">
+              { <Chip label={ data[cell]} /> }
+            </Typography>
+          </MenuItem>
+          );
+        cardCells.push( <Divider/> );
       }
-      const fetchData = await fetch('/path', options);
-      const response = await fetchData.json();
-      const gotError = 'No path data';
-      console.log(response)
-      response.code === 200 ? this.setState({'pathData': this.fixData(response)}) : response.error ? this.setState({'ErrorMessage': gotError}) : this.setState({'ErrorMessage':gotError })
+      return cardCells;
     }
   }
-  
+
 
   render () {
     const { errorMessage } = this.state;
-
     return (
-      <Card className="default_container">
-        <Typography align="center" variant="caption" color="text.secondary"> {"test card"} </Typography>
-      </Card>
-      )}
+      <Card style={{'height':'100%'} }className="default_container">
+      <CardHeader/>
+      {
+        this.parseCardCells(this.props.celldata, "")
+      }
+        <Divider />
+        <CardActions> 
+        <Button size="small">GET</Button>
+        </CardActions>
+     </Card>
+  )}
 }

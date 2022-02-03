@@ -1,8 +1,9 @@
 .tab-list-container {
-    display: grid;
+/*    display: grid;
     grid-template-areas:
     'header'
-    'menu ';
+    'menu ';*/
+    background-color: #fff;
 }
 
 .solid-tab-container > div {
@@ -15,13 +16,14 @@
 .tabs-container-main-div {
 	margin-top: 80px;
 }
-div .tabs-container{
+/*div .tabs-container{
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;
     width: 100vw;
-}
+}*/
 .tab-list-container {
+    position: fixed;
     width: 20vw;
     list-style: none;
     border: 1px solid #bdbdbd59;
@@ -82,12 +84,13 @@ div .inactive-assetList-avatar{
 
 }
 .search-textfield {
-    width: 100%;
+    width: inherit;
     position: fixed;
 }
 .tab-panel{
 	display: none;
     width: 75vw;
+    float: right;
 }
 .react-tabs__tab-panel--selected{
     display: block;

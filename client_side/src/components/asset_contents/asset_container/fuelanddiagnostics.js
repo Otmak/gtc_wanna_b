@@ -1,12 +1,10 @@
 import React, {Component} from 'react';
 import './css/trackandtrace.css';
-import Location from '../location/location.js';
 import GpsInfo from '../gpsinfo/gpsinfo.js';
 import DefaultCard from '../regular/regular.js';
-import Path from '../path/path.js';
 
 
-export default class TrackAndTrace extends Component {
+export default class FuelAndDiagnostics extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -51,10 +49,6 @@ export default class TrackAndTrace extends Component {
       <div id="trackAndTraceWrapper">
         <div id="content">
           <div ref={this.carousel} id="carousel">
-            <GpsInfo data={assetData} id={this.props.id} gps={this.props.gps} />
-            <Path  data={assetData} id={this.props.id} gps={this.props.gps} />
-            <Location  data={assetData} id={this.props.id} />
-            <DefaultCard celldata={cdata} data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>

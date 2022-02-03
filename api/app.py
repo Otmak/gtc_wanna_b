@@ -153,5 +153,25 @@ def path():
         return {'error': {'message': 'exception occurred this message is from the server'}}
 
 
+@app.route('/phhm', methods=['POST'])
+def phhm():
+    try:
+        phhm_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=getphonehome&startdate=&enddate=&format=xml'
+        phhm_data = create_dictionary(unpack_bytes(make_call(generate_api(request.get_json(), phhm_url))))
+        return validate_data(phhm_data)
+    except:
+        return {'error': {'message': 'exception occurred this message is from the server'}}
+
+
+@app.route('/assetactivity', methods=['POST'])
+def assetactivity():
+    try:
+        assetactivity_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=getphonehome&startdate=&enddate=&format=xml'
+        assetactivity_data = create_dictionary(unpack_bytes(make_call(generate_api(request.get_json(), assetactivity_url))))
+        return validate_data(assetactivity_data)
+    except:
+        return {'error': {'message': 'exception occurred this message is from the server'}}
+
+
 if __name__ == '__main__':
     app.run(debug=True)
