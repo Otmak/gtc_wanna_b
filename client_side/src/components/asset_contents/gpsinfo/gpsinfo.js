@@ -24,6 +24,7 @@ export default class GpsInfo extends Component {
 
 
   convertB64ToStr (str) {
+    
     if ( this.validate(str)){
       return decodeURIComponent(escape(window.atob( str )));
     }
@@ -34,16 +35,13 @@ export default class GpsInfo extends Component {
 
 
   decodeLocalStorage (){
+
     const payload = {};
-
-    if ( this.validate(localStorage.getItem('secreteAccount')) && this.validate(localStorage.getItem('secretePass')) ){//dry
-      // const store = {};
-      const decodeLocalStorageAccount = this.convertB64ToStr( localStorage.getItem('secreteAccount'));
-      const decodeLocalStoragePasskey = this.convertB64ToStr( localStorage.getItem('secretePass'));
-      payload['customer'] = decodeLocalStorageAccount.split('_')[0];
-      payload['password'] = decodeLocalStoragePasskey.split('_')[0];
-      payload['user'] = 'zonar';
-
+    const mostwanted = [ "customer", "password", "user" ]
+    if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) ){
+      for ( let i =0; i < mostwanted.length; i++ ){
+        payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
+      }
       return payload;
     }else{
       return false;
@@ -54,45 +52,54 @@ export default class GpsInfo extends Component {
   componentDidMount(){
 
     this._isMounted = true;
+    // console.log(this)
 
     const { params, startTime, endTime } = this.state; 
     const mainData = this.decodeLocalStorage();
+    // console.log(mainData)
     mainData['target'] = this.props.id;
     mainData['start'] = startTime.toString();
     mainData['end'] = endTime.toString();
+    mainData['time'] = Math.round(startTime).toString();
 
     this.setState({params: mainData });
     this.handleApiCall(mainData);
   }
 
 
-  mergeData(phhm){
+  epochToHtime(epoch){
+    const time = new Date( epoch *1000);
+    return time.toLocaleString();
+  }
+
+
+  mergeData(phhm){//tbc
+
+    console.log(phhm, 'from merge.********************')
 
     if ( this.validate(phhm) ){
-      const main = new Object();
+      console.log('SOmeHOW passed.')
+      const main = {};
       const ref = {  
         'fwver': 'firmware',
         'gpssn': 'gpsid',
         'scid': 'scid',
-        'timestamp': 'Last phhm',
+        'timestamp': 'phhm',
       }
-
-      console.log(phhm.data.null.child)
-      const data = phhm.data.null.child;
-
+      const data = phhm.data.gpsphonecall.child;
       for ( let i in data ) {
         if ( i in ref ){
           main[ref[i]] = data[i]
         }
       }
-      console.log(main)
+      main['phhm'] = this.epochToHtime(main['phhm']);
       return main;
     }
   }
 
-
   handleApiCall = async (data) => {//-_-
-
+    this.setState({gpsData:""});
+    // console.log('calling api.....', data)
     if ( this._isMounted ){
       const id = this.props.id;
       const options = 
@@ -104,25 +111,24 @@ export default class GpsInfo extends Component {
         body : JSON.stringify(data)
       }
       const fetchPhhmData = await fetch('/phhm', options);
-      // const fetchAssetActivityData = await fetch('/assetactivity', options);
-      // const fetchPhhmData = await fetch('/phhm', options);
+      // const fetchAssetActivityData = await fetch('/newinspection', options);
       const phhmResponse = await fetchPhhmData.json();
       // const assetActivityResponse = await fetchAssetActivityData.json();
       const gotError = 'No gps data';
-      // console.log('phhm ',phhmResponse )
+
+      // console.log('phhm ++ ' , phhmResponse)
       if (this._isMounted){
         phhmResponse.code === 200  ? this.setState({'gpsData': this.mergeData( phhmResponse )}) : phhmResponse.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
       }
     }
   }
 
-
   render(){
-    const { params, gpsData } = this.state;
-
+    const { params, errorMessage, gpsData } = this.state;
+    // console.log(this)
     return (
       <div>
-        <DefaultCard celldata={gpsData}/>
+        <DefaultCard message={errorMessage} handlecall={()=>this.handleApiCall(params)} celldata={gpsData}/>
       </div>
       )
   }

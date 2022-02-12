@@ -20,6 +20,10 @@ export default class Map extends React.Component {
     return value === '' || value === undefined || value === null ? false : true;
   }
 
+  renderMap(){
+
+  }
+
   componentDidMount() {
     // console.log('mounted',this, this.map)
 
@@ -55,8 +59,8 @@ export default class Map extends React.Component {
       if ( this.validate(this.props.polyline) ) { //if polyline excists 
 
         const polylineData = this.props.polyline;
-        let lat = polylineData[0].lat;
-        let lng =  polylineData[0].lng;
+        let lat = polylineData[Math.round(polylineData.length/2)].lat;
+        let lng =  polylineData[Math.round(polylineData.length/2)].lng;
 
         const platform = new H.service.Platform({
           apikey: 'BWBsAh_xGfd6_BdguHOQLAyMl2cNm_loHRD6gemyQNE'
@@ -67,7 +71,7 @@ export default class Map extends React.Component {
           layers.vector.normal.map,
           {
             center: {lat:lat, lng:lng},
-            zoom: 6.1,
+            zoom: 6.5,
           },
         );
 

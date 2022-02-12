@@ -25,7 +25,7 @@ export default class NoData extends Component {
   render(){
     const { errorMessage } = this.state;
     return (
-		<Paper elevation={0} sx={{ height : 330, width: "inherit"}} >  
+		<Paper elevation={0} sx={{ height : 'inherit', width: "inherit"}} >  
 			<AnnouncementOutlinedIcon sx={{ fontSize: 204, color: "rgb(229 227 227 / 60%)", marginLeft:"25%" }}/>
 			<Typography align="center" variant="h5" color="text.secondary"> {errorMessage} </Typography>
 		</Paper> 

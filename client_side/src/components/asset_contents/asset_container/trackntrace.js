@@ -54,7 +54,6 @@ export default class TrackAndTrace extends Component {
             <GpsInfo data={assetData} id={this.props.id} gps={this.props.gps} />
             <Path  data={assetData} id={this.props.id} gps={this.props.gps} />
             <Location  data={assetData} id={this.props.id} />
-            <DefaultCard celldata={cdata} data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>

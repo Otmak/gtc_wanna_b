@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
+import LoadingButton from '@mui/lab/LoadingButton';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -10,18 +11,18 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://otuma.io/">
-       {' otuma.io'}
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+// function Copyright(props) {
+//   return (
+//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
+//       {'Copyright © '}
+//       <Link color="inherit" href="https://otuma.io">
+//        {' otuma.io'}
+//       </Link>{' '}
+//       {new Date().getFullYear()}
+//       {'.'}
+//     </Typography>
+//   );
+// }
 
 const theme = createTheme();
 
@@ -30,6 +31,7 @@ export default function SignIn(props) {
   let {message} = props;
   const handleSubmit = (event) => {
     event.preventDefault();
+    // setLoading(true);
     const data = new FormData(event.currentTarget);
     const mydata = {
       customer: data.get('customer'),
@@ -40,6 +42,7 @@ export default function SignIn(props) {
     props.handleSubmit(mydata);
 
   };
+  const [loading, setLoading] = React.useState(false);
 
   return (
     <ThemeProvider theme={theme}>
@@ -80,21 +83,24 @@ export default function SignIn(props) {
               autoComplete="current-password"
             />
  
-            <Button
+            <LoadingButton
+              loading={message === ''? loading : false}
+              loadingIndicator="Loading..."
+              variant="contained"
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
               Get Data
-            </Button>
+            </LoadingButton>
           </Box>
         </Box>
            <Typography sx={{ mb: 1.1 }} color="#e06666" align="center">
            {message}
           </Typography>
 
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+        {/*<Copyright sx={{ mt: 8, mb: 4 }} />*/}
       </Container>
     </ThemeProvider>
   );

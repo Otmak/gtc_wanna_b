@@ -44,7 +44,7 @@ def make_call(url):
             data = r.content
             return data
     else:
-        return {'error': 'something went wrong with the call'}
+        return {'error': 'some thing wrong with the call'}
 
 
 # takes XML element and returns text
@@ -76,24 +76,40 @@ def atrrib_or_text(elem):  # ?
 def get_elems(root):
     main_data = {}
     for child in root.findall('*'):
-        main_data[child.tag] = atrrib_or_text(child)
+        main_data[child.tag] = atrrib_or_text(child)  # if child exists
     return main_data
 
 
 # takes main XML data from API and returns a python dictionary
 def create_dictionary(data):
-    print('starting dictionary.....', type(data))
+    # print('starting dictionary.....', type(data), data)
     if isinstance(data, dict) or isinstance(data, str):
         return data
     if data.tag == 'error':
         return get_elems(data)
-    main_data = {}
+
+    main_dict_data = {}
+    main_list_data = []
+
     for i in data:
-        main_data[i.get('id')] = {
+        if i.get('id') == None:
+            tag_data = {
+                i.tag: i.attrib,
+                'text': get_elems(i),
+            }
+            main_list_data.append(tag_data)
+
+        data_handle =  i.get('id') if i.get('id') != None else i.tag
+        main_dict_data[data_handle] = {
             i.tag: i.attrib,
-            'child': get_elems(i)
+            'child': get_elems(i),
+            'some' :i.text
         }
-    return main_data
+    # print('Done creatinng...', 'len = ', len(main_list_data), 'type = ', type(len(main_list_data)))
+    if len(main_list_data) > 0:
+        main_dict_data['secondary'] = main_list_data
+
+    return main_dict_data
 
 
 # takes byte data from api call and returns a XML tree 
@@ -156,7 +172,7 @@ def path():
 @app.route('/phhm', methods=['POST'])
 def phhm():
     try:
-        phhm_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=getphonehome&startdate=&enddate=&format=xml'
+        phhm_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=getphonehome&target=&reqtype=dbid&startdate=&enddate=&format=xml'
         phhm_data = create_dictionary(unpack_bytes(make_call(generate_api(request.get_json(), phhm_url))))
         return validate_data(phhm_data)
     except:
@@ -166,9 +182,21 @@ def phhm():
 @app.route('/assetactivity', methods=['POST'])
 def assetactivity():
     try:
-        assetactivity_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=getphonehome&startdate=&enddate=&format=xml'
-        assetactivity_data = create_dictionary(unpack_bytes(make_call(generate_api(request.get_json(), assetactivity_url))))
+        assetactivity_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showposition&operation=assetactivity&format=xml&customer=&start=&end=&vers=2'
+        assetactivity_data = create_dictionary(
+            unpack_bytes(make_call(generate_api(request.get_json(), assetactivity_url))))
         return validate_data(assetactivity_data)
+    except:
+        return {'error': {'message': 'exception occurred this message is from the server'}}
+
+
+@app.route('/newinspection', methods=['POST'])
+def newinspection():
+    try:
+        newinspection_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=insp&&target=&reqtype=dbid&format=xml&timestamp=&status=all'
+        newinspection_data = create_dictionary(
+            unpack_bytes(make_call(generate_api(request.get_json(), newinspection_url))))
+        return validate_data(newinspection_data)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
 

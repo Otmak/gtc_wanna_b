@@ -27,7 +27,7 @@ validate (value) {
 }
 
 
-checkForColdStarts(r){
+colorServices(r){
 
 	const rSplit = r.split(',');
 	const pathReasons = {
@@ -72,10 +72,10 @@ componentDidMount(){
 
 parseCellOrNot(cont, data){
 
-	const cells = new Array();
+	const cells = [];
 	for ( let i=0; i<cont.length; i++ ){
 		if ( cont[i] ==='reasons'){
-			cells.push( <TableCell key={i}> { this.checkForColdStarts( data[cont[i]] ) } </TableCell> );		
+			cells.push( <TableCell key={i}> { this.colorServices( data[cont[i]] ) } </TableCell> );		
 		}else{
 			cells.push( <TableCell key={i}> {data[cont[i]]} </TableCell> );
 		}
@@ -88,15 +88,22 @@ parseFullTable ( head, body, bodyContains){
 
 	if (this.validate(head) && this.validate(body)){
 
-		let headData = new Array();
-		let bodyData = new Array();
-		let fullTable = new Array();
-
+		let headData = [];
+		let bodyData = [];
+		let fullTable = [];
+		let bodyLength = body.length;
+		if (this.validate(this.props.bodylength )){
+			// bodyLength = this.props.bodylength;
+			// console.log(this.props.bodylength)
+			bodyLength =  body.length < this.props.bodylength ? body.length : this.props.bodylength;
+		}
+		// console.log(bodyLength)
 		for ( let i =0; i < head.length; i++ ) {
 			headData.push( <TableCell key={ i } align="left"> { head[i] } </TableCell> )
 		}
 
-		for ( let i =0; i < body.length; i++ ){// -_-
+
+		for ( let i =0; i < bodyLength; i++ ){// -_-
 			bodyData.push(
 		  	<TableRow hover role="checkbox" tabIndex={-1} key={i} >
 		  		{ this.parseCellOrNot( bodyContains, body[i] ) }

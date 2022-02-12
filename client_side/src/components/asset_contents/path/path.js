@@ -6,6 +6,7 @@ import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import Skeleton from '@mui/material/Skeleton';
+import ExpandIcon from '@mui/icons-material/Expand';
 import Button from '@mui/material/Button';
 import FullScreen from '../fullscreen/fullscreen.js';
 import DefaultCard from '../regular/regular.js';
@@ -46,15 +47,13 @@ export default class Path extends Component {
 
   decodeLocalStorage (){
     const payload = {};
+    const mostwanted = [ "customer", "password", "user" ]
 
-    if ( this.validate(localStorage.getItem('secreteAccount')) && this.validate(localStorage.getItem('secretePass')) ){//dry
-      // const store = {};
-      const decodeLocalStorageAccount = this.convertB64ToStr( localStorage.getItem('secreteAccount'));
-      const decodeLocalStoragePasskey = this.convertB64ToStr( localStorage.getItem('secretePass'));
-      payload['customer'] = decodeLocalStorageAccount.split('_')[0];
-      payload['password'] = decodeLocalStoragePasskey.split('_')[0];
-      payload['user'] = 'zonar';
-
+    if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) )
+    {
+      for ( let i =0; i < mostwanted.length; i++ ){
+        payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
+      }
       return payload;
     }else{
       return false;
@@ -109,7 +108,7 @@ export default class Path extends Component {
       const response = await fetchData.json();
       const gotError = 'No data available';
 
-      console.log(response)
+      // console.log(response)
 
       if ( this._isMounted){
         response.code === 200 ? this.setState({'pathData': this.getPath(response)}) : response.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
@@ -133,8 +132,11 @@ export default class Path extends Component {
                 type='path' 
                 data={this.props.data}/> }
           /> 
-          <CustomTable maxheight={350} head={headData} body={pathData} bodycount={bodyCount} />
-            { this.validate(errorMessage) && <NoData message={ errorMessage } /> }
+        
+            <CustomTable maxheight={350} head={headData} body={pathData} bodycount={bodyCount} bodylength={20} />
+              { this.validate(errorMessage) && <NoData message={ errorMessage } /> }
+         
+
           <CardActions onClick={()=>this.handleApiCall(params)} className="cardActions">
             <Button size="small">GET</Button>
           </CardActions>

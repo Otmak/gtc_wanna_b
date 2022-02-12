@@ -4,6 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import ListItemText from '@mui/material/ListItemText';
 import ListItem from '@mui/material/ListItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ExpandIcon from '@mui/icons-material/Expand';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import AppBar from '@mui/material/AppBar';
@@ -54,7 +55,7 @@ export default class FullScreen extends Component {
 
     return (
       <div>
-        <MoreVertIcon onClick={this.handleClickOpen} />    
+        <ExpandIcon onClick={this.handleClickOpen} />    
         <Dialog
           fullScreen
           open={open}

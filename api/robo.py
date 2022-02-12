@@ -1,115 +1,94 @@
 import xml.etree.ElementTree as ET
 import requests
-from flask import Flask
+from flask import Flask, request
 
 
-# ROBO's URL's
 
-asset_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showassets&format=xml'
-path_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showposition&operation=path&reqtype=dbid&target=191&version=2&starttime=1189321200&endtime=1189493940&logvers=3&format=xml'
-gps_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showgps&format=xml'
-# test_asset_api = f'https://omi.zonarsystems.net/interface.php?customer={customer}&username={z}&password={px}&action=showopen&operation=showassets&format=xml'
-
-
-# Take user login input and api string as argurment and and insert the login credential then return complete URL.  (-_-) too long***
-def generate_api(user, api):
-    print('Generating API........')
-    split_api = api.split('=')  # split the Link or string, separating it by '='
-    fully_built_api = ''
-
-    for i in split_api:
-
-        try:
-            if len(i) == 51:
-                fully_built_api = i + '=' + user['companyid']
-            elif i == '&password':
-                fully_built_api += i + '=' + user['password']
-            elif i == '&username':
-                fully_built_api += i + '=' + user['user']
-            else:
-                fully_built_api += i + '='
-        except:
-            return 'Encoutered some Error'
-
-    return fully_built_api[:-1]
-
-
-# Take a api url as argument and return byte data if call is successful
-def make_call(url):
+@application.route('/gendata', methods=['GET', 'POST'])
+def gendata():
     try:
-        r = requests.get(url)
-        if r.ok:
-            return r.content
+        url = f'https://hol3292.zonarsystems.net/interface.php?format=xml&username=zonar&password={password}&action=showopen&operation=gendata&start=1603958400&tstype=load&reqtype=dbid&target=194'
+        res = requests.get(url)
+        print(res.status_code)
+        if res.status_code == 200:
+            print('AUTH SUCSESS')
         else:
-            return unpack_and_interpret(r.content)
-    except TypeError:
-        print('Some Error occured')
-        return {'error': 'got a type error'}
+            print('******ATTENTION*******  AUTH FAILED')
+            print(f'ERROR : {str(res.content.decode("utf-8"))}')
+        getData = ET.fromstring(res.content)
+        myArray = []
+        data = getData.findall('gendata')
+        '''get all items
+        '''
 
+        def parseReqtoJson(gendataXML):
+            try:
+                count = 0
+                ourCache = {}
+                bigData = {}
+                listcount = 1
 
-# Deside
-def atrrib_or_text(elem):
-    if elem.text and elem.attrib:
-        data = elem.attrib
-        data[elem.tag] = elem.text
-        return data
-    elif elem.text is not None and len(elem.findall('*')) <= 0:
-        return str(elem.text)
-    elif elem.attrib != None and len(elem.attrib) != 0:
-        return elem.attrib
-    elif len(elem.findall('*')) > 1:
-        return get_elems(elem)
-    else:
-        if elem.text is not None and len(elem.text) > 0:
-            return elem.text
-        else:
-            return 'TBD'
+                for i in gendataXML:
+                    # print(bigData)
+                    count += 1
+                    key = i.get('ctimestamp')
 
+                    if key in ourCache:
+                        currentValue = {
+                            'label': i.get('label'),
+                            'ctime': i.get('ctimestamp'),
+                            'ltime': i.get('ltimestamp'),
+                            'data': i.text
+                        }
+                        listcount += 1
+                        ourCache[key] = listcount
+                        theLabels = bigData.get(key)['labels']
+                        theLabels.append(i.get('label'))
 
+                        # theLabels.push(bigData.get(key)['labels'][0])
+                        # print(bigData.get(key)['labels']) assign to vari then see if push works
 
-# Take XML data and return a python dictiony
-def get_elems(root):
-    main_data = {}
-    for child in root.findall('*'):
-        main_data[child.tag] = atrrib_or_text(child)
-    return main_data
+                        existingValue = bigData.get(key)['events']
 
+                        if type(
+                                existingValue) is list:  # un-nessesary just assign value to variable and append to it and put it back on events
+                            allEventsList = []
+                            # print('******ITS A LIST*****')
+                            # print(f'LENTH OF LIST: {len(existingValue)}')
+                            # print('BEGIN :******', existingValue)
+                            for eachEvent in existingValue:
+                                allEventsList.append(eachEvent)
+                            allEventsList.append(currentValue)
+                            bigData.get(key)['events'] = allEventsList
+                            # print(f'LENTH OF LIST: {len(allEventsList)}')
+                            # print('AFTER: ****** ', bigData.get(key)['events'], '      '*110)
+                        else:
+                            events = [existingValue, currentValue]
+                            bigData.get(key)['events'] = events
+                    else:
+                        # print('NOTHING YET')
+                        bigData[i.get('ctimestamp')] = {
+                            'asset': f'{i.get("fleet")} {count}',
+                            'id': i.get('assetid'),
+                            'gpsid': i.get('sn'),
+                            'labels': [i.get('label')],
+                            'assettype': i.get('assettype'),
+                            'events': {
+                                'label': i.get('label'),
+                                'ctime': i.get('ctimestamp'),
+                                'ltime': i.get('ltimestamp'),
+                                'data': i.text
+                            }
+                        }
+                    ourCache[i.get('ctimestamp')] = listcount
 
-# Take XML tree and initiate the creation of our main python dictionary
-def init_dictionary(data):
-    main_data = {}
-    if data.tag == 'error':
-        return get_elems(data)
+                myArray.append(bigData)
+                print('FUNCTION IS DONE!', count, len(myArray))
+                return {'gendata': myArray}
+            except:
+                print('somn went wrong bruh, looks like its inside PXMLJ')
 
-    for i in data:
-        main_data[i.get('id')] = {
-            i.tag: i.attrib,
-            'child': get_elems(i)
-        }
-    return main_data
-
-
-# Take byte data from api call and convert it then return a XML tree
-def unpack_and_interpret(payload):
-    if isinstance(payload, bytes):
-        data = ET.fromstring(payload)
-        return data
-    else:
-        print('type of not byte', payload)
-        return {'error': 'input not bytes'}
-
-                # ROUTES BEGIN #
-
-
-app = Flask(__name__)
-
-
-@app.route('/test', methods=['GET', 'POST'])
-def index():
-    return '<h1> Online! </h1>'
-
-@app.route('/', methods=['GET'])
-def path():
-    superman = init_dictionary(unpack_and_interpret(make_call(generate_api(u_data, asset_url))))
-
-    return superman
+        return jsonify(parseReqtoJson(data))
+    except:
+        print('somn Error in /gendata main.')
+        return {'error': 'An Error occurred in GendataMain'}

@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
+import NoData from '../nodata/nodata.js';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
+import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -19,7 +22,7 @@ export default class DefaultCard extends Component {
     super(props)
     this.state = {
       assetData :{},
-      errorMessage : '',
+      errorMessage : this.props.message,
       params : '',
     }
   }
@@ -30,38 +33,52 @@ export default class DefaultCard extends Component {
   }
 
 
-  parseCardCells (data, jay ) {
+  handlecall =()=>{
+    // console.log('logging', this.props)
+    if ( this.validate(this.props.handlecall) ){
+      this.props.handlecall();
+    }
+  }
+
+
+  parseCardCells (data, temp ) {
 
     if (this.validate(data)){
       const cardCells = new Array();
 
       for (let cell in data ){
         const capitalizedCell = cell;
-        cardCells.push(
-          <MenuItem>
-            <ListItemText primary={capitalizedCell} secondary={""}/>
-            <Typography variant="body2" color="text.secondary">
-              { <Chip label={ data[cell]} /> }
-            </Typography>
-          </MenuItem>
-          );
         cardCells.push( <Divider/> );
+        cardCells.push(
+            <ListItem secondaryAction={ data[cell] } >
+              <ListItemText >
+                <Typography variant="subtitle2" color="text.secondary"> {capitalizedCell} </Typography>
+              </ListItemText>
+            </ListItem>
+          );
+            // <ListItem secondaryAction={ <Chip label={ data[cell] } /> } >
+            //   <ListItemText primary={capitalizedCell} />
+            // </ListItem>      
       }
       return cardCells;
     }
   }
 
-
   render () {
     const { errorMessage } = this.state;
     return (
       <Card style={{'height':'100%'} }className="default_container">
-      <CardHeader/>
-      {
-        this.parseCardCells(this.props.celldata, "")
-      }
+        <CardHeader action={ <MoreVertIcon/> } />
+        <CardContent>
+          { 
+            !this.validate(errorMessage) && this.parseCardCells(this.props.celldata, "")
+          }
+          {
+            this.validate(this.props.message) && <NoData message={this.props.message}/>
+          }
+        </CardContent>
         <Divider />
-        <CardActions> 
+        <CardActions onClick={this.handlecall} > 
         <Button size="small">GET</Button>
         </CardActions>
      </Card>

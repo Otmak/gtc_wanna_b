@@ -14,7 +14,7 @@ import NoData from '../nodata/nodata.js';
 import './location.css';
 
 
-export default class Location extends Component {
+export default class NewInspection extends Component {
   _isMounted = false
   constructor(props){
     super(props)
@@ -91,7 +91,7 @@ export default class Location extends Component {
         body : JSON.stringify(data)
       }
 
-      const fetchData = await fetch('/location', options);
+      const fetchData = await fetch('/newinspection', options);
       const response = await fetchData.json();
       const updateErrorMessage = 'No data available';
 
@@ -112,6 +112,7 @@ export default class Location extends Component {
     const nowTime = Date.now()/1000.0;
     const min24hourDate = nowTime - 86400; //24 hours from now
     return dateOfLocation < min24hourDate ? "warning" : "default"
+
   }
 
   

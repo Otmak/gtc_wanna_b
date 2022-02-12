@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './asset_container.css';
 import TrackAndTrace from './trackntrace.js';
 import FuelAndDiagnostics from './fuelanddiagnostics.js';
-import EvirInspection from './evirinspection.js';
+import EvirInspections from './evirinspections.js';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 
@@ -27,7 +27,7 @@ export default class AssetContainer extends Component {
           <TrackAndTrace data={assetData} id={this.props.id} />
           
           <Typography color="text.secondary" variant="h4"> {"Evir Inspection"} </Typography><Divider/>
-          <EvirInspection data={assetData} id={this.props.id} />
+          <EvirInspections data={assetData} id={this.props.id} />
           
           <Typography color="text.secondary" variant="h4"> {"Fuel & Diagnostics"} </Typography><Divider/>
           <FuelAndDiagnostics data={assetData} id={this.props.id} />

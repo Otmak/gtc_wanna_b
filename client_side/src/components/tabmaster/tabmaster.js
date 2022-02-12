@@ -21,32 +21,41 @@ export default class TabMaster extends Component {//rewrt
     }
   }
 
+  validate (value) {
+    return value === '' || value === undefined || value === null ? false : true;
+  }
 
-  creation(data, type) {
+  createTabsAndPanels (data, type) {
 
     const { assetData } = this.state;
+    const mainArray = [];
+    if ( type === 'p'){
+      const listOfTabPanels = [];
+      for ( let i in data ){
 
-      const mainArray = [];
-      if ( type === 'p'){
-        const listOfTabPanels = [];
-        for ( let i in data ){
-          listOfTabPanels.push(
-            <TabPanel key={i} className='tab-panel'>
-               <AssetContainer name={data[i].child.fleet} id={i} gps={data[i].child.gps} data={assetData}/>
-            </TabPanel>
-          )};
-          return listOfTabPanels;
+        // console.log(data[i].child)
+        if ( this.validate(data[i].child) ){        
+            listOfTabPanels.push(
+              <TabPanel key={i} className='tab-panel'>
+                 <AssetContainer name={data[i].child.fleet} id={i} gps={data[i].child.gps} data={assetData}/>
+              </TabPanel>
+            )}
+    };
+    return listOfTabPanels;
+    }else if (type === 't'){
 
-      }else if (type === 't'){
+      const listOfTabs = [];
+      for ( let i in data ){
+        // console.log( data[i].child );
+        // const ju = data[i]
 
-        const listOfTabs = [];
-        for ( let i in data ){
-          listOfTabs.push( 
+        if ( this.validate(data[i].child) ){
+          listOfTabs.push(                
             <Tab key={i} >
               <List className='tabItem'>
                 <ListItem className='listItem'>
                   <ListItemAvatar/>
-                  <Avatar className={ data[i].child.status === '1' ? 'active-assetList-avatar' : 'inactive-assetList-avatar'}>
+                  <Avatar className={ data[i].child['status'] === '1' ? 'active-assetList-avatar' : 'inactive-assetList-avatar'}>
                     {data[i].child.status === '1'? 'a' : 'i'}
                   </Avatar>
                   <ListItemText primary={ data[i].child.fleet } secondary={data[i].child.type.type} />
@@ -55,19 +64,16 @@ export default class TabMaster extends Component {//rewrt
               </List>
             </Tab>
           )};
-          return listOfTabs;
-      }else{
-
-        return (<p> {'specify type please'} </p>)
-      }
+        }
+        return listOfTabs;
+    }else{
+      return (<p> {'specify type please'} </p>)
     }
+  }
 
 
   render(){
-
     const { assetData, filteredAssetData } = this.state;
-
-    console.log('from Tab', assetData)
 
     let filteredassetList;
 
@@ -75,10 +81,10 @@ export default class TabMaster extends Component {//rewrt
       <div className='tabs-container-main-div'>
         <Tabs className='tabs-container'>
           <TabList className='tab-list-container' >
-            <TextField className='search-textfield' id="filled-search" label="Search" type="search" variant="filled" />
-            { this.creation( assetData, 't') }
+            <TextField onChange={this.props.getsearch} className='search-textfield' id="filled-search" label="Search" type="search" variant="filled" />
+            { this.createTabsAndPanels( assetData, 't') }
           </TabList>
-          { this.creation( assetData, 'p') }
+          { this.createTabsAndPanels( assetData, 'p') }
         </Tabs>
       </div>
       )

@@ -6,7 +6,7 @@ import DefaultCard from '../regular/regular.js';
 import Path from '../path/path.js';
 
 
-export default class EvirInspection extends Component {
+export default class EvirInspections extends Component {
   constructor(props){
     super(props)
     this.state = {
