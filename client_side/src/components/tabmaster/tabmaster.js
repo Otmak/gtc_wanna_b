@@ -27,7 +27,10 @@ export default class TabMaster extends Component {//rewrt
 
   createTabsAndPanels (data, type) {
 
-    const { assetData } = this.state;
+    // console.log( 'Creating tabs', data )
+    console.log( 'T..', this )
+
+    const assetData  = this.props.data ;
     const mainArray = [];
     if ( type === 'p'){
       const listOfTabPanels = [];
@@ -37,7 +40,7 @@ export default class TabMaster extends Component {//rewrt
         if ( this.validate(data[i].child) ){        
             listOfTabPanels.push(
               <TabPanel key={i} className='tab-panel'>
-                 <AssetContainer name={data[i].child.fleet} id={i} gps={data[i].child.gps} data={assetData}/>
+                 <AssetContainer name={data[i].child.fleet} id={i} gps={data[i].child.gps} data={data}/>
               </TabPanel>
             )}
     };
@@ -74,7 +77,6 @@ export default class TabMaster extends Component {//rewrt
 
   render(){
     const { assetData, filteredAssetData } = this.state;
-
     let filteredassetList;
 
     return (
@@ -82,9 +84,9 @@ export default class TabMaster extends Component {//rewrt
         <Tabs className='tabs-container'>
           <TabList className='tab-list-container' >
             <TextField onChange={this.props.getsearch} className='search-textfield' id="filled-search" label="Search" type="search" variant="filled" />
-            { this.createTabsAndPanels( assetData, 't') }
+            { this.createTabsAndPanels( this.props.data, 't') }
           </TabList>
-          { this.createTabsAndPanels( assetData, 'p') }
+          { this.createTabsAndPanels( this.props.data, 'p') }
         </Tabs>
       </div>
       )

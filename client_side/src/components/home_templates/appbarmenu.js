@@ -42,9 +42,9 @@ export default function AppBarMenu(props) {
   const validateAccountCode =(e)=>{
 
     const cap = e.target.value;
-    console.log(cap)
+    // console.log(cap)
     if (validate(cap) && cap.length > 4) {
-      console.log('Qualified.', cap)
+      // console.log('Qualified.', cap)
       setCode(cap);
     }
     // console.log(cap)

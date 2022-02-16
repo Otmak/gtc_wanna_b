@@ -10,7 +10,9 @@ import Paper from '@mui/material/Paper';
 import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import Chip from '@mui/material/Chip';//change color on conditions
 import Map from '../map/map.js';
+import ShowHide from '../showhide/showhide.js';
 import NoData from '../nodata/nodata.js';
+import CardSkeleton from '../skeleton/cardskeleton.js';
 import './location.css';
 
 
@@ -93,7 +95,7 @@ export default class Location extends Component {
 
       const fetchData = await fetch('/location', options);
       const response = await fetchData.json();
-      const updateErrorMessage = 'No data available';
+      const updateErrorMessage = 'No location data';
 
       if (this._isMounted ){
         response.code === 200 ? this.setState({'locationData':response.data[id].child}) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
@@ -121,6 +123,7 @@ export default class Location extends Component {
     // console.log(locationData.time)
     return (
         <Card sx={{ width: 800 , height : 440}}>
+
           <CardMedia
             height ="140"
             component="map"
@@ -140,6 +143,8 @@ export default class Location extends Component {
           <CardActions onClick={()=>this.handleApiCall(params)}>
             <Button size="small">GET</Button>
           </CardActions>
+
+
         </Card>
       )
   }

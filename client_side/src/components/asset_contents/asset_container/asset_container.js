@@ -18,20 +18,19 @@ export default class AssetContainer extends Component {
 
 
   render(){ 
-    // console.log(this)
     const { assetData } = this.state; 
 
     return (
       <div className="asset_conatiner">
           <Typography color="text.secondary" variant="h4"> {"GPS Track & Trace"} </Typography><Divider/>
-          <TrackAndTrace data={assetData} id={this.props.id} />
+          <TrackAndTrace data={this.props.data} id={this.props.id} />
+
+          <Typography color="text.secondary" variant="h4"> {"Fuel & Diagnostics"} </Typography><Divider/>
+          <FuelAndDiagnostics data={this.props.data} id={this.props.id} /> 
           
           <Typography color="text.secondary" variant="h4"> {"Evir Inspection"} </Typography><Divider/>
-          <EvirInspections data={assetData} id={this.props.id} />
-          
-          <Typography color="text.secondary" variant="h4"> {"Fuel & Diagnostics"} </Typography><Divider/>
-          <FuelAndDiagnostics data={assetData} id={this.props.id} />
-          
+          <EvirInspections data={this.props.data} id={this.props.id} />
+           
       </div>
       )
   }

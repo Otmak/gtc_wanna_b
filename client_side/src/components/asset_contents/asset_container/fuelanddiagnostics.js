@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './css/trackandtrace.css';
-import GpsInfo from '../gpsinfo/gpsinfo.js';
+import JbusEvents from '../jbus/jbusevents.js';
+import JbusTripReport from '../jbustrip/jbustripreport.js';
 import DefaultCard from '../regular/regular.js';
 
 
@@ -46,11 +47,11 @@ export default class FuelAndDiagnostics extends Component {
       'Location': 'home',
     }
     return (
-      <div id="trackAndTraceWrapper">
-        <div id="content">
-          <div ref={this.carousel} id="carousel">
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
+      <div className="trackAndTraceWrapper">
+        <div className="content">
+          <div ref={this.carousel} className="carousel">
+            <JbusEvents data={assetData} id={this.props.id} gps={this.props.gps} />
+            <JbusTripReport data={assetData} id={this.props.id} gps={this.props.gps} />
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
@@ -61,7 +62,7 @@ export default class FuelAndDiagnostics extends Component {
             <DefaultCard  data={assetData} id={this.props.id}/>
           </div>
         </div>
-        <button style={{ display: display}} onClick={ this.prev } id="prev">
+        <button style={{ display: display}} onClick={ this.prev } className="prev">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -73,7 +74,7 @@ export default class FuelAndDiagnostics extends Component {
             <path d="M15.61 7.41L14.2 6l-6 6 6 6 1.41-1.41L11.03 12l4.58-4.59z" />
           </svg>
         </button>
-        <button onClick={ this.next } id="next">
+        <button onClick={ this.next } className="next">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

@@ -24,7 +24,7 @@ export default class GpsInfo extends Component {
 
 
   convertB64ToStr (str) {
-    
+
     if ( this.validate(str)){
       return decodeURIComponent(escape(window.atob( str )));
     }
@@ -46,6 +46,7 @@ export default class GpsInfo extends Component {
     }else{
       return false;
     }
+    
   }
 
 
@@ -89,10 +90,10 @@ export default class GpsInfo extends Component {
       const data = phhm.data.gpsphonecall.child;
       for ( let i in data ) {
         if ( i in ref ){
-          main[ref[i]] = data[i]
+          main[ ref[i].toUpperCase() ] = data[i]
         }
       }
-      main['phhm'] = this.epochToHtime(main['phhm']);
+      main['PHHM'] = this.epochToHtime(main['PHHM']);
       return main;
     }
   }
@@ -123,9 +124,10 @@ export default class GpsInfo extends Component {
     }
   }
 
+
   render(){
     const { params, errorMessage, gpsData } = this.state;
-    // console.log(this)
+    // console.log(this.validate(false))
     return (
       <div>
         <DefaultCard message={errorMessage} handlecall={()=>this.handleApiCall(params)} celldata={gpsData}/>

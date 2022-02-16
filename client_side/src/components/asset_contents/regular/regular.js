@@ -5,12 +5,10 @@ import CardActions from '@mui/material/CardActions';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
-import Paper from '@mui/material/Paper';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
@@ -41,37 +39,63 @@ export default class DefaultCard extends Component {
   }
 
 
-  parseCardCells (data, temp ) {
+  parseTextOrChip (str, opt ) {
+    // const colors = {
+    // }
+
+    
+    if ( this.validate(opt) && opt[str] ) {
+      console.log('Setting up chip',str, str)
+      return<Chip color={opt[str].color} label={ str } />
+    }
+
+    return str
+  }
+
+
+  parseCardCells ( data, opt ) {
 
     if (this.validate(data)){
-      const cardCells = new Array();
+
+      
+      const cardCells = [];
+      let k = 0;
+
 
       for (let cell in data ){
         const capitalizedCell = cell;
-        cardCells.push( <Divider/> );
+        // console.log(data[cell])
+        // console.log('Now creating cells...', data, opt)
+
+        // cardCells.push( <Divider/> );
         cardCells.push(
-            <ListItem secondaryAction={ data[cell] } >
+            <ListItem key={k} secondaryAction={ this.parseTextOrChip( data[cell], opt ) } >
               <ListItemText >
-                <Typography variant="subtitle2" color="text.secondary"> {capitalizedCell} </Typography>
+                <Typography variant="subtitle2" color="text.secondary"> {cell} </Typography>
               </ListItemText>
             </ListItem>
           );
             // <ListItem secondaryAction={ <Chip label={ data[cell] } /> } >
             //   <ListItemText primary={capitalizedCell} />
-            // </ListItem>      
+            // </ListItem>     
+        k++; 
       }
       return cardCells;
     }
+    return "";
   }
+
 
   render () {
     const { errorMessage } = this.state;
+
+    // console.log(this.props)
     return (
       <Card style={{'height':'100%'} }className="default_container">
         <CardHeader action={ <MoreVertIcon/> } />
         <CardContent>
           { 
-            !this.validate(errorMessage) && this.parseCardCells(this.props.celldata, "")
+            !this.validate(errorMessage) && this.parseCardCells( this.props.celldata , this.props.colors )
           }
           {
             this.validate(this.props.message) && <NoData message={this.props.message}/>

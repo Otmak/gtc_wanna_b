@@ -24,7 +24,7 @@ export default class Map extends React.Component {
 
   }
 
-  componentDidMount() {
+  componentDidMount() {//DRY.
     // console.log('mounted',this, this.map)
 
     if (!this.map) {
@@ -59,7 +59,7 @@ export default class Map extends React.Component {
       if ( this.validate(this.props.polyline) ) { //if polyline excists 
 
         const polylineData = this.props.polyline;
-        let lat = polylineData[Math.round(polylineData.length/2)].lat;
+        let lat = polylineData[Math.round(polylineData.length/2)].lat; //center of arrray.
         let lng =  polylineData[Math.round(polylineData.length/2)].lng;
 
         const platform = new H.service.Platform({

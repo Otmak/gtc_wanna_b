@@ -11,11 +11,12 @@ import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import Chip from '@mui/material/Chip';//change color on conditions
 import Map from '../map/map.js';
 import DefaultCard from '../regular/regular.js';
+import LineChart from '../chart/linechart.js';
 import NoData from '../nodata/nodata.js';
 
 
-
-export default class NewInspection extends Component {
+// startTime :  Date.now()/1000.0 - 86400,
+export default class JbusTripReport extends Component {
   _isMounted = false
   constructor(props){
     super(props)
@@ -23,8 +24,8 @@ export default class NewInspection extends Component {
       assetData: this.props.data,
       params: '',
       endTime : Date.now()/1000.0,
-      startTime :  Date.now()/1000.0 - 86400,
-      inspectionsData: '',
+      startTime :  Date.now()/1000.0 - 172800,
+      jbusTripData: '',
       errorMessage:'',
     }
   }
@@ -48,8 +49,7 @@ export default class NewInspection extends Component {
   decodeLocalStorage (){
     const payload = {};
     const mostwanted = [ "customer", "password", "user" ]
-    if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) )
-    {
+    if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) ){
       for ( let i =0; i < mostwanted.length; i++ ){
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
       }
@@ -61,36 +61,36 @@ export default class NewInspection extends Component {
 
 
 
-  fixData (data) {//tbc 
-    // console.log(data, 'from merge.********************')
-    // console.log(this)
+  FixData (data) {//tbc 
+
     const id = this.props.id;
 
     const main = {};
-    const ref = {  
-      'loadtime': 'uploaded',
-      'cfglabel': 'type',
-      'defect': 'defects',
-      'operator': 'driver',
-    }
+    // const ref = {   }
 
-    for ( let i in data ) {
+    const payload = data.secondary;
+    const jLabels = [];
+    const fuelPlotData = [];
+    const engHrsPlotData = [];
 
-      let insp = data[i].insp;
-      if ( this.validate(insp) ){
-        if (insp['assetid'] === id ){
-          let inspection = data[i].insp;
+    if ( this.validate(payload) ){
 
-          for (let x in ref){
-            main[ref[x]] = inspection[x];
-          }
-          return main;
-        }
+      for ( let i = payload.length -1; i > 0; i -- ){
+
+        fuelPlotData.push( payload[i].text.asset.fuel );
+        engHrsPlotData.push( payload[i].text.asset.engine_hours );
+        jLabels.push( payload[i].text.asset.start.slice(5,16) );
       }
+
+      main['fuel'] = fuelPlotData;
+      main['egnhrs'] = engHrsPlotData;
+      main['labels'] = jLabels;
+      // console.log(main)
+
+      return main;
     }
-    // console.log('END OF THE LINE..', main, this)
-    this.setState( {errorMessage: 'No inspection data'})
-    // return main;
+
+    this.setState( { errorMessage: 'No JbusTrip data'})
   }
 
 
@@ -119,7 +119,9 @@ export default class NewInspection extends Component {
   handleApiCall = async (data) => {
     if (this._isMounted){
 
-      this.setState({inspectionsData:""});
+      console.log('Making call....')
+
+      this.setState({jbusTripData:""});
       const id = this.props.id;
       const options = 
       {
@@ -130,40 +132,44 @@ export default class NewInspection extends Component {
         body : JSON.stringify(data)
       }
 
-      const fetchData = await fetch('/newinspection', options);
+      const fetchData = await fetch('/jbustripreport', options);
       const response = await fetchData.json();
-      const updateErrorMessage = 'No data available';
-      console.log('fetch done.',response)
+      const updateErrorMessage = 'No JbusTrip data';
+      // console.log('fetch done.',response)
 
       if (this._isMounted ){
-        response.code === 200 ? this.setState({'inspectionsData': this.fixData(response.data.secondary) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
+        response.code === 200 ? this.setState({'jbusTripData': this.FixData(response.data) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
         } 
     } 
   }
 
-
-  getMap(data){
-    return <Map width="" location={data} />
-  }
-
-
-  isPast24Hours(date) {
-    const dateOfLocation = new Date(date).getTime()/1000.0;
-    const nowTime = Date.now()/1000.0;
-    const min24hourDate = nowTime - 86400; //24 hours from now
-    return dateOfLocation < min24hourDate ? "warning" : "default"
-  }
-
   
   render(){
-    // <Typography variant="caption" color="text.secondary"> {'Speed : '} <Chip label={locationData}/> </Typography>
-    const { params, inspectionsData, errorMessage } = this.state;
+    const { params, jbusTripData, errorMessage } = this.state;
     // console.log(this)
     return (
-        <div>
-          <DefaultCard message={errorMessage} handlecall={()=>this.handleApiCall(params)} celldata={inspectionsData} />
-        </div>
-      )
+      <Card sx={{ maxHeight:'inherit'}}>
+          <CardMedia
+            height ="140"
+            component="map"
+          >
+            { this.validate(jbusTripData.labels) && <LineChart labels={jbusTripData.labels} data={jbusTripData} />
+            /*{this.validate(jbusTripData) && this.getMap(jbusTripData)}*/}
+          </CardMedia>
+          <CardContent>
+{/*            { !this.validate(errorMessage)
+              && 
+              <div>
+                <Typography variant="caption" color="text.secondary"> {'Last updated : '} </Typography> <br /> 
+              </div>
+            }*/}
+            { this.validate(errorMessage) && <NoData message={ errorMessage }/>  }
+          </CardContent>
+          <CardActions onClick={()=>this.handleApiCall(params)}>
+            <Button size="small">GET</Button>
+          </CardActions>
+      </Card>
+    )
   }
 }
 

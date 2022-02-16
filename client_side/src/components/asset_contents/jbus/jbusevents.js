@@ -15,7 +15,7 @@ import NoData from '../nodata/nodata.js';
 
 
 
-export default class NewInspection extends Component {
+export default class JbusEvents extends Component {
   _isMounted = false
   constructor(props){
     super(props)
@@ -24,7 +24,7 @@ export default class NewInspection extends Component {
       params: '',
       endTime : Date.now()/1000.0,
       startTime :  Date.now()/1000.0 - 86400,
-      inspectionsData: '',
+      jBusData: '',
       errorMessage:'',
     }
   }
@@ -48,8 +48,7 @@ export default class NewInspection extends Component {
   decodeLocalStorage (){
     const payload = {};
     const mostwanted = [ "customer", "password", "user" ]
-    if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) )
-    {
+    if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) ){
       for ( let i =0; i < mostwanted.length; i++ ){
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
       }
@@ -61,36 +60,35 @@ export default class NewInspection extends Component {
 
 
 
-  fixData (data) {//tbc 
+  mergeData (data) {//tbc 
     // console.log(data, 'from merge.********************')
-    // console.log(this)
+    // console.log(this, data)
     const id = this.props.id;
 
     const main = {};
     const ref = {  
-      'loadtime': 'uploaded',
-      'cfglabel': 'type',
-      'defect': 'defects',
-      'operator': 'driver',
+      'ODOMETER': 'ODOMETER',
+      'PROTOCOL': 'protocol',
+      'TIMESTAMP': 'time',
+      'CHKENG': 'chkeng',
+    }
+    const rek = {  
+      'ODOMETER': 'ODOMETER',
+      'PROTOCOL': 'PROTOCOL',
+      'TIMESTAMP': 'TIMESTAMP',
+      'CHKENG': 'CHKENG',
+    }
+    
+
+    if ( id in data ){
+    	let l = data[id]['child']['EVENT'];
+    	for ( let i in rek ) {
+    		main[ rek[i] ] =  l[i]
+    	}
+    	return main;
     }
 
-    for ( let i in data ) {
-
-      let insp = data[i].insp;
-      if ( this.validate(insp) ){
-        if (insp['assetid'] === id ){
-          let inspection = data[i].insp;
-
-          for (let x in ref){
-            main[ref[x]] = inspection[x];
-          }
-          return main;
-        }
-      }
-    }
-    // console.log('END OF THE LINE..', main, this)
-    this.setState( {errorMessage: 'No inspection data'})
-    // return main;
+    this.setState( {errorMessage: 'No Jbus data'})
   }
 
 
@@ -117,9 +115,10 @@ export default class NewInspection extends Component {
 
 
   handleApiCall = async (data) => {
+  	console.log('Making call....' ,data)
     if (this._isMounted){
 
-      this.setState({inspectionsData:""});
+      this.setState({jBusData:""});
       const id = this.props.id;
       const options = 
       {
@@ -130,13 +129,13 @@ export default class NewInspection extends Component {
         body : JSON.stringify(data)
       }
 
-      const fetchData = await fetch('/newinspection', options);
+      const fetchData = await fetch('/jbusevents', options);
       const response = await fetchData.json();
       const updateErrorMessage = 'No data available';
       console.log('fetch done.',response)
 
       if (this._isMounted ){
-        response.code === 200 ? this.setState({'inspectionsData': this.fixData(response.data.secondary) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
+        response.code === 200 ? this.setState({'jBusData': this.mergeData(response.data) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
         } 
     } 
   }
@@ -156,12 +155,17 @@ export default class NewInspection extends Component {
 
   
   render(){
-    // <Typography variant="caption" color="text.secondary"> {'Speed : '} <Chip label={locationData}/> </Typography>
-    const { params, inspectionsData, errorMessage } = this.state;
-    // console.log(this)
+    const { params, jBusData, errorMessage } = this.state;
+    const ref = {
+    	'on': {
+    		"color" :'warning',
+    		"desc":'The check engine light in on'
+    	}
+    }
+
     return (
         <div>
-          <DefaultCard message={errorMessage} handlecall={()=>this.handleApiCall(params)} celldata={inspectionsData} />
+          <DefaultCard message={errorMessage} handlecall={()=>this.handleApiCall(params)} colors={ref} celldata={jBusData} />
         </div>
       )
   }

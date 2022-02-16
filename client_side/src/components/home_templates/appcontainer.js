@@ -57,35 +57,40 @@ export default class AppContainer extends Component {
 	}
 
 
+	searchedList =( data, query)=>{ //AND concept
+		console.log('searching............')
+		const bank = {};
+		// console.log('running', data, query)
+		for ( let i in data ){
+			// console.log(data[i].child.fleet.length)
+			// console.log(data[i].child.fleet.length)
+			const assetName = data[i].child.fleet;
+			// console.log( 'data>>>',data[i].child.fleet, 'query>>>',query )
+			if ( query === assetName ){
+				// console.log('Found MAtch!', query,'>>>', data[i]);
+				bank[i] = data[i];
+			}
+			// const current = data[i].child.fleet;
+		}
+		if ( Object.keys(bank).length > 0 ){
+			// console.log('Found bank', bank);
+			return this.setState({ assetData: bank});
+		}
+
+		this.setState({ assetData:data});
+	}
+
+
 	handleSearch = (e)=>{
-		const {searchData} = this.state;
-		this.setState( { searchData: ''})
+		// const { assetData, searchData} = this.state;
+		console.log('Search',e.target.value);
+		this.searchedList( this.props.mainData , e.target.value);
 	}
 
 
 	render(){
 		const { assetData, searchData, menuOpen, buttonRef } = this.state;
-		// console.log('Logging...:: ',this)
-		// const searchedList = ( data, query)=>{ //AND concept
-		// 	const bank = {};
-		// 	// console.log('running', data, query)
-		// 	for ( let i in data ){
-		// 		// console.log(data[i].child.fleet.length)
-		// 		const assetName = data[i].child.fleet;
-
-		// 		if (query === data[i]){
-		// 			bank[i] = data[i]
-		// 		}
-		// 		// const current = data[i].child.fleet;
-		// 	}
-		// 	// console.log( Object.keys(bank).length )
-		// 	return Object.keys(bank).length > 0 ? bank :data;
-		// }
-		// console.log('APP cointainer', searchedList (assetData, searchData));
-		// console.log( Object.keys(this.state.assetData).length );
-		// console.log('APP cointainer', searchedList (assetData, searchData)) 
-
-		const account_code = this.convertB64ToStr( localStorage.getItem('customer')).split('_')[0]
+		const account_code = this.convertB64ToStr( localStorage.getItem('customer')).split('_')[0];
 		// console.log(account_code)
 		return(
 			<div className='app_container'>

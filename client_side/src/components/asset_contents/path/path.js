@@ -86,12 +86,11 @@ export default class Path extends Component {
     if (this.validate(path)){
       return path[0].events;
     }
-    this.setState( {'errorMessage' : 'No data available'})
+    this.setState( {'errorMessage' : 'No path data_'})
   }
 
 
   handleApiCall = async (data) => {
-
     if ( this._isMounted ){
 
       this.setState({pathData:""});
@@ -106,8 +105,7 @@ export default class Path extends Component {
       }
       const fetchData = await fetch('/path', options);
       const response = await fetchData.json();
-      const gotError = 'No data available';
-
+      const gotError = 'No path data';
       // console.log(response)
 
       if ( this._isMounted){
@@ -121,6 +119,8 @@ export default class Path extends Component {
     const { assetData, pathData, tableData, params, errorMessage } = this.state;
     const headData = [ 'Source', 'Time', 'Speed', 'Reason' ];
     const bodyCount = ['source', 'time', 'speed', 'reasons'];
+
+    // console.log(this)
 
     return (
         <Card>

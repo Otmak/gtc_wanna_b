@@ -4,14 +4,14 @@
  	max-width: 20rem;
 }
 
-#trackAndTraceWrapper {
+.trackAndTraceWrapper {
 	width: 100%;
 	max-width: 100%;
 	/*height: ;*/
 	position: relative;
 }
 
-#carousel {
+.carousel {
 	display: flex;
 	overflow: auto;
 	scroll-behavior: smooth;
@@ -19,13 +19,13 @@
 
 }
 
-#carousel::-webkit-scrollbar {
+.carousel::-webkit-scrollbar {
   height: 0;
 }
 
 
-#prev,
-#next {
+.prev,
+.next {
 	display: flex;
 	justify-content: center;
 	align-content: center;
@@ -38,20 +38,20 @@
 	position: absolute;
 }
 
-#prev {
+.prev {
 	top: 50%;
 	left: 0;
 	transform: translate(50%, -50%);
 	/*  display: none;*/
 }
 
-#next {
+.next {
 	top: 50%;
 	right: 0;
 	transform: translate(-50%, -50%);
 }
 
-#content {
+.content {
 	display: grid;
 	grid-gap: 16px;
 	grid-auto-flow: column;
@@ -59,13 +59,13 @@
 	box-sizing: border-box;
 }
 
-#carousel > div {
+.carousel > div {
 	margin: 1rem;
 	min-height: 440px;
 	min-width :27rem;
 	max-height: 440px;
 }
 
-#carousel > div:hover {
+.carousel > div:hover {
 	box-shadow: 0px 5px 6px -3px rgb(0 0 0 / 20%), 0px 9px 12px 1px rgb(0 0 0 / 14%), 0px 3px 16px 2px rgb(0 0 0 / 12%);
 }

@@ -48,7 +48,7 @@ def make_call(url):
 
 
 # takes XML element and returns text
-def atrrib_or_text(elem):  # ?
+def atrrib_or_text(elem):  # workin but flwd
     '''
     filter: nothing,
             text,
@@ -56,8 +56,8 @@ def atrrib_or_text(elem):  # ?
             text & Attrib,
             more childs
     '''
-    if elem.text == None and len(elem.attrib) < 1:  # checking for tag with no data
-        return None
+    if len(elem.findall('*')) > 1 :  # checking for tag with no data
+        return get_elems(elem)
 
     elif elem.text is not None and len(elem.attrib) < 1 and len(elem.findall('*')) < 1:  # checking for text only
         return elem.text
@@ -68,8 +68,8 @@ def atrrib_or_text(elem):  # ?
     elif len(elem.attrib) > 0 and elem.text is not None:  # checking for Text & Attrib
         return {'attrib': elem.attrib, elem.tag: elem.text}
 
-    elif len(elem.findall('*')) > 1:  # checking for children
-        return get_elems(elem)
+    elif elem.text == None and len(elem.attrib) < 1:  # checking for children
+        return None
 
 
 # takes XML data and returns a python dictiony/ for elems without sub elems
@@ -197,6 +197,28 @@ def newinspection():
         newinspection_data = create_dictionary(
             unpack_bytes(make_call(generate_api(request.get_json(), newinspection_url))))
         return validate_data(newinspection_data)
+    except:
+        return {'error': {'message': 'exception occurred this message is from the server'}}
+
+
+@app.route('/jbusevents', methods=['POST'])
+def jbusevents():
+    try:
+        jbusevents_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=jbusevents&version=2&format=xml&start=&end=&logvers=3'
+        jbusevents_data = create_dictionary(
+            unpack_bytes(make_call(generate_api(request.get_json(), jbusevents_url))))
+        return validate_data(jbusevents_data)
+    except:
+        return {'error': {'message': 'exception occurred this message is from the server'}}
+
+
+@app.route('/jbustripreport', methods=['POST'])
+def jbustripreport():
+    try:
+        jbustripreport_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=jbustrip&target=&reqtype=dbid&format=xml&start=&end='
+        jbustripreport_data = create_dictionary(
+            unpack_bytes(make_call(generate_api(request.get_json(), jbustripreport_url))))
+        return validate_data(jbustripreport_data)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
 

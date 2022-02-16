@@ -55,7 +55,7 @@ export default class FullScreen extends Component {
 
     return (
       <div>
-        <ExpandIcon onClick={this.handleClickOpen} />    
+        <ExpandIcon sx={{'cursor':'pointer'}} color="primary" onClick={this.handleClickOpen} />    
         <Dialog
           fullScreen
           open={open}
@@ -73,7 +73,7 @@ export default class FullScreen extends Component {
                 <CloseIcon />
               </IconButton>
               <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                {this.props.title}
+                {"Path data for " + this.props.title}
               </Typography>
             </Toolbar>
           </AppBar>
