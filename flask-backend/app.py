@@ -20,7 +20,7 @@ def apply_caching(response):
 
 @app.route('/')
 def index():
-    return "API is Healthy!, and Welcome OT you update went through."
+    return "API Healthy ✅"
     # return render_template('index.html')
 
 

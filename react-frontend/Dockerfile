@@ -2,7 +2,7 @@
 FROM node:16.13.0 AS buildfrontend
 
 WORKDIR /react-frontend
-
+# create env & run install
 ENV PATH /react-frontend/node_modules/.bin:$PATH
 COPY ./react-frontend/package*.json ./
 RUN npm install 
