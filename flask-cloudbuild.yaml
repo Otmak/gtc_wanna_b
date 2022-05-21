@@ -1,0 +1,22 @@
+#build and deploy containers to GKE.
+steps:
+  # Step 0. build the container image
+- name: "gcr.io/cloud-builders/docker"
+  args: ["build", "-t", "us-west1-docker.pkg.dev/$PROJECT_ID/wanna-b-gtc-repo/flask-backend", "-f" ,"flask-backend/Dockerfile", "."]
+
+  # Step 1. push backend image to AR
+- name: "gcr.io/cloud-builders/docker"
+  args: ["push", "us-west1-docker.pkg.dev/$PROJECT_ID/wanna-b-gtc-repo/flask-backend"]
+
+  # Step 2. begin GKE work.
+- name: "gcr.io/cloud-builders/gke-deploy"
+  args:
+  - run
+  - --filename=flask-gke/
+  - --location=us-west1
+  - --cluster=zonar-zpeek-cluster-1
+
+timeout: "1200s"
+options:
+  logging: CLOUD_LOGGING_ONLY
+  

@@ -7,7 +7,6 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
-import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import Chip from '@mui/material/Chip';//change color on conditions
 import Map from '../map/map.js';
 import DefaultCard from '../regular/regular.js';

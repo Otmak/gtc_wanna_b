@@ -75,7 +75,11 @@ export default class App extends Component {
       keepLogin[i] = userInfo[i]
       localStorage.setItem( i, this.convertStrToB64(userInfo[i]))
     }
-    this.setState({'isLoggedIn' : true,  'assetData' : data.data, LoginInfo : keepLogin})
+    this.setState({
+      'isLoggedIn' : true,
+      'assetData' : data.data,
+      'LoginInfo' : keepLogin
+    })
   }
 
 
@@ -102,7 +106,10 @@ export default class App extends Component {
         body : JSON.stringify(payload)
       }
 
-      const fetchData = await fetch('/asset', options);
+      const url = 'http://34.82.109.63/asset';
+      const test_url = '/asset';
+
+      const fetchData = await fetch(test_url, options);
       const response = await fetchData.json();
       console.log(response, payload)
 
@@ -116,7 +123,9 @@ export default class App extends Component {
 
 
   render(){
+    const activeOnlyAssetList = {};
     // localStorage.clear();
+
     // console.log(localStorage)
     const { assetData, isLoggedIn, LoginErrorMessage, whatsTheWord, LoginInfo } = this.state;
     return (
