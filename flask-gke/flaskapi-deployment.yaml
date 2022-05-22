@@ -10,7 +10,7 @@ spec:
       app: flask-backend
   # minReadySeconds: 3
   strategy:
-    type: Recreate
+    # type: Recreate
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1 # At least 1 pod can be unavailable.

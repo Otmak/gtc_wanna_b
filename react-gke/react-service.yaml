@@ -4,11 +4,11 @@ kind: Service
 metadata:
   name: zpeek-react-service
   labels:
-    app: zpeek-react
+    app: react-frontend
 spec:
   type: LoadBalancer
   selector:
-    app: zpeek-react
+    app: react-frontend
   ports:
   - port: 80
     targetPort: 8080
