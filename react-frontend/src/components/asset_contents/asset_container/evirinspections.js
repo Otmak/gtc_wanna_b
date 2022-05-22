@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import './css/trackandtrace.css';
-import Location from '../location/location.js';
-import GpsInfo from '../gpsinfo/gpsinfo.js';
-import NewInspection from '../newinspection/newinspection.js';
+// import Location from '../location/location.js';
+// import GpsInfo from '../gpsinfo/gpsinfo.js';
+import NewInspection from '../evirinspection/newinspection.js';
+import InspectionDetail from '../evirinspection/inspectiondetail.js';
 import DefaultCard from '../regular/regular.js';
-import Path from '../path/path.js';
+// import Path from '../path/path.js';
 
 
 export default class EvirInspections extends Component {
@@ -40,7 +41,7 @@ export default class EvirInspections extends Component {
 
 
   render(){ 
-    console.log(this)
+    // console.log(this)
     const { assetData, display } = this.state; 
     // <Path data={assetData} id={this.props.id} gps={this.props.gps} />
     const cdata= {
@@ -53,7 +54,7 @@ export default class EvirInspections extends Component {
         <div className="content">
           <div ref={this.carousel} className="carousel">
             <NewInspection  data={assetData} id={this.props.id} gps={this.props.gps} />
-            <DefaultCard  data={assetData} id={this.props.id}/>
+            <InspectionDetail  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>

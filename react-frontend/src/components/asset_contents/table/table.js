@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Paper from '@mui/material/Paper';
+// import Paper from '@mui/material/Paper';
 import Table from '@mui/material//Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -128,10 +128,11 @@ parseFullTable ( head, body, bodyContains){
 
 
 render(){ 
-return (
-  	<TableContainer sx={{ maxHeight: this.props.maxheight }} className="table-container" >
-  		{ this.parseFullTable( this.props.head, this.props.body, this.props.bodycount) }
-  	</TableContainer>
-  )
+	console.log(this.props)
+	return (
+	  	<TableContainer key={this.props.id}  sx={{ maxHeight: this.props.maxheight }} className="table-container" >
+	  		{ this.parseFullTable( this.props.head, this.props.body, this.props.bodycount) }
+	  	</TableContainer>
+	  )
 }
 }

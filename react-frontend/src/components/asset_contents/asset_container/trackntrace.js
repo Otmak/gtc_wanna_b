@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './css/trackandtrace.css';
 import Location from '../location/location.js';
 import GpsInfo from '../gpsinfo/gpsinfo.js';
-import DefaultCard from '../regular/regular.js';
+import DefaultCard from '../card/card.js';
 import Path from '../path/path.js';
 
 
@@ -54,16 +54,10 @@ export default class TrackAndTrace extends Component {
             <GpsInfo data={assetData} id={this.props.id} gps={this.props.gps} />
             <Path  data={assetData} id={this.props.id} gps={this.props.gps} />
             <Location  data={assetData} id={this.props.id} />
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
+            <DefaultCard title={"..."}  data={assetData} id={this.props.id}/>
+            <DefaultCard title={"..."} data={assetData} id={this.props.id}/>
+            <DefaultCard title={"...."} data={assetData} id={this.props.id}/>
+            <DefaultCard title={"....."} data={assetData} id={this.props.id}/>
           </div>
         </div>
         <button style={{ display: display}} onClick={ this.prev } className="prev">

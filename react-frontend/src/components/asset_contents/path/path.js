@@ -1,18 +1,10 @@
 import React, {Component} from 'react';
-import Card from '@mui/material/Card';
-import Paper from '@mui/material/Paper';
-import CardActions from '@mui/material/CardActions';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import IconButton from '@mui/material/IconButton';
-import Skeleton from '@mui/material/Skeleton';
-import ExpandIcon from '@mui/icons-material/Expand';
-import Button from '@mui/material/Button';
 import FullScreen from '../fullscreen/fullscreen.js';
-import DefaultCard from '../regular/regular.js';
-import NoData from '../nodata/nodata.js';
+import DefaultCard from '../card/card.js';
+// import CardSpeedDail from '../card/cardspeeddail.js';
+// import NoData from '../nodata/nodata.js';
 import CustomTable from '../table/table.js';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+// import MoreVertIcon from '@mui/icons-material/MoreVert';
 import './path.css';
 
 
@@ -28,6 +20,7 @@ export default class Path extends Component {
       pathData : [],
       errorMessage: '',
       params: '',
+      isOpen:false,
     }
   }
 
@@ -65,7 +58,7 @@ export default class Path extends Component {
 
     this._isMounted = true;
 
-    const { params, startTime, endTime } = this.state; 
+    const { startTime, endTime } = this.state; 
     const mainData = this.decodeLocalStorage();
     mainData['target'] = this.props.id;
     mainData['start'] = startTime.toString();
@@ -86,7 +79,7 @@ export default class Path extends Component {
     if (this.validate(path)){
       return path[0].events;
     }
-    this.setState( {'errorMessage' : 'No path data_'})
+    this.setState( {'errorMessage' : 'No path data'})
   }
 
 
@@ -94,7 +87,7 @@ export default class Path extends Component {
     if ( this._isMounted ){
 
       this.setState({pathData:""});
-      const id = this.props.id;
+      // const id = this.props.id;
       const options = 
       {
         method : 'POST',
@@ -103,7 +96,9 @@ export default class Path extends Component {
         },
         body : JSON.stringify(data)
       }
-      const fetchData = await fetch('/path', options);
+
+      const url = 'http://127.0.0.1:5000/path';
+      const fetchData = await fetch(url, options);
       const response = await fetchData.json();
       const gotError = 'No path data';
       // console.log(response)
@@ -115,32 +110,23 @@ export default class Path extends Component {
   }
   
   render(){ 
-
-    const { assetData, pathData, tableData, params, errorMessage } = this.state;
+    const { isOpen, pathData, params, errorMessage } = this.state;
     const headData = [ 'Source', 'Time', 'Speed', 'Reason' ];
     const bodyCount = ['source', 'time', 'speed', 'reasons'];
-
-    // console.log(this)
+    const items = [{icon:<FullScreen title={this.props.data[this.props.id].child.fleet} pathdata={pathData} type='path' data={this.props.data} fullscreen={isOpen} fontSize="small"/> ,name:'Fullscreen', func:()=>this.fullscreenLONG()},];
 
     return (
-        <Card>
-          <CardHeader
-            action={ 
-              <FullScreen           
-                title={this.props.data[this.props.id].child.fleet} 
-                pathdata={pathData} 
-                type='path' 
-                data={this.props.data}/> }
-          /> 
-        
-            <CustomTable maxheight={350} head={headData} body={pathData} bodycount={bodyCount} bodylength={20} />
-              { this.validate(errorMessage) && <NoData message={ errorMessage } /> }
-         
-
-          <CardActions onClick={()=>this.handleApiCall(params)} className="cardActions">
-            <Button size="small">GET</Button>
-          </CardActions>
-        </Card>
-      )
+    	<div>
+    	    <DefaultCard 
+            title={"PATH"}
+            message={errorMessage}
+            handlecall={()=>this.handleApiCall(params)}
+            custom={true} 
+            cardData={ <CustomTable id={this.props.id } className="customtable" maxheight={290} head={headData} body={pathData} bodycount={bodyCount} bodylength={20} /> }
+          >
+            {items}
+          </DefaultCard>
+    	</div>
+    	)
   }
 }

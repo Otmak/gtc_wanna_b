@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: flask-backend-service
+  name: zpeek-react-service
   labels:
-    app: flask-backend
+    app: zpeek-react
 spec:
   type: LoadBalancer
   selector:
-    app: flask-backend
+    app: zpeek-react
   ports:
   - port: 80
-    targetPort: 5000
+    targetPort: 8080

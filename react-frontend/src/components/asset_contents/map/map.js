@@ -1,5 +1,5 @@
 import React from 'react';
-import Badge from '@mui/material/Badge';
+// import Badge from '@mui/material/Badge';
 import H from "@here/maps-api-for-javascript";
 
 export default class Map extends React.Component {
@@ -97,7 +97,7 @@ export default class Map extends React.Component {
     const { hasData } = this.state
     return (
           <div
-            style={{ height:'300px', width: this.props.width }}
+            style={{ height:this.props.height, width: this.props.width }}
             ref={this.ref}
            />
     )

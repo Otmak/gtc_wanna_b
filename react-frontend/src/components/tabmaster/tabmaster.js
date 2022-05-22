@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './tabmaster.css';
-import Skeleton from '@mui/material/Skeleton';
 import AssetContainer from '../asset_contents/asset_container/asset_container.js';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TextField from '@mui/material/TextField';
@@ -28,10 +27,10 @@ export default class TabMaster extends Component {//rewrt
   createTabsAndPanels (data, type) {
 
     // console.log( 'Creating tabs', data )
-    console.log( 'T..', this )
+    // console.log( 'T..', this )
 
-    const assetData  = this.props.data ;
-    const mainArray = [];
+    // const assetData  = this.props.data ;
+    // const mainArray = [];
     if ( type === 'p'){
       const listOfTabPanels = [];
       for ( let i in data ){
@@ -76,7 +75,7 @@ export default class TabMaster extends Component {//rewrt
 
 
   render(){
-    const { assetData, filteredAssetData } = this.state;
+    // const { assetData, filteredAssetData } = this.state;
     let filteredassetList;
 
     return (

@@ -111,11 +111,11 @@ export default class App extends Component {
 
       const fetchData = await fetch(test_url, options);
       const response = await fetchData.json();
-      console.log(response, payload)
+      // console.log(response, payload)
 
       response.code === 200 ? this.loginSuccess(response, payload ) : response.error ? this.setState({'LoginErrorMessage':response.error.message}) : this.setState({'LoginErrorMessage':response.data.message })
     }else{
-      console.log('Cancelled.' )
+      // console.log('Cancelled.' )
       const isEmptyMessage = 'Please enter a valid account code or password.';
       return this.setState({'LoginErrorMessage' : isEmptyMessage});
     }

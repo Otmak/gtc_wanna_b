@@ -1,18 +1,11 @@
 import React, {Component} from 'react';
 import Card from '@mui/material/Card';
-import Skeleton from '@mui/material/Skeleton';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import Chip from '@mui/material/Chip';//change color on conditions
 import Map from '../map/map.js';
-import ShowHide from '../showhide/showhide.js';
-import NoData from '../nodata/nodata.js';
-import CardSkeleton from '../skeleton/cardskeleton.js';
+import Tooltip from '@mui/material/Tooltip';
+import DefaultCard from '../card/card.js';
 import './location.css';
 
 
@@ -93,7 +86,8 @@ export default class Location extends Component {
         body : JSON.stringify(data)
       }
 
-      const fetchData = await fetch('/location', options);
+      const url = 'http://127.0.0.1:5000/location';
+      const fetchData = await fetch(url, options);
       const response = await fetchData.json();
       const updateErrorMessage = 'No location data';
 
@@ -102,10 +96,38 @@ export default class Location extends Component {
         } 
     } 
   }
-
-
   getMap(data){
-    return <Map width="" location={data} />
+    // console.log(data)
+    const { id } = this.props;
+    return <Map height={220} location={data} />
+  }
+
+
+  parseContent(data){
+    // console.log('loaction data', data)
+    if ( this.validate(data) ){
+      console.log(data)
+
+      return (
+          <CardMedia  >
+            { this.getMap(data) }
+            <Typography variant="subtitle2" color="text.secondary">
+             {'Vehicle Status '}  
+             <Tooltip  title={ data.power== 'on' ? `Vehicle is moving @ ${data.speed.speed}${data.speed.attrib.unit}.`:'Vehicle is powered off.' } followCursor> 
+              <Chip color={ data.power === "on" ? "success" : "default"} label={data.power}/> 
+             </Tooltip>
+            </Typography>
+
+            <Typography variant="caption" color="text.secondary">
+             {'Last updated'} 
+             <Tooltip title={ this.isPast24Hours(data.time) == "warning" ? `Last location entry is more than 24hr old.`:""  } followCursor>
+              <Chip color={ this.isPast24Hours(data.time)} label={data.time}/> 
+             </Tooltip>
+            </Typography> <br /> 
+
+          </CardMedia>
+          )
+    }
   }
 
 
@@ -115,37 +137,13 @@ export default class Location extends Component {
     const min24hourDate = nowTime - 86400; //24 hours from now
     return dateOfLocation < min24hourDate ? "warning" : "default"
   }
-
   
   render(){
-    // <Typography variant="caption" color="text.secondary"> {'Speed : '} <Chip label={locationData}/> </Typography>
-    const { params, locationData, errorMessage } = this.state;
-    // console.log(locationData.time)
+    const { params, errorMessage, locationData } = this.state;
     return (
-        <Card sx={{ width: 800 , height : 440}}>
-
-          <CardMedia
-            height ="140"
-            component="map"
-          >
-            {this.validate(locationData) && this.getMap(locationData)}
-          </CardMedia>
-          <CardContent>
-            { !this.validate(errorMessage)
-              && 
-              <div>
-                <Typography variant="subtitle2" color="text.secondary"> {'Vehicle Status: '} <Chip color={ locationData.power === "on" ? "success" : "default"} label={locationData.power}/> </Typography>
-                <Typography variant="caption" color="text.secondary"> {'Last updated : '} <Chip color={ this.isPast24Hours(locationData.time)} label={locationData.time}/> </Typography> <br /> 
-              </div>
-            }
-            { this.validate(errorMessage) && <NoData message={ errorMessage }/>  }
-          </CardContent>
-          <CardActions onClick={()=>this.handleApiCall(params)}>
-            <Button size="small">GET</Button>
-          </CardActions>
-
-
-        </Card>
+      <div>
+        <DefaultCard title={"LOCATION"}  message={errorMessage} handlecall={()=>this.handleApiCall(params)} custom={true} cardData={ this.parseContent(locationData)} />
+      </div>
       )
   }
 }

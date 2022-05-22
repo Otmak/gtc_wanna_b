@@ -1,11 +1,8 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
-import BusinessIcon from '@mui/icons-material/Business';
 import MenuItem from '@mui/material/MenuItem';
 import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Settings from '@mui/icons-material/Settings';
 import Dialog from '@mui/material/Dialog';
@@ -31,7 +28,8 @@ export default function AppBarMenu(props) {
   const convertStrToB64 = (str) =>{
 
     if ( validate(str) ){
-      let strEnc = str + '_' + 'mandelbrot_set' ;
+      let strEnc2 = str + '_' + 'mandelbrot_set' ;
+      let strEnc = `${str}_mandelbrot_set`;
       return window.btoa(unescape(encodeURIComponent( strEnc )));
     }else{
       return str

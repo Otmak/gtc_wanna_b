@@ -1,17 +1,8 @@
 import React, {Component} from 'react';
-import Card from '@mui/material/Card';
-import Skeleton from '@mui/material/Skeleton';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
-import Chip from '@mui/material/Chip';//change color on conditions
-import Map from '../map/map.js';
-import DefaultCard from '../regular/regular.js';
-import NoData from '../nodata/nodata.js';
+// import Chip from '@mui/material/Chip';//change color on conditions
+// import Map from '../map/map.js';
+import DefaultCard from '../card/card.js';
+// import NoData from '../nodata/nodata.js';
 
 
 
@@ -39,9 +30,7 @@ export default class JbusEvents extends Component {
     if ( this.validate(str)){
       return decodeURIComponent(escape(window.atob( str )));
     }
-    else{
-      return str;
-    }
+    return str;
   }
 
 
@@ -53,9 +42,8 @@ export default class JbusEvents extends Component {
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
       }
       return payload;
-    }else{
-      return false;
     }
+    return false;
   }
 
 
@@ -64,27 +52,26 @@ export default class JbusEvents extends Component {
     // console.log(data, 'from merge.********************')
     // console.log(this, data)
     const id = this.props.id;
+    const readEpoch = (t)=>{
+      let i = new Date ( t * 1000 );
+      return i.toLocaleString();
+    }
 
     const main = {};
     const ref = {  
-      'ODOMETER': 'ODOMETER',
-      'PROTOCOL': 'protocol',
-      'TIMESTAMP': 'time',
-      'CHKENG': 'chkeng',
-    }
-    const rek = {  
       'ODOMETER': 'ODOMETER',
       'PROTOCOL': 'PROTOCOL',
       'TIMESTAMP': 'TIMESTAMP',
       'CHKENG': 'CHKENG',
     }
-    
 
     if ( id in data ){
     	let l = data[id]['child']['EVENT'];
-    	for ( let i in rek ) {
-    		main[ rek[i] ] =  l[i]
+    	for ( let i in ref ) {
+    		main[ ref[i] ] =  l[i]
     	}
+
+      main['TIMESTAMP'] = readEpoch(main['TIMESTAMP'])
     	return main;
     }
 
@@ -96,7 +83,7 @@ export default class JbusEvents extends Component {
     this._isMounted = true;
     // console.log(this)
 
-    const { params, startTime, endTime } = this.state; 
+    const { startTime, endTime } = this.state; 
     const mainData = this.decodeLocalStorage();
     // console.log(mainData)
     mainData['target'] = this.props.id;
@@ -115,11 +102,11 @@ export default class JbusEvents extends Component {
 
 
   handleApiCall = async (data) => {
-  	console.log('Making call....' ,data)
+  	// console.log('Making call....' ,data)
     if (this._isMounted){
 
       this.setState({jBusData:""});
-      const id = this.props.id;
+      // const id = this.props.id;
       const options = 
       {
         method : 'POST',
@@ -128,11 +115,12 @@ export default class JbusEvents extends Component {
         },
         body : JSON.stringify(data)
       }
+      const url = 'http://127.0.0.1:5000/jbusevents';
+      const fetchData = await fetch(url, options);
 
-      const fetchData = await fetch('/jbusevents', options);
       const response = await fetchData.json();
       const updateErrorMessage = 'No data available';
-      console.log('fetch done.',response)
+      // console.log('fetch done.',response)
 
       if (this._isMounted ){
         response.code === 200 ? this.setState({'jBusData': this.mergeData(response.data) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
@@ -140,18 +128,12 @@ export default class JbusEvents extends Component {
     } 
   }
 
-
-  getMap(data){
-    return <Map width="" location={data} />
-  }
-
-
-  isPast24Hours(date) {
-    const dateOfLocation = new Date(date).getTime()/1000.0;
-    const nowTime = Date.now()/1000.0;
-    const min24hourDate = nowTime - 86400; //24 hours from now
-    return dateOfLocation < min24hourDate ? "warning" : "default"
-  }
+  // isPast24Hours(date) {
+  //   const dateOfLocation = new Date(date).getTime()/1000.0;
+  //   const nowTime = Date.now()/1000.0;
+  //   const min24hourDate = nowTime - 86400; //24 hours from now
+  //   return dateOfLocation < min24hourDate ? "warning" : "default"
+  // }
 
   
   render(){
@@ -165,7 +147,7 @@ export default class JbusEvents extends Component {
 
     return (
         <div>
-          <DefaultCard message={errorMessage} handlecall={()=>this.handleApiCall(params)} colors={ref} celldata={jBusData} />
+          <DefaultCard title={"JBUS EVENT"}  message={errorMessage} handlecall={ ()=>this.handleApiCall(params)}  colors={ref} cardData={jBusData} />
         </div>
       )
   }

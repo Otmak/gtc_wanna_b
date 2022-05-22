@@ -1,18 +1,6 @@
 import React, {Component} from 'react';
-import Card from '@mui/material/Card';
-import Skeleton from '@mui/material/Skeleton';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import Chip from '@mui/material/Chip';//change color on conditions
-import Map from '../map/map.js';
-import DefaultCard from '../regular/regular.js';
-import LineChart from '../chart/linechart.js';
-import NoData from '../nodata/nodata.js';
-
+import DefaultCard from '../card/card.js';
+import Chart from '../chart/chart.js';
 
 // startTime :  Date.now()/1000.0 - 86400,
 export default class JbusTripReport extends Component {
@@ -53,16 +41,15 @@ export default class JbusTripReport extends Component {
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
       }
       return payload;
-    }else{
-      return false;
     }
+    return false;
   }
 
 
 
   FixData (data) {//tbc 
 
-    const id = this.props.id;
+    // const id = this.props.id;
 
     const main = {};
     // const ref = {   }
@@ -73,7 +60,6 @@ export default class JbusTripReport extends Component {
     const engHrsPlotData = [];
 
     if ( this.validate(payload) ){
-
       for ( let i = payload.length -1; i > 0; i -- ){
 
         fuelPlotData.push( payload[i].text.asset.fuel );
@@ -97,7 +83,7 @@ export default class JbusTripReport extends Component {
     this._isMounted = true;
     // console.log(this)
 
-    const { params, startTime, endTime } = this.state; 
+    const {  startTime, endTime } = this.state; 
     const mainData = this.decodeLocalStorage();
     // console.log(mainData)
     mainData['target'] = this.props.id;
@@ -118,10 +104,10 @@ export default class JbusTripReport extends Component {
   handleApiCall = async (data) => {
     if (this._isMounted){
 
-      console.log('Making call....')
+      // console.log('Making call....')
 
       this.setState({jbusTripData:""});
-      const id = this.props.id;
+      // const id = this.props.id;
       const options = 
       {
         method : 'POST',
@@ -130,11 +116,13 @@ export default class JbusTripReport extends Component {
         },
         body : JSON.stringify(data)
       }
-
-      const fetchData = await fetch('/jbustripreport', options);
+      const url = 'http://127.0.0.1:5000/jbustripreport';
+      const fetchData = await fetch(url, options);
+      // const fetchData = await fetch('http://34.127.101.3/jbustripreport', options);
       const response = await fetchData.json();
       const updateErrorMessage = 'No JbusTrip data';
       // console.log('fetch done.',response)
+
 
       if (this._isMounted ){
         response.code === 200 ? this.setState({'jbusTripData': this.FixData(response.data) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
@@ -147,27 +135,9 @@ export default class JbusTripReport extends Component {
     const { params, jbusTripData, errorMessage } = this.state;
     // console.log(this)
     return (
-      <Card sx={{ maxHeight:'inherit'}}>
-          <CardMedia
-            height ="140"
-            component="map"
-          >
-            { this.validate(jbusTripData.labels) && <LineChart labels={jbusTripData.labels} data={jbusTripData} />
-            /*{this.validate(jbusTripData) && this.getMap(jbusTripData)}*/}
-          </CardMedia>
-          <CardContent>
-{/*            { !this.validate(errorMessage)
-              && 
-              <div>
-                <Typography variant="caption" color="text.secondary"> {'Last updated : '} </Typography> <br /> 
-              </div>
-            }*/}
-            { this.validate(errorMessage) && <NoData message={ errorMessage }/>  }
-          </CardContent>
-          <CardActions onClick={()=>this.handleApiCall(params)}>
-            <Button size="small">GET</Button>
-          </CardActions>
-      </Card>
+      <div>
+        <DefaultCard title={"JBUS TRIP"}  message={errorMessage} handlecall={ ()=>this.handleApiCall(params)} custom={true} cardData={ <Chart labels={jbusTripData.labels} data={jbusTripData} /> } />
+      </div>
     )
   }
 }

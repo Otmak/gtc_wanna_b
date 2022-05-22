@@ -1,19 +1,9 @@
 import React, {Component} from 'react';
-import Card from '@mui/material/Card';
-import Skeleton from '@mui/material/Skeleton';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
-import Chip from '@mui/material/Chip';//change color on conditions
-import Map from '../map/map.js';
-import DefaultCard from '../regular/regular.js';
-import NoData from '../nodata/nodata.js';
-
-
+// import Typography from '@mui/material/Typography';
+// import Chip from '@mui/material/Chip';//change color on conditions
+// import Map from '../map/map.js';
+import DefaultCard from '../card/card.js';
+// import NoData from '../nodata/nodata.js';
 
 export default class NewInspection extends Component {
   _isMounted = false
@@ -59,31 +49,34 @@ export default class NewInspection extends Component {
     }
   }
 
-
-
   fixData (data) {//tbc 
     // console.log(data, 'from merge.********************')
     // console.log(this)
     const id = this.props.id;
+    const readEpoch = (t)=>{
+      let i = new Date ( t * 1000 );
+      return i.toLocaleString();
+    }
 
     const main = {};
     const ref = {  
-      'loadtime': 'uploaded',
-      'cfglabel': 'type',
-      'defect': 'defects',
-      'operator': 'driver',
+      'loadtime': 'UPLOADED',
+      'cfglabel': 'TYPE',
+      'defect': 'DEFECTS',
+      'operator': 'OPERATOR',
     }
+    // console.log(data)
 
     for ( let i in data ) {
-
       let insp = data[i].insp;
       if ( this.validate(insp) ){
-        if (insp['assetid'] === id ){
+        if (insp['assetid'] === id ){ 
           let inspection = data[i].insp;
-
           for (let x in ref){
             main[ref[x]] = inspection[x];
           }
+
+          main['UPLOADED'] = readEpoch(main['UPLOADED']);
           return main;
         }
       }
@@ -92,7 +85,6 @@ export default class NewInspection extends Component {
     this.setState( {errorMessage: 'No inspection data'})
     // return main;
   }
-
 
   componentDidMount(){
     this._isMounted = true;
@@ -130,7 +122,9 @@ export default class NewInspection extends Component {
         body : JSON.stringify(data)
       }
 
-      const fetchData = await fetch('/newinspection', options);
+      const url = 'http://127.0.0.1:5000/newinspection'
+
+      const fetchData = await fetch(url, options);
       const response = await fetchData.json();
       const updateErrorMessage = 'No data available';
       console.log('fetch done.',response)
@@ -140,28 +134,19 @@ export default class NewInspection extends Component {
         } 
     } 
   }
-
-
-  getMap(data){
-    return <Map width="" location={data} />
-  }
-
-
-  isPast24Hours(date) {
-    const dateOfLocation = new Date(date).getTime()/1000.0;
-    const nowTime = Date.now()/1000.0;
-    const min24hourDate = nowTime - 86400; //24 hours from now
-    return dateOfLocation < min24hourDate ? "warning" : "default"
-  }
-
-  
+  // isPast24Hours(date) {
+  //   const dateOfLocation = new Date(date).getTime()/1000.0;
+  //   const nowTime = Date.now()/1000.0;
+  //   const min24hourDate = nowTime - 86400; //24 hours from now
+  //   return dateOfLocation < min24hourDate ? "warning" : "default"
+  // }
   render(){
     // <Typography variant="caption" color="text.secondary"> {'Speed : '} <Chip label={locationData}/> </Typography>
     const { params, inspectionsData, errorMessage } = this.state;
     // console.log(this)
     return (
         <div>
-          <DefaultCard message={errorMessage} handlecall={()=>this.handleApiCall(params)} celldata={inspectionsData} />
+          <DefaultCard title={"LAST INSP"}  message={errorMessage} handlecall={ ()=>this.handleApiCall(params)} cardData={inspectionsData} />
         </div>
       )
   }

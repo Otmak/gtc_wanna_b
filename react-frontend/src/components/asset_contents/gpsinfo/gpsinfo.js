@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import DefaultCard from '../regular/regular.js';
-import Card from '@mui/material/Card';
+import DefaultCard from '../card/card.js';
 
 
 export default class GpsInfo extends Component {
@@ -55,7 +54,7 @@ export default class GpsInfo extends Component {
     this._isMounted = true;
     // console.log(this)
 
-    const { params, startTime, endTime } = this.state; 
+    const { startTime, endTime } = this.state; 
     const mainData = this.decodeLocalStorage();
     // console.log(mainData)
     mainData['target'] = this.props.id;
@@ -102,7 +101,7 @@ export default class GpsInfo extends Component {
     this.setState({gpsData:""});
     // console.log('calling api.....', data)
     if ( this._isMounted ){
-      const id = this.props.id;
+      // const id = this.props.id;
       const options = 
       {
         method : 'POST',
@@ -111,15 +110,12 @@ export default class GpsInfo extends Component {
         },
         body : JSON.stringify(data)
       }
-
-      const url = 'http://34.82.109.63/phhm';
-      const url_test = '/phhm';
-      const fetchPhhmData = await fetch(url_test, options);
+      const url = 'http://127.0.0.1:5000/phhm';
+      const fetchPhhmData = await fetch(url, options);
       // const fetchAssetActivityData = await fetch('/newinspection', options);
       const phhmResponse = await fetchPhhmData.json();
       // const assetActivityResponse = await fetchAssetActivityData.json();
       const gotError = 'No gps data';
-
       // console.log('phhm ++ ' , phhmResponse)
       if (this._isMounted){
         phhmResponse.code === 200  ? this.setState({'gpsData': this.mergeData( phhmResponse )}) : phhmResponse.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
@@ -133,7 +129,7 @@ export default class GpsInfo extends Component {
     // console.log(this.validate(false))
     return (
       <div>
-        <DefaultCard message={errorMessage} handlecall={()=>this.handleApiCall(params)} celldata={gpsData}/>
+        <DefaultCard title={"GPS UNIT"}  message={errorMessage} handlecall={()=>this.handleApiCall(params)} cardData={gpsData}/>
       </div>
       )
   }

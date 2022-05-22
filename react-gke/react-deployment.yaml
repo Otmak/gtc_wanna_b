@@ -1,0 +1,26 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: zpeek-react-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: react-frontend
+  # minReadySeconds: 3
+  strategy:
+    # type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1 # At least 1 pod can be unavailable.
+      maxSurge: 2 # Add 2 pod at a time.
+  template:
+    metadata:
+      labels:
+        app: react-frontend
+    spec:
+      containers:
+      - name: react-frontend
+        image: us-west1-docker.pkg.dev/g-testv1/wanna-b-gtc-repo/react-rontend:latest
+        ports:
+        - containerPort: 8080

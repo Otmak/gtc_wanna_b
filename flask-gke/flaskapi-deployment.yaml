@@ -2,26 +2,26 @@
 apiVersion: apps/v1  #Older versions of k8s use apps/v1beta1
 kind: Deployment
 metadata:
-  name: api-deployment
+  name: flask-backend-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: api-service
+      app: flask-backend
   # minReadySeconds: 3
   strategy:
     type: Recreate
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1 # At least 1 pod can be unavailable.
-    #   maxSurge: 2 # Add 2 pod at a time.
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1 # At least 1 pod can be unavailable.
+      maxSurge: 2 # Add 2 pod at a time.
   template:
     metadata:
       labels:
-        app: api-service
+        app: flask-backend
     spec:
       containers:
-      - name: flask-v1
-        image: us-west1-docker.pkg.dev/g-testv1/m-cards-repo/test-backend-wanav1:latest
+      - name: flask-backend
+        image: us-west1-docker.pkg.dev/g-testv1/wanna-b-gtc-repo/flask-backend:latest
         ports:
         - containerPort: 5000
