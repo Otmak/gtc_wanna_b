@@ -106,10 +106,10 @@ export default class App extends Component {
         body : JSON.stringify(payload)
       }
 
-      const url = 'http://34.82.109.63/asset';
+      const url = 'http://34.83.13.20/asset';
       const test_url = '/asset';
 
-      const fetchData = await fetch(test_url, options);
+      const fetchData = await fetch(url, options);
       const response = await fetchData.json();
       // console.log(response, payload)
 

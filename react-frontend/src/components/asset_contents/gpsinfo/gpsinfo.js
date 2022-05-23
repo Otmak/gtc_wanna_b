@@ -110,7 +110,8 @@ export default class GpsInfo extends Component {
         },
         body : JSON.stringify(data)
       }
-      const url = 'http://127.0.0.1:5000/phhm';
+      const test_url = 'http://127.0.0.1:5000/phhm';
+      const url = 'http://34.83.13.20/phhm';
       const fetchPhhmData = await fetch(url, options);
       // const fetchAssetActivityData = await fetch('/newinspection', options);
       const phhmResponse = await fetchPhhmData.json();

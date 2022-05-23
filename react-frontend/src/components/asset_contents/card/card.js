@@ -74,7 +74,7 @@ export default class DefaultCard extends Component {
   }
 
   fullScreen(){
-    // console.log('Fullscreen in card.', this)
+    console.log('Fullscreen in card.', this)
     return this.props.fullscreen();
   }
 

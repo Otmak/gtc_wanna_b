@@ -122,12 +122,13 @@ export default class NewInspection extends Component {
         body : JSON.stringify(data)
       }
 
-      const url = 'http://127.0.0.1:5000/newinspection'
+      const test_url = 'http://127.0.0.1:5000/newinspection'
+      const url = 'http://34.83.13.20/newinspection'
 
       const fetchData = await fetch(url, options);
       const response = await fetchData.json();
       const updateErrorMessage = 'No data available';
-      console.log('fetch done.',response)
+      // console.log('fetch done.',response)
 
       if (this._isMounted ){
         response.code === 200 ? this.setState({'inspectionsData': this.fixData(response.data.secondary) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })

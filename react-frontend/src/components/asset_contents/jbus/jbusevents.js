@@ -115,7 +115,8 @@ export default class JbusEvents extends Component {
         },
         body : JSON.stringify(data)
       }
-      const url = 'http://127.0.0.1:5000/jbusevents';
+      const test_url = 'http://127.0.0.1:5000/jbusevents';
+      const url = 'http://34.83.13.20/jbusevents';
       const fetchData = await fetch(url, options);
 
       const response = await fetchData.json();

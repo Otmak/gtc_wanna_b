@@ -48,9 +48,8 @@ export default class Path extends Component {
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
       }
       return payload;
-    }else{
-      return false;
     }
+    return false;
   }
 
 
@@ -82,6 +81,11 @@ export default class Path extends Component {
     this.setState( {'errorMessage' : 'No path data'})
   }
 
+  fullscreenLONG(){
+    // console.log(this, 'fullscree!')
+    this.setState({isOpen:true})
+  }
+
 
   handleApiCall = async (data) => {
     if ( this._isMounted ){
@@ -97,7 +101,8 @@ export default class Path extends Component {
         body : JSON.stringify(data)
       }
 
-      const url = 'http://127.0.0.1:5000/path';
+      const url = 'http://34.83.13.20/path';
+      const test_url = 'http://127.0.0.1:5000/path';
       const fetchData = await fetch(url, options);
       const response = await fetchData.json();
       const gotError = 'No path data';
@@ -122,7 +127,7 @@ export default class Path extends Component {
             message={errorMessage}
             handlecall={()=>this.handleApiCall(params)}
             custom={true} 
-            cardData={ <CustomTable id={this.props.id } className="customtable" maxheight={290} head={headData} body={pathData} bodycount={bodyCount} bodylength={20} /> }
+            cardData={ <CustomTable key={this.props.id} id={this.props.id } className="customtable" maxheight={290} head={headData} body={pathData} bodycount={bodyCount} bodylength={20} /> }
           >
             {items}
           </DefaultCard>

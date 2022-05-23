@@ -15,7 +15,7 @@ export default class InspectionDetail extends Component {
   render(){
 
     const { errorMessage, params} = this.state;
-    return ( <DefaultCard title={"INSP DETAIL"}  message={errorMessage} handlecall={()=>this.handleApiCall(params)} custom={true} cardData/>)
+    return ( <DefaultCard title={"INSP DETAIL"}  message={errorMessage} handlecall={()=>this.handleApiCall(params)} />)
 
   }
 }

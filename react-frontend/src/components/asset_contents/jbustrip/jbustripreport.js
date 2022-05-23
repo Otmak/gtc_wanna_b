@@ -116,7 +116,8 @@ export default class JbusTripReport extends Component {
         },
         body : JSON.stringify(data)
       }
-      const url = 'http://127.0.0.1:5000/jbustripreport';
+      const url = 'http://34.83.13.20/jbustripreport';
+      const test_url = 'http://127.0.0.1:5000/jbustripreport';
       const fetchData = await fetch(url, options);
       // const fetchData = await fetch('http://34.127.101.3/jbustripreport', options);
       const response = await fetchData.json();

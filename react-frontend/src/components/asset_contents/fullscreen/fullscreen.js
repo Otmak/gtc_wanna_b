@@ -49,7 +49,7 @@ export default class FullScreen extends Component {
   }
 
   handleClickOpen = () =>{
-    console.log('Fullscreen Logged. ', this)
+    // console.log('Fullscreen Logged. ', this)
     if (this._isMounted){
       this.setState({ open: true});
     }
