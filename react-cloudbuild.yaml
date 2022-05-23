@@ -2,7 +2,7 @@
 steps:
  # Step 0. build container image.
 - name: "gcr.io/cloud-builders/docker"
-  args: ["build", "-t", "us-west1-docker.pkg.dev/$PROJECT_ID/wanna-b-gtc-repo/react-rontend", "-f", "react-frontend/Dockerfile", "."]
+  args: ["build", "-t", "us-west1-docker.pkg.dev/$PROJECT_ID/wanna-b-gtc-repo/react-frontend", "-f", "react-frontend/Dockerfile", "."]
 
   # Step 1. push frontend iamge to AR.
 - name: "gcr.io/cloud-builders/docker"
