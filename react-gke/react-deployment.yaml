@@ -21,6 +21,6 @@ spec:
     spec:
       containers:
       - name: react-frontend
-        image: us-west1-docker.pkg.dev/g-testv1/wanna-b-gtc-repo/react-rontend:latest
+        image: us-west1-docker.pkg.dev/g-testv1/wanna-b-gtc-repo/react-frontend:latest
         ports:
         - containerPort: 8080

@@ -107,7 +107,7 @@ export default class Location extends Component {
   parseContent(data){
     // console.log('loaction data', data)
     if ( this.validate(data) ){
-      console.log(data)
+      // console.log(data)
 
       return (
           <CardMedia  >

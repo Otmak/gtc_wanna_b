@@ -60,7 +60,7 @@ export default class App extends Component {
 
 
   componentDidMount(){
-    console.log(localStorage)
+    // console.log(localStorage)
     if (this.decodeLocalStorage()){
       const payload = this.decodeLocalStorage();
       return this.handleLogin(payload);
@@ -85,7 +85,7 @@ export default class App extends Component {
 
   handleLogin  = async (e) => { 
 
-    console.log('Starting the calls')
+    // console.log('Starting the calls')
 
     let account = e['customer'];
     let passKey = e['password'];

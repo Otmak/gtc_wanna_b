@@ -33,13 +33,13 @@ export default class FullScreen extends Component {
   }
 
   componentDidMount(){
-    console.log('MENU mounted.', this)
+    // console.log('MENU mounted.', this)
     this._isMounted = true;
 
   }
 
   componentWillUnmount(){
-    console.log('MENU unmounted.')
+    // console.log('MENU unmounted.')
     this._isMounted = false
   }
 
@@ -53,7 +53,7 @@ export default class FullScreen extends Component {
     if (this._isMounted){
       this.setState({ open: true});
     }
-    console.log('Not mounted.')
+    // console.log('Not mounted.')
     
   }
 
@@ -71,7 +71,7 @@ export default class FullScreen extends Component {
     const headData = [ 'Source', 'Time', 'Speed', 'Distance', 'Reason', 'Heading' ];
     const bodyCount = ['source', 'time', 'speed', 'distance_traveled', 'reasons', 'heading'];
 
-    console.log(this)
+    // console.log(this)
 
     // fullscreen
 

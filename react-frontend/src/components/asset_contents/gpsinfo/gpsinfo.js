@@ -75,10 +75,10 @@ export default class GpsInfo extends Component {
 
   mergeData(phhm){//tbc
 
-    console.log(phhm, 'from merge.********************')
+    // console.log(phhm, 'from merge.********************')
 
     if ( this.validate(phhm) ){
-      console.log('SOmeHOW passed.')
+      // console.log('SOmeHOW passed.')
       const main = {};
       const ref = {  
         'fwver': 'firmware',

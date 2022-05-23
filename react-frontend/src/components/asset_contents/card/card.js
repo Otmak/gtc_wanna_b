@@ -45,7 +45,7 @@ export default class DefaultCard extends Component {
     // const colors = {
     // }
     if ( this.validate(opt) && opt[str] ) {
-      console.log('Setting up chip',str, str)
+      // console.log('Setting up chip',str, str)
       return<Chip color={opt[str].color} label={ str } />
     }
     return str
@@ -74,7 +74,7 @@ export default class DefaultCard extends Component {
   }
 
   fullScreen(){
-    console.log('Fullscreen in card.', this)
+    // console.log('Fullscreen in card.', this)
     return this.props.fullscreen();
   }
 
