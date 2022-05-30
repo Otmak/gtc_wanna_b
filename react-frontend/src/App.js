@@ -26,9 +26,7 @@ export default class App extends Component {
     if ( this.validate(str)){
       return decodeURIComponent(escape(window.atob( str )));
     }
-    else{
-      return str;
-    }
+    return str;
   }
 
 
@@ -36,9 +34,8 @@ export default class App extends Component {
     if ( this.validate(str) ){
       let strEnc = str + '_' + this.state.whatsTheWord;
       return window.btoa(unescape(encodeURIComponent( strEnc )));
-    }else{
-      return str
     }
+    return str
   }
 
 
@@ -53,9 +50,8 @@ export default class App extends Component {
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
       }
       return payload;
-    }else{
-      return false;
     }
+    return false;
   }
 
 

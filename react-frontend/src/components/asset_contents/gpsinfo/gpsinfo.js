@@ -66,6 +66,11 @@ export default class GpsInfo extends Component {
     this.handleApiCall(mainData);
   }
 
+  componentWillUnmount(){
+    this._isMounted = false;
+
+  }
+
 
   epochToHtime(epoch){
     const time = new Date( epoch *1000);

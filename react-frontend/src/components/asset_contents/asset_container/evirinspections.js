@@ -57,12 +57,6 @@ export default class EvirInspections extends Component {
             <InspectionDetail  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
           </div>
         </div>
         <button style={{ display: display}} onClick={ this.prev } className="prev">

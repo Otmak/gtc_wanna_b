@@ -56,8 +56,6 @@ export default class TrackAndTrace extends Component {
             <Location  data={assetData} id={this.props.id} />
             <DefaultCard title={"..."}  data={assetData} id={this.props.id}/>
             <DefaultCard title={"..."} data={assetData} id={this.props.id}/>
-            <DefaultCard title={"...."} data={assetData} id={this.props.id}/>
-            <DefaultCard title={"....."} data={assetData} id={this.props.id}/>
           </div>
         </div>
         <button style={{ display: display}} onClick={ this.prev } className="prev">

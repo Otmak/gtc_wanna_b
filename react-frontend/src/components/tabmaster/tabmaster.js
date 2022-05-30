@@ -85,7 +85,9 @@ export default class TabMaster extends Component {//rewrt
             <TextField onChange={this.props.getsearch} className='search-textfield' id="filled-search" label="Search" type="search" variant="filled" />
             { this.createTabsAndPanels( this.props.data, 't') }
           </TabList>
-          { this.createTabsAndPanels( this.props.data, 'p') }
+          <div className="tab-panel-container">
+            { this.createTabsAndPanels( this.props.data, 'p') }
+          </div>
         </Tabs>
       </div>
       )

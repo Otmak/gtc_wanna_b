@@ -7,38 +7,19 @@ export default class Chart extends Component{
 		super(props)
 	}
 
-
 	validate (value) {
     	return value === '' || value === undefined || value === null ? false : true;
   	}
 
-	// componentDidMount(){
-
-	// 	const mainLabels = this.props.labels;
-	// 	const engHours = this.props.data.egnhrs;
-	// 	const fuelData = this.props.data.fuel;
-
-	// }
-
 	render(){
 
-		// console.log(<Plot/>)
+		// console.log(this)
 		return(
 			<Plot 
-				data={[
-          {
-            x: this.props.labels,
-            y: this.props.data.egnhrs,
-            type: 'scatter',
-            mode: 'lines+markers',
-            marker: {color: 'red'},
-            name: 'EngHrs ()'
-          },
-          {type: 'bar', x: this.props.labels, y: this.props.data.fuel, name: 'Fuel()'},
-        ]}
-        layout={ {width: 420, height: 310, title: ''} } 
-        config={{ scrollZoom:true }}  
-      />
+				data={[{type: this.props.type, x: this.props.labels, y: this.props.data, name: 'Fuel'},]}
+		        layout={ {width: 420, height: 300, title: this.props.title} } 
+		        config={{ scrollZoom:true }}  
+		      />
 		)
 	}
 }

@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import './css/trackandtrace.css';
 import JbusEvents from '../jbus/jbusevents.js';
-import JbusTripReport from '../jbustrip/jbustripreport.js';
+import JbusTripReport from '../jbustrip/jbustripenghrs.js';
+import JbusTripFuel from '../jbustrip/jbustripfuel.js';
 import DefaultCard from '../regular/regular.js';
 
 
@@ -52,12 +53,7 @@ export default class FuelAndDiagnostics extends Component {
           <div ref={this.carousel} className="carousel">
             <JbusEvents data={assetData} id={this.props.id} gps={this.props.gps} />
             <JbusTripReport data={assetData} id={this.props.id} gps={this.props.gps} />
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
+            <JbusTripFuel data={assetData} id={this.props.id} gps={this.props.gps} />
             <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
           </div>

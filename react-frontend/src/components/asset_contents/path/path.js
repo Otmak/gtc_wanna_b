@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import FullScreen from '../fullscreen/fullscreen.js';
 import DefaultCard from '../card/card.js';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
 // import CardSpeedDail from '../card/cardspeeddail.js';
 // import NoData from '../nodata/nodata.js';
 import CustomTable from '../table/table.js';
@@ -40,7 +41,7 @@ export default class Path extends Component {
 
   decodeLocalStorage (){
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ]
+    const mostwanted = [ "customer", "password", "user" ];
 
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) )
     {
@@ -62,7 +63,7 @@ export default class Path extends Component {
     mainData['target'] = this.props.id;
     mainData['start'] = startTime.toString();
     mainData['end'] = endTime.toString();
-    // console.log('No params', params,this.props, mainData)
+    // console.log('No params', this.props, mainData)
 
     this.setState({params: mainData });
     this.handleApiCall(mainData);
@@ -81,9 +82,16 @@ export default class Path extends Component {
     this.setState( {'errorMessage' : 'No path data'})
   }
 
-  fullscreenLONG(){
+  handleFullScreenOpen(){
     // console.log(this, 'fullscree!')
-    this.setState({isOpen:true})
+    this.setState({isOpen:true});
+  }
+
+  handleFullScreenClose(){
+    // console.log(this, 'hi rise')
+    // this.callhelp()
+    return this.setState({tableData:false, isOpen:false});
+    // console.log(this, 'after rise')
   }
 
 
@@ -106,19 +114,24 @@ export default class Path extends Component {
       const fetchData = await fetch(url, options);
       const response = await fetchData.json();
       const gotError = 'No path data';
-      // console.log(response)
+      // console.log('path response',response)
 
       if ( this._isMounted){
         response.code === 200 ? this.setState({'pathData': this.getPath(response)}) : response.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
       } 
     }
   }
+
   
   render(){ 
     const { isOpen, pathData, params, errorMessage } = this.state;
+
+    // console.log(this)
     const headData = [ 'Source', 'Time', 'Speed', 'Reason' ];
     const bodyCount = ['source', 'time', 'speed', 'reasons'];
-    const items = [{icon:<FullScreen title={this.props.data[this.props.id].child.fleet} pathdata={pathData} type='path' data={this.props.data} fullscreen={isOpen} fontSize="small"/> ,name:'Fullscreen', func:()=>this.fullscreenLONG()},];
+    const items = [{icon:<FullscreenIcon fontSize="small"/> ,name:'Fullscreen', func:()=>this.handleFullScreenOpen()}];
+    const fullscreen = this.validate(isOpen) ? isOpen : false;
+    // const items = [{icon:<FullScreen handleClose={()=>this.handleCloseFullpathClose()} title={this.props.data[this.props.id].child.fleet} pathdata={pathData} type='path' data={this.props.data} fullscreen={isOpen} fontSize="small"/> ,name:'Fullscreen', func:()=>this.handleCloseFullpathOpen()},];
 
     return (
     	<div>
@@ -131,6 +144,7 @@ export default class Path extends Component {
           >
             {items}
           </DefaultCard>
+          <FullScreen open={fullscreen} handleClose={()=>this.handleFullScreenClose()} title={this.props.data[this.props.id].child.fleet} pathdata={pathData} type='path' data={this.props.data} fullscreen={fullscreen} fontSize="small"/>
     	</div>
     	)
   }

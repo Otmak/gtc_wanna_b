@@ -13,28 +13,15 @@ export default class MainMenu extends Component {
 			anChor:this.props.anchor
 		}
 	}
-
-	handleClickOpen () {
-		// console.log('Open!', this.props)
-		// this.props.fullscreenLONG();
-		if( this.validate( this.props.fullscreenLONG ) ){
-			this.props.fullscreenLONG();
-		}
-		// this.setState({open:true});
-	}
+	
 
 	handleClose (){
-		// console.log('Close!', this.props)
-		// this.setState({anChor:null})
 		if( this.validate( this.props.fullscreenSHORT ) ){
 			return this.props.fullscreenSHORT();
 		}
 		return this.props.close();
 	}
 
-	fullscreenSHORT(){
-
-	}
 
 	validate (value) {
 		return value === '' || value === undefined || value === null ? false : true;
@@ -47,7 +34,6 @@ export default class MainMenu extends Component {
 		const menuItems = this.validate(this.props.menuItems)? this.props.menuItems : [];
 
 		return (
-			<div>
 				<Menu
 				    anchorEl={this.props.anchor}
 				    id="table-menu"
@@ -92,7 +78,5 @@ export default class MainMenu extends Component {
 			      </MenuItem>
 			      )}
 				</Menu>
-				{/*{this.props}*/}
-			</div>
 	)}
 }

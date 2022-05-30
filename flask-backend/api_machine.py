@@ -2,7 +2,13 @@ import os
 import requests
 import xml.etree.ElementTree as ET
 
-
+# send actionable data to postges db
+        # ideas
+            # import db model then add data to db 
+                # each function adds behavious or things to db
+                # 1. its input data
+                # 2. return data
+                # if retun data does not return might indicate sm goin on with the app means it failed.
 # Generate API
 def generate_api(user, api):
     print('Starting api......')

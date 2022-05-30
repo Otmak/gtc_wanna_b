@@ -1,6 +1,17 @@
 .app_container{
-	display: grid;
-	grid-template-areas:
-	'header'
-	'menu ';
+	display: flex;
+	flex-direction: column;
+}
+
+#main-app-bar{
+	position: fixed;
+	width: 100%;
+	z-index: 999;
+	margin-bottom: 1rem;
+	padding-bottom: 2rem;
+
+}
+#tab-master-container{
+	/*position: absolute;*/
+	margin: 2rem;
 }

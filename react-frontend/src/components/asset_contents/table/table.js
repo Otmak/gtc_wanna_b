@@ -50,18 +50,29 @@ export default class CustomTable extends Component {
 		const coloredReasons = {
 			6:"error",
 			12:"success",
-			7:"default"
+			7:"default",
 		}
 
+		let counter = 0;
+		let reason = '';
+
 		for (let i = 0; i < rSplit.length; i++ ){
-			if ( rSplit[i] in coloredReasons ) {
-				return ( 	
-					<Tooltip key={i} title={ pathReasons[rSplit[i]] } followCursor>
-						<Chip key={i} color={ coloredReasons[ rSplit[i] ] } label={r} />
-					</Tooltip> 
-				)};
-			return r;
-		};
+			if (rSplit.length === 1){
+				return (
+				<Tooltip key={i} title={ pathReasons[rSplit[i]] } followCursor>
+					<Chip key={i} color={ coloredReasons[ rSplit[i] ] } label={r} />
+		 		</Tooltip>
+				)
+			}
+			
+			reason += ` ${pathReasons[rSplit[i]]}`;
+		}
+
+		return (
+			<Tooltip key={reason} title={ reason } followCursor>
+				<Chip key={`${reason}1`} color={ coloredReasons[ rSplit[0] ] } label={r} />
+	 		</Tooltip>
+			)
 	}
 
 
@@ -73,8 +84,10 @@ export default class CustomTable extends Component {
 	parseCellOrNot(cont, data){
 
 		const cells = [];
+		// console.log(cont)
 		for ( let i=0; i<cont.length; i++ ){
 			if ( cont[i] ==='reasons'){
+				// console.log(cont[i])
 				cells.push( <TableCell key={i}> { this.colorServices( data[cont[i]] ) } </TableCell> );		
 			}else{
 				cells.push( <TableCell key={i}> {data[cont[i]]} </TableCell> );
@@ -93,8 +106,6 @@ export default class CustomTable extends Component {
 			let fullTable = [];
 			let bodyLength = body.length;
 			if (this.validate(this.props.bodylength )){
-				// bodyLength = this.props.bodylength;
-				// console.log(this.props.bodylength)
 				bodyLength =  body.length < this.props.bodylength ? body.length : this.props.bodylength;
 			}
 			// console.log(bodyLength)
@@ -110,7 +121,7 @@ export default class CustomTable extends Component {
 					</TableRow>
 				 )
 			}
-			// console.log(this)
+			// console.log('while parsing',this)
 			fullTable.push(
 				  <Table key={this.props.id} stickyHeader aria-label="sticky table">
 		  			<TableHead>

@@ -3,8 +3,6 @@ import React, {Component} from 'react';
 import Dialog from '@mui/material/Dialog';
 // import ListItemText from '@mui/material/ListItemText';
 import ListItem from '@mui/material/ListItem';
-// import MoreVertIcon from '@mui/icons-material/MoreVert';
-// import ExpandIcon from '@mui/icons-material/Expand';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
@@ -14,13 +12,7 @@ import CustomTable from '../table/table.js';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
-// import Slide from '@mui/material/Slide';
 import Map from '../map/map.js';
-// import OpenWithIcon from '@mui/icons-material/OpenWith';
-
-// const Transition = React.forwardRef(function Transition(props, ref) {
-//   return <Slide direction="up" ref={ref} {...props} />;
-// });
 
 export default class FullScreen extends Component {
   _isMounted = false
@@ -33,13 +25,11 @@ export default class FullScreen extends Component {
   }
 
   componentDidMount(){
-    // console.log('MENU mounted.', this)
     this._isMounted = true;
 
   }
 
   componentWillUnmount(){
-    // console.log('MENU unmounted.')
     this._isMounted = false
   }
 
@@ -49,16 +39,16 @@ export default class FullScreen extends Component {
   }
 
   handleClickOpen = () =>{
-    // console.log('Fullscreen Logged. ', this)
     if (this._isMounted){
       this.setState({ open: true});
     }
-    // console.log('Not mounted.')
     
   }
 
-  handleClose = () =>{
+  handleClose () {
+    // console.log('Full screen close trigger', this)
     this.setState({open: false});
+    return this.props.handleClose()
   }
 
   getMap (data) {
@@ -71,17 +61,13 @@ export default class FullScreen extends Component {
     const headData = [ 'Source', 'Time', 'Speed', 'Distance', 'Reason', 'Heading' ];
     const bodyCount = ['source', 'time', 'speed', 'distance_traveled', 'reasons', 'heading'];
 
-    // console.log(this)
-
-    // fullscreen
-
     return (
       <div>
-        <FullscreenIcon sx={{'cursor':'pointer'}} color="primary" onClick={this.handleClickOpen} />    
+        {/*<FullscreenIcon sx={{'cursor':'pointer'}} color="primary"  />    */}
         <Dialog
+          open={ this.props.fullscreen }
+          onClose={ ()=>this.handleClose() }
           fullScreen
-          open={open }
-          onClose={open}
           // TransitionComponent={Transition}
         >
           <AppBar sx={{ position: 'relative' }}>
@@ -89,7 +75,7 @@ export default class FullScreen extends Component {
               <IconButton
                 edge="start"
                 color="inherit"
-                onClick={this.handleClose}
+                onClick={ ()=>this.handleClose() }
                 aria-label="close"
               >
                 <CloseIcon />
@@ -101,11 +87,11 @@ export default class FullScreen extends Component {
           </AppBar>
           <List>
             <ListItem key={"full-map"} >
-              { <Map key={"full-map"} height={300} width={"100%"} full={true} polyline={this.props.pathdata}/>}
+              { <Map key={"full-map-custom"} height={300} width={"100%"} full={true} polyline={ this.props.pathdata } /> }
             </ListItem>
             <Divider />
             <ListItem key={"full-table"}>
-              <CustomTable key={"full-table"} maxheight={500} head={headData} body={this.props.pathdata} bodycount={bodyCount}/> 
+              <CustomTable key={"full-table-custom"} maxheight={500} head={headData} body={this.props.pathdata} bodycount={bodyCount}/> 
             </ListItem>
           </List>
         </Dialog>

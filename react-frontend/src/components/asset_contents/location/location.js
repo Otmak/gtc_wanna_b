@@ -114,7 +114,7 @@ export default class Location extends Component {
             { this.getMap(data) }
             <Typography variant="subtitle2" color="text.secondary">
              {'Vehicle Status '}  
-             <Tooltip  title={ data.power== 'on' ? `Vehicle is moving @ ${data.speed.speed}${data.speed.attrib.unit}.`:'Vehicle is powered off.' } followCursor> 
+             <Tooltip  title={ data.power== 'on' ? `Vehicle is moving at ${data.speed.speed} ${data.speed.attrib.unit}.`:'' } followCursor> 
               <Chip color={ data.power === "on" ? "success" : "default"} label={data.power}/> 
              </Tooltip>
             </Typography>
@@ -136,7 +136,7 @@ export default class Location extends Component {
     const dateOfLocation = new Date(date).getTime()/1000.0;
     const nowTime = Date.now()/1000.0;
     const min24hourDate = nowTime - 86400; //24 hours from now
-    return dateOfLocation < min24hourDate ? "warning" : "default"
+    return dateOfLocation < min24hourDate ? "warning" : "default";
   }
   
   render(){

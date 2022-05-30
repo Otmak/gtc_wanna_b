@@ -44,7 +44,7 @@ export default class Map extends React.Component {
           layers.vector.normal.map,
           {
             center: {lat:lat, lng:lng},
-            zoom: 8,
+            zoom: 4,
           },
         );
 

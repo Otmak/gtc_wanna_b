@@ -16,6 +16,9 @@ import Typography from '@mui/material/Typography';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import './card.css';
 
+// cards should 
+  // register funcgtion from its child and send it to its parent.
+
 
 export default class DefaultCard extends Component {
   constructor(props){
@@ -105,15 +108,7 @@ export default class DefaultCard extends Component {
 
   render () {
     const { errorMessage, fullscreen, buttonRef } = this.state;
-    // const items = [{icon:<FullscreenIcon fontSize="small"/> ,name:'Fullscreen'},];
-    // LIST of work 1.apearance 2.Basicfunctionality 3.
-    // card
-    // header
-    //CardData fullscreen
-    // actions
-// color="inherit" aria-label="open drawer" edge="end"
-
-    const cleanItems = this.validate(this.props.children) ? this.props.children : [] ;
+    const items = this.validate(this.props.children) ? this.props.children : [] ;
 
     return (
       <Card style={{'height':'100%'} }className="default_container">
@@ -122,7 +117,7 @@ export default class DefaultCard extends Component {
         	action={ <IconButton onClick={ this.showMenu} > <MoreVertIcon/> </IconButton> } 
         />
         <MainMenu
-          menuItems={ cleanItems } 
+          menuItems={ items } 
           close={()=>this.removeRef()} 
           open={fullscreen} 
           anchor={buttonRef}

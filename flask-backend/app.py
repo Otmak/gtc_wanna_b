@@ -1,6 +1,7 @@
 import os
 import api_machine
 from flask import Flask, request, make_response, render_template
+# from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
@@ -54,8 +55,10 @@ def location():
 @app.route('/path', methods=['POST'])
 def path():
     try:
+        # print('Req',request.get_json())
         path_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showposition&operation=path&reqtype=dbid&target=&version=2&starttime=&endtime=&logvers=3.8&format=json'
         path_data = api_machine.create_dictionary( api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api(request.get_json(), path_url))))
+        # print('data',path_data)
         return api_machine.validate_data(path_data)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}

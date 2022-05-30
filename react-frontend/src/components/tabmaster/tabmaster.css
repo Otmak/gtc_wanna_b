@@ -16,12 +16,21 @@
 .tabs-container-main-div {
 	margin-top: 80px;
 }
-/*div .tabs-container{
-    display: grid;
+
+.tab-panel-container{
+    /*position: fixed;*/
+    /*overflow: auto;*/
+    float: right;
+}
+
+
+.tabs-container{
+    /*position: fixed;*/
+/*    display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;
-    width: 100vw;
-}*/
+    width: 100vw;*/
+}
 .tab-list-container {
     position: fixed;
     width: 20vw;

@@ -75,7 +75,7 @@ export default class JbusEvents extends Component {
     	return main;
     }
 
-    this.setState( {errorMessage: 'No Jbus data'})
+    this.setState( {errorMessage: 'No Jbus events'})
   }
 
 

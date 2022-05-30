@@ -3,7 +3,7 @@ import DefaultCard from '../card/card.js';
 import Chart from '../chart/chart.js';
 
 // startTime :  Date.now()/1000.0 - 86400,
-export default class JbusTripReport extends Component {
+export default class JbusTripFuel extends Component {
   _isMounted = false
   constructor(props){
     super(props)
@@ -48,29 +48,27 @@ export default class JbusTripReport extends Component {
 
 
   FixData (data) {//tbc 
-
-    // const id = this.props.id;
-
     const main = {};
     // const ref = {   }
 
     const payload = data.secondary;
     const jLabels = [];
     const fuelPlotData = [];
-    const engHrsPlotData = [];
+    let measure = '';
 
     if ( this.validate(payload) ){
-      for ( let i = payload.length -1; i > 0; i -- ){
-
+    	// console.log(payload.length)
+      for ( let i = payload.length -1; i >= 0; i -- ){
+        // console.log(payload[i])
+        // fuelPlotData.push( `${payload[i].text.asset.fuel} ${payload[i].text.asset.fuel_units}` );
         fuelPlotData.push( payload[i].text.asset.fuel );
-        engHrsPlotData.push( payload[i].text.asset.engine_hours );
         jLabels.push( payload[i].text.asset.start.slice(5,16) );
+        measure = payload[i].text.asset.fuel_units;
       }
 
-      main['fuel'] = fuelPlotData;
-      main['egnhrs'] = engHrsPlotData;
-      main['labels'] = jLabels;
-      // console.log(main)
+      main['data'] = fuelPlotData;
+      main['times'] = jLabels;
+      main['measure'] = measure;
 
       return main;
     }
@@ -82,7 +80,6 @@ export default class JbusTripReport extends Component {
   componentDidMount(){
     this._isMounted = true;
     // console.log(this)
-
     const {  startTime, endTime } = this.state; 
     const mainData = this.decodeLocalStorage();
     // console.log(mainData)
@@ -103,9 +100,7 @@ export default class JbusTripReport extends Component {
 
   handleApiCall = async (data) => {
     if (this._isMounted){
-
       // console.log('Making call....')
-
       this.setState({jbusTripData:""});
       // const id = this.props.id;
       const options = 
@@ -123,8 +118,6 @@ export default class JbusTripReport extends Component {
       const response = await fetchData.json();
       const updateErrorMessage = 'No JbusTrip data';
       // console.log('fetch done.',response)
-
-
       if (this._isMounted ){
         response.code === 200 ? this.setState({'jbusTripData': this.FixData(response.data) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
         } 
@@ -134,10 +127,10 @@ export default class JbusTripReport extends Component {
   
   render(){
     const { params, jbusTripData, errorMessage } = this.state;
-    // console.log(this)
+    // console.log(jbusTripData)
     return (
       <div>
-        <DefaultCard title={"JBUS TRIP"}  message={errorMessage} handlecall={ ()=>this.handleApiCall(params)} custom={true} cardData={ <Chart labels={jbusTripData.labels} data={jbusTripData} /> } />
+        <DefaultCard title={`FUEL `}  message={errorMessage} handlecall={ ()=>this.handleApiCall(params)} custom={true} cardData={ <Chart title={`${jbusTripData.measure} (s)`} type={"scatter"} labels={jbusTripData.times} data={jbusTripData.data} /> } />
       </div>
     )
   }
