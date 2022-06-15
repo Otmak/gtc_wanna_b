@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import Badge from '@mui/material/Badge';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
@@ -45,8 +46,7 @@ export default class DefaultCard extends Component {
     }
   }
     parseTextOrChip (str, opt ) {
-    // const colors = {
-    // }
+
     if ( this.validate(opt) && opt[str] ) {
       // console.log('Setting up chip',str, str)
       return<Chip color={opt[str].color} label={ str } />
@@ -83,14 +83,12 @@ export default class DefaultCard extends Component {
 
   removeRef(){
     this.setState({removeRef: null, fullscreen:false})
-    // this.props.fullscreenSHORT();
     if(this.props.fullscreenSHORT){
       this.props.fullscreenSHORT();
     }
   }
 
   showMenu = (e)=>{
-    // console.log('Displaying MEnu. in card.', e.currentTarget)
     this.setState({fullscreen:true, buttonRef : e.currentTarget})
   }
 
@@ -113,8 +111,8 @@ export default class DefaultCard extends Component {
     return (
       <Card style={{'height':'100%'} }className="default_container">
         <CardHeader sx={{'height': '5%'}}
-        	subheader={ `${this.props.title}` }
-        	action={ <IconButton onClick={ this.showMenu} > <MoreVertIcon/> </IconButton> } 
+        	subheader={ this.validate(this.props.title)? `${this.props.title}`:'...' }
+        	action={ <IconButton onClick={ this.showMenu} > <Badge badgeContent={this.props.announcement? 1: 0} color="success"> <MoreVertIcon/></Badge> </IconButton> } 
         />
         <MainMenu
           menuItems={ items } 

@@ -27,7 +27,14 @@ export default class CustomTable extends Component {
 	}
 
 
-	colorServices(r){
+	// genColorServices(r){
+	// 	// console.log(r)
+
+
+	// }
+
+
+	pathColorServices(r){
 
 		const rSplit = r.split(',');
 		const pathReasons = {
@@ -51,6 +58,10 @@ export default class CustomTable extends Component {
 			6:"error",
 			12:"success",
 			7:"default",
+			11:"info",
+			7:"warning",
+			10:"secondary",
+			
 		}
 
 		let counter = 0;
@@ -62,9 +73,7 @@ export default class CustomTable extends Component {
 				<Tooltip key={i} title={ pathReasons[rSplit[i]] } followCursor>
 					<Chip key={i} color={ coloredReasons[ rSplit[i] ] } label={r} />
 		 		</Tooltip>
-				)
-			}
-			
+				)}
 			reason += ` ${pathReasons[rSplit[i]]}`;
 		}
 
@@ -81,23 +90,44 @@ export default class CustomTable extends Component {
 	}
 
 
-	parseCellOrNot(cont, data){
+	decorationService(cont, data){// styling of table cells.
 
 		const cells = [];
-		// console.log(cont)
-		for ( let i=0; i<cont.length; i++ ){
-			if ( cont[i] ==='reasons'){
-				// console.log(cont[i])
-				cells.push( <TableCell key={i}> { this.colorServices( data[cont[i]] ) } </TableCell> );		
-			}else{
+		for ( let i=0; i<cont.length; i++ ){ // DRY?
+			// console.log(cont[i], data[cont[i]])
+			if ( cont[i] ==='reasons'){ // path styling.
+				cells.push( <TableCell key={i}> { this.pathColorServices( data[cont[i]] ) } </TableCell> );		
+			}
+			// else if ( cont[i] ==='label' ){//data[cont[i]] === 'GDT 59999'
+			// 	console.log()
+			// 	cells.push( <TableCell key={i}> { this.genColorServices( data[cont[i]] ) } </TableCell> );
+			// 	// console.log( 'found string', data[cont[i]] )
+			// 	// if ( data[cont[i]] === 'GDT 59999'){ // 
+
+
+			// 	// 	// cells.push( <TableCell key={i}> { this.genColorServices( data[cont[i]] ) } </TableCell> );
+			// 	// }
+			// }
+			else{
 				cells.push( <TableCell key={i}> {data[cont[i]]} </TableCell> );
 			}
+
+			// if ( cont[i] ==='string' ){ //gendata styling.
+			// 	console.log(data.)
+			// }
+
+			// cells.push( <TableCell key={i}> {data[cont[i]]} </TableCell> );
+			// if ( cont[i] ==='string' ){
+			// 	console.log(data.)
+			// }
+
 		}
+		// console.log(cells)
 		return cells;
 	}
 
 
-	parseFullTable ( head, body, bodyContains){
+	parseFullTable ( head, body, bodyContains){ //generate head and bdy septly, parse them as one.
 
 		if (this.validate(head) && this.validate(body)){
 
@@ -109,15 +139,15 @@ export default class CustomTable extends Component {
 				bodyLength =  body.length < this.props.bodylength ? body.length : this.props.bodylength;
 			}
 			// console.log(bodyLength)
-			for ( let i =0; i < head.length; i++ ) {
+			for ( let i =0; i < head.length; i++ ) { // generate head.
 				headData.push( <TableCell key={ i } align="left"> { head[i] } </TableCell> )
 			}
 
 
-			for ( let i =0; i < bodyLength; i++ ){// -_-
-				bodyData.push(
+			for ( let i =0; i < bodyLength; i++ ){// generate each row.
+				bodyData.push( 
 			  	<TableRow hover role="checkbox" tabIndex={-1} key={i} >
-			  		{ this.parseCellOrNot( bodyContains, body[i] ) }
+			  		{ this.decorationService( bodyContains, body[i] ) } 
 					</TableRow>
 				 )
 			}

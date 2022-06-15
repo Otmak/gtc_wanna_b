@@ -81,17 +81,17 @@ export default class FullScreen extends Component {
                 <CloseIcon />
               </IconButton>
               <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                {"Path data for " + this.props.title}
+                { this.props.title}
               </Typography>
             </Toolbar>
           </AppBar>
           <List>
             <ListItem key={"full-map"} >
-              { <Map key={"full-map-custom"} height={300} width={"100%"} full={true} polyline={ this.props.pathdata } /> }
+              { this.validate(this.props.type ) && <Map key={"full-map-custom"} height={300} width={"100%"} full={true} polyline={ this.props.tabledata } /> }
             </ListItem>
             <Divider />
             <ListItem key={"full-table"}>
-              <CustomTable key={"full-table-custom"} maxheight={500} head={headData} body={this.props.pathdata} bodycount={bodyCount}/> 
+              <CustomTable key={"full-table-custom"} maxheight={500} head={this.props.tablehead} body={this.props.tabledata} bodycount={ this.props.tableguide }/> 
             </ListItem>
           </List>
         </Dialog>

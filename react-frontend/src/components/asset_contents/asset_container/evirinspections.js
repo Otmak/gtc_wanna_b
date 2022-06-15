@@ -4,7 +4,7 @@ import './css/trackandtrace.css';
 // import GpsInfo from '../gpsinfo/gpsinfo.js';
 import NewInspection from '../evirinspection/newinspection.js';
 import InspectionDetail from '../evirinspection/inspectiondetail.js';
-import DefaultCard from '../regular/regular.js';
+import DefaultCard from '../card/card.js';
 // import Path from '../path/path.js';
 
 
@@ -55,7 +55,6 @@ export default class EvirInspections extends Component {
           <div ref={this.carousel} className="carousel">
             <NewInspection  data={assetData} id={this.props.id} gps={this.props.gps} />
             <InspectionDetail  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
             <DefaultCard  data={assetData} id={this.props.id}/>
           </div>
         </div>

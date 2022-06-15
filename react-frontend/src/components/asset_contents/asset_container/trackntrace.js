@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './css/trackandtrace.css';
 import Location from '../location/location.js';
 import GpsInfo from '../gpsinfo/gpsinfo.js';
+import ConnectTablet from '../tablet/connecttablet.js';
 import DefaultCard from '../card/card.js';
 import Path from '../path/path.js';
 
@@ -54,8 +55,7 @@ export default class TrackAndTrace extends Component {
             <GpsInfo data={assetData} id={this.props.id} gps={this.props.gps} />
             <Path  data={assetData} id={this.props.id} gps={this.props.gps} />
             <Location  data={assetData} id={this.props.id} />
-            <DefaultCard title={"..."}  data={assetData} id={this.props.id}/>
-            <DefaultCard title={"..."} data={assetData} id={this.props.id}/>
+            {/*<ConnectTablet data={assetData} id={this.props.id} gps={this.props.data[this.props.id].child.gps } />*/}
           </div>
         </div>
         <button style={{ display: display}} onClick={ this.prev } className="prev">

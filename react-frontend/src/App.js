@@ -79,10 +79,17 @@ export default class App extends Component {
   }
 
 
+  // requestFailed(s){
+  //   // console.log('')
+  //   localStorage.clear();
+  //   this.setState({'LoginErrorMessage':s});
+  //   // console.log('Something wrong with the Request .... cleared storage')
+  // }
+
+
   handleLogin  = async (e) => { 
 
     // console.log('Starting the calls')
-
     let account = e['customer'];
     let passKey = e['password'];
     const payload = {};
@@ -102,26 +109,25 @@ export default class App extends Component {
         body : JSON.stringify(payload)
       }
 
-      const url = 'http://34.83.13.20/asset';
-      const test_url = '/asset';
-
-      const fetchData = await fetch(url, options);
-      const response = await fetchData.json();
-      // console.log(response, payload)
-
-      response.code === 200 ? this.loginSuccess(response, payload ) : response.error ? this.setState({'LoginErrorMessage':response.error.message}) : this.setState({'LoginErrorMessage':response.data.message })
-    }else{
-      // console.log('Cancelled.' )
+      try {
+        const url = 'http://34.83.13.20/asset';
+        const test_url = 'http://127.0.0.1:5000/asset';
+        const fetchData = await fetch(url, options);
+        const response = await fetchData.json();
+        response.code === 200 ? this.loginSuccess(response, payload ) : response.error ? this.setState({'LoginErrorMessage': response.error.message }): this.setState({'LoginErrorMessage':response.data.message })
+      } catch(error) {
+        localStorage.clear();
+      }
+    } else{
       const isEmptyMessage = 'Please enter a valid account code or password.';
       return this.setState({'LoginErrorMessage' : isEmptyMessage});
     }
   }
 
-
   render(){
-    const activeOnlyAssetList = {};
+    // const activeOnlyAssetList = {};
     // localStorage.clear();
-
+    // localStorage.setItem( 'password', this.convertStrToB64('time'));
     // console.log(localStorage)
     const { assetData, isLoggedIn, LoginErrorMessage, whatsTheWord, LoginInfo } = this.state;
     return (

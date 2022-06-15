@@ -83,15 +83,12 @@ export default class Path extends Component {
   }
 
   handleFullScreenOpen(){
-    // console.log(this, 'fullscree!')
     this.setState({isOpen:true});
   }
 
   handleFullScreenClose(){
-    // console.log(this, 'hi rise')
-    // this.callhelp()
     return this.setState({tableData:false, isOpen:false});
-    // console.log(this, 'after rise')
+
   }
 
 
@@ -128,9 +125,12 @@ export default class Path extends Component {
 
     // console.log(this)
     const headData = [ 'Source', 'Time', 'Speed', 'Reason' ];
+    const fullScreenHeadData = [ 'Source', 'Time', 'Speed', 'Distance', 'Reason', 'Heading' ];
+    const fullScreenGuide = ['source', 'time', 'speed', 'distance_traveled', 'reasons', 'heading'];
     const bodyCount = ['source', 'time', 'speed', 'reasons'];
     const items = [{icon:<FullscreenIcon fontSize="small"/> ,name:'Fullscreen', func:()=>this.handleFullScreenOpen()}];
     const fullscreen = this.validate(isOpen) ? isOpen : false;
+    // console.log(pathData)
     // const items = [{icon:<FullScreen handleClose={()=>this.handleCloseFullpathClose()} title={this.props.data[this.props.id].child.fleet} pathdata={pathData} type='path' data={this.props.data} fullscreen={isOpen} fontSize="small"/> ,name:'Fullscreen', func:()=>this.handleCloseFullpathOpen()},];
 
     return (
@@ -139,12 +139,13 @@ export default class Path extends Component {
             title={"PATH"}
             message={errorMessage}
             handlecall={()=>this.handleApiCall(params)}
-            custom={true} 
+            custom={true}
+            announcement={this.validate(pathData) && pathData.length > 0 ? 1:''} 
             cardData={ <CustomTable key={this.props.id} id={this.props.id } className="customtable" maxheight={290} head={headData} body={pathData} bodycount={bodyCount} bodylength={20} /> }
           >
             {items}
           </DefaultCard>
-          <FullScreen open={fullscreen} handleClose={()=>this.handleFullScreenClose()} title={this.props.data[this.props.id].child.fleet} pathdata={pathData} type='path' data={this.props.data} fullscreen={fullscreen} fontSize="small"/>
+          <FullScreen open={isOpen} handleClose={()=>this.handleFullScreenClose()} title={`Path for ${this.props.data[this.props.id].child.fleet}`} tablehead={fullScreenHeadData} tableguide={fullScreenGuide} tabledata={pathData} type='path' data={this.props.data} fullscreen={fullscreen} fontSize="small"/>
     	</div>
     	)
   }
