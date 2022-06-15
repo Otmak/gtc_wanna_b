@@ -27,9 +27,7 @@ export default class JbusTripFuel extends Component {
     if ( this.validate(str)){
       return decodeURIComponent(escape(window.atob( str )));
     }
-    else{
-      return str;
-    }
+    return str;
   }
 
 
@@ -53,6 +51,7 @@ export default class JbusTripFuel extends Component {
     const jLabels = [];
     const fuelPlotData = [];
     const engHrsPlotData = [];
+    // console.log(data)
 
     if ( this.validate(payload) ){
       for ( let i = payload.length -1; i >= 0; i -- ){
@@ -96,6 +95,7 @@ export default class JbusTripFuel extends Component {
     if (this._isMounted){
       this.setState({jbusTripData:""});
       // const id = this.props.id;
+      // console.log(data)
       const options = 
       {
         method : 'POST',

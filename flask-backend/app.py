@@ -109,8 +109,7 @@ def assetactivity():
 def newinspection():
     try:
         newinspection_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=insp&&target=&reqtype=dbid&format=xml&timestamp=&status=all'
-        newinspection_data = api_machine.create_dictionary(
-            api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), newinspection_url))))
+        newinspection_data = api_machine.create_dictionary(api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), newinspection_url))))
         return api_machine.validate_data(newinspection_data)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
@@ -119,9 +118,10 @@ def newinspection():
 @app.route('/jbusevents', methods=['POST'])
 def jbusevents():
     try:
+        print(request.get_json())
         jbusevents_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=jbusevents&version=2&format=xml&start=&end=&logvers=3'
-        jbusevents_data = api_machine.create_dictionary(
-            api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api(request.get_json(), jbusevents_url))))
+        jbusevents_data = api_machine.create_dictionary(api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api(request.get_json(), jbusevents_url))))
+        print('done jbus',jbusevents_data)
         return api_machine.validate_data(jbusevents_data)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
@@ -131,8 +131,7 @@ def jbusevents():
 def jbustripreport():
     try:
         jbustripreport_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=jbustrip&target=&reqtype=dbid&format=xml&start=&end='
-        jbustripreport_data = api_machine.create_dictionary(
-            api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), jbustripreport_url))))
+        jbustripreport_data = api_machine.create_dictionary(api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), jbustripreport_url))))
         return api_machine.validate_data(jbustripreport_data)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}

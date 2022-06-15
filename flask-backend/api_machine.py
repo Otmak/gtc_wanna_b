@@ -64,12 +64,16 @@ def get_elems(root):
     main_data = {}
     for child in root.findall('*'):
         main_data[child.tag] = atrrib_or_text(child)  # if child exists
-    rsult = root.text if len(root.text) > 0 and len(root.findall('*')) < 1 else main_data
-    return rsult
+    try:
+        rsult = root.text if len(root.text) > 0 and len(root.findall('*')) < 1 and root.text is not None else main_data
+        return rsult
+    except:
+        return main_data
 
 
 # takes main XML data from API and returns a python dictionary
 def create_dictionary(data):
+    print(data)
     if isinstance(data, dict) or isinstance(data, str):
         return data
     if data.tag == 'error': # check if call return error in xml.
@@ -92,8 +96,10 @@ def create_dictionary(data):
             'child': get_elems(i),
             'some' :i.text
         }
+    print(data)
     if len(main_list_data) > 0:
         main_dict_data['secondary'] = main_list_data
+
     return main_dict_data
 
 

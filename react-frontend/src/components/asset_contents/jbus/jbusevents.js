@@ -102,9 +102,7 @@ export default class JbusEvents extends Component {
 
 
   handleApiCall = async (data) => {
-  	// console.log('Making call....' ,data)
     if (this._isMounted){
-
       this.setState({jBusData:""});
       // const id = this.props.id;
       const options = 
@@ -121,21 +119,11 @@ export default class JbusEvents extends Component {
 
       const response = await fetchData.json();
       const updateErrorMessage = 'No data available';
-      // console.log('fetch done.',response)
-
       if (this._isMounted ){
         response.code === 200 ? this.setState({'jBusData': this.mergeData(response.data) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
         } 
     } 
   }
-
-  // isPast24Hours(date) {
-  //   const dateOfLocation = new Date(date).getTime()/1000.0;
-  //   const nowTime = Date.now()/1000.0;
-  //   const min24hourDate = nowTime - 86400; //24 hours from now
-  //   return dateOfLocation < min24hourDate ? "warning" : "default"
-  // }
-
   
   render(){
     const { params, jBusData, errorMessage } = this.state;
