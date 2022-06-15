@@ -7,7 +7,7 @@ RUN apt-get clean \
 RUN apt-get -y install \
     nginx \
     python3-dev \
-    build-essential \
+    build-essential
     # python3-psycopg2 \
     # python3-flask-sqlalchemy
 
