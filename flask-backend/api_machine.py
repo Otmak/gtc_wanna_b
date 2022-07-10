@@ -1,121 +1,106 @@
-import os
-import requests
 import xml.etree.ElementTree as ET
+import requests
 
 
-def generate_api(user, url):
+class UrlMachine:
+    """Will generate full Url and make api call
 
-    split_url = url.split('=')
-    final_api = ''
-    cache = {}
+        given a base url e.g BASE_URL = 'https://omi.zonarsystems.net/interface.php?'
+        and dictionary of API parameter.
+    """
 
-    def nothing():
-        pass
+    def __init__(self, url, params):
+        self.base = url
+        self.__url = ''
+        self.__complete_url = ''
+        self.params = params
 
-    for url_part in split_url:
-        for item in user:
-            if item in url_part:
-                final_api += url_part + '=' + user[item]
-                cache[url_part] = url_part
-            else:
-                nothing()
-        if cache.get(url_part):
-            nothing()
-        else:
-            final_api += url_part + '='
+    def make_url(self):
+        for i in self.params:
+            self.__url += '&' + i + '=' + str(self.params[i])
+        self.__complete_url = f'{self.base}{self.__url[1:]}'
+        return self.__complete_url
 
-    return final_api[:-1]
-
-
-# takes a api url as argument and returns byte data
-def make_call(url):
-    r = requests.get(url)
-    data = {}
-    if r.ok:
+    def make_call(self):
+        if len(self.__complete_url) > 1:
+            self.make_url()
+        r = requests.get(self.__complete_url)
         try:
             data = r.json()
             return data
         except:
             data = r.content
             return data
-    else:
-        return {'error': 'some thing wrong with the call'}
 
 
-# takes XML element and returns text
-def atrrib_or_text(elem):  # nd imprvt
-    '''
-     filter: nothing,text,attrib,text & Attrib, more childs
-    '''
-    if len(elem.findall('*')) > 1 :  # checking for tag with no data
-        return get_elems(elem)
-    elif elem.text is not None and len(elem.attrib) < 1 and len(elem.findall('*')) < 1:  # checking for text only
-        return elem.text
-    elif len(elem.attrib) > 0 and elem.text is None:  # checking for attribs only (may not exist)
-        return elem.attrib
-    elif len(elem.attrib) > 0 and elem.text is not None:  # checking for Text & Attrib
-        return {'attrib': elem.attrib, elem.tag: elem.text}
-    elif elem.text == None and len(elem.attrib) < 1:  # checking for children
-        return None
+class DataConverterTool:
+    """Converts byte to xml or dict
+    
+        Takes byte data as arg e.g data returned by class UrlMachine
+    """
 
+    def __init__(self):
+        print('Tool ready')
 
-# takes XML data and returns a python dictiony/ for elems without sub elems
-def get_elems(root):
-    main_data = {}
-    for child in root.findall('*'):
-        main_data[child.tag] = atrrib_or_text(child)  # if child exists
-    try:
-        rsult = root.text if len(root.text) > 0 and len(root.findall('*')) < 1 and root.text is not None else main_data
-        return rsult
-    except:
-        return main_data
+    def byte_to_xml(self, arg):
+        if isinstance(arg, bytes):
+            data = ET.fromstring(arg)
+            return data
+        return 'input data must be of type Byte(s)'
 
+    def get_elems(self, arg):
+        main_data = {}
+        for child in arg.findall('*'):
+            main_data[child.tag] = self.atrrib_or_text(child)  # if child exists
+        try:
+            rsult = self.text if len(self.text) > 0 and len(
+                self.findall('*')) < 1 and self.text is not None else main_data
+            return rsult
+        except:
+            return main_data
 
-# takes main XML data from API and returns a python dictionary
-def create_dictionary(data):
-    print(data)
-    if isinstance(data, dict) or isinstance(data, str):
-        return data
-    if data.tag == 'error': # check if call return error in xml.
-        return get_elems(data)
+    def atrrib_or_text(self, arg):
+        if len(arg.findall('*')) > 1:  # checking for tag with no data
+            return self.get_elems(arg)
+        elif arg.text is not None and len(arg.attrib) < 1 and len(arg.findall('*')) < 1:  # checking for text only
+            return arg.text
+        elif len(arg.attrib) > 0 and arg.text is None:  # checking for attribs only (may not exist)
+            return arg.attrib
+        elif len(arg.attrib) > 0 and arg.text is not None:  # checking for Text & Attrib
+            return {'attrib': arg.attrib, arg.tag: arg.text}
+        elif arg.text == None and len(arg.attrib) < 1:  # checking for children
+            return self.get_elems(arg)
 
-    main_dict_data = {}
-    main_list_data = []
+    def xml_to_dictionary_zpeekv3(self, arg):
+        print(type(arg), ':', arg)
+        if isinstance(arg, dict) or isinstance(arg, str):
+            return arg
+        if arg.tag == 'error':
+            return self.get_elems(arg)
 
-    for i in data:
-        if i.get('id') == None:
-            tag_data = {
+        main_dict_data = {}
+        main_list_data = []
+        for i in arg:
+            if i.get('id') == None:
+                tag_data = {
+                    i.tag: i.attrib,
+                    'text': self.get_elems(i),
+                }
+                main_list_data.append(tag_data)
+            data_handle = i.get('id') if i.get('id') != None else i.tag
+            main_dict_data[data_handle] = {
                 i.tag: i.attrib,
-                'text': get_elems(i),
+                'child': self.get_elems(i),
+                'some': i.text
             }
-            main_list_data.append(tag_data)
-
-        data_handle =  i.get('id') if i.get('id') != None else i.tag
-        main_dict_data[data_handle] = {
-            i.tag: i.attrib,
-            'child': get_elems(i),
-            'some' :i.text
-        }
-    print(data)
-    if len(main_list_data) > 0:
-        main_dict_data['secondary'] = main_list_data
-
-    return main_dict_data
+        if len(main_list_data) > 0:
+            main_dict_data['secondary'] = main_list_data
+        return main_dict_data
 
 
-# takes byte data from api call and returns a XML tree 
-def unpack_bytes(payload):
-    if isinstance(payload, bytes):
-        data = ET.fromstring(payload)
-        return data
-    else:
-        return payload
-
-
-def validate_data(data):  # needs work
-    main_data = {}
+def validate_data(data):  # :/
     try:
-        if data.get('code') == None and len(data) > 0:  # data did not return error
+        if data.get('code') is None and len(data) > 0:  # data did not return error
             main_data = {'data': data, 'code': 200}
             return main_data
         else:  # data returned error
@@ -123,4 +108,3 @@ def validate_data(data):  # needs work
             return main_data
     except:
         return data
-

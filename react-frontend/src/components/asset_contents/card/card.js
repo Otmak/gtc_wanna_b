@@ -14,10 +14,12 @@ import Badge from '@mui/material/Badge';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
+import Skeleton from '@mui/material/Skeleton';
+import Box from '@mui/material/Box';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import './card.css';
 
-// cards should 
+// cards should 👀
   // register funcgtion from its child and send it to its parent.
 
 
@@ -40,7 +42,6 @@ export default class DefaultCard extends Component {
 
 
   handlecall =()=>{
-    // console.log('logging', this.props)
     if ( this.validate(this.props.handlecall) ){
       this.props.handlecall();
     }
@@ -48,7 +49,6 @@ export default class DefaultCard extends Component {
     parseTextOrChip (str, opt ) {
 
     if ( this.validate(opt) && opt[str] ) {
-      // console.log('Setting up chip',str, str)
       return<Chip color={opt[str].color} label={ str } />
     }
     return str
@@ -66,9 +66,6 @@ export default class DefaultCard extends Component {
               </ListItemText>
             </ListItem>
           );
-            // <ListItem secondaryAction={ <Chip label={ data[cell] } /> } >
-            //   <ListItemText primary={capitalizedCell} />
-            // </ListItem>     
         k++; 
       }
       return cardCells;
@@ -77,7 +74,6 @@ export default class DefaultCard extends Component {
   }
 
   fullScreen(){
-    // console.log('Fullscreen in card.', this)
     return this.props.fullscreen();
   }
 
@@ -92,9 +88,19 @@ export default class DefaultCard extends Component {
     this.setState({fullscreen:true, buttonRef : e.currentTarget})
   }
 
+  loading(){
+    {/*const m = <div>*/}
+    return (
+      <Box sx={{'height': '75%'}} >
+        <Skeleton variant="string" height={220}/>
+        <Skeleton animation="wave"  height ={20}/>
+        <Skeleton animation="wave" width="60%" height ={15}/>
+      </Box>
+      )
+  }
+
 
   parseContent(){
-    // const { errorMessage } = this.state;
     if ( this.props.message ){
       return <NoData message={this.props.message}/>
     }
@@ -107,6 +113,14 @@ export default class DefaultCard extends Component {
   render () {
     const { errorMessage, fullscreen, buttonRef } = this.state;
     const items = this.validate(this.props.children) ? this.props.children : [] ;
+    const content = ()=>{
+      const d = ( <CardContent sx={{'height': '65%'}}>{ this.parseContent() }</CardContent> );
+      let e = ( <NoData message={this.props.message}/> );
+      let p = this.validate(this.props.cardData) ? d : this.validate(this.props.message) ? e : this.loading();
+
+      return p;
+    }
+
 
     return (
       <Card style={{'height':'100%'} }className="default_container">
@@ -121,9 +135,7 @@ export default class DefaultCard extends Component {
           anchor={buttonRef}
         />
         <Divider />
-        <CardContent sx={{'height': '65%'}}>
-          { this.parseContent() }
-        </CardContent>
+          {content()}
         <Divider />
         <CardActions sx={{'height': '10%'}}> 
         	<IconButton onClick={this.handlecall} > <Button size="small">GET</Button> </IconButton>

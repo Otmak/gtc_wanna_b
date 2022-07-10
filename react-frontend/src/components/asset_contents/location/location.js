@@ -28,18 +28,13 @@ export default class Location extends Component {
 
 
   convertB64ToStr (str) {
-    if ( this.validate(str)){
-      return decodeURIComponent(escape(window.atob( str )));
-    }
-    else{
-      return str;
-    }
+    return this.validate(str)? decodeURIComponent(escape(window.atob( str ))) : str;
   }
 
 
   decodeLocalStorage (){
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ]
+    const mostwanted = [ "customer", "password", "username" ]
 
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) )
     {
@@ -85,29 +80,29 @@ export default class Location extends Component {
         },
         body : JSON.stringify(data)
       }
+      try {
+        const url = 'http://34.83.13.20/location';
+        const test_url = 'http://127.0.0.1:5000/location';
+        const fetchData = await fetch(test_url, options);
+        const response = await fetchData.json();
+        const updateErrorMessage = 'No location data';
 
-      const url = 'http://34.83.13.20/location';
-      const test_url = 'http://127.0.0.1:5000/location';
-      const fetchData = await fetch(url, options);
-      const response = await fetchData.json();
-      const updateErrorMessage = 'No location data';
-
-      if (this._isMounted ){
-        response.code === 200 ? this.setState({'locationData':response.data[id].child}) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
-        } 
+        if (this._isMounted ){
+          response.code === 200 ? this.setState({'locationData':response.data[id].child}) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
+        }
+      } catch(e) {
+        return;
+      } 
     } 
   }
   getMap(data){
-    // console.log(data)
     const { id } = this.props;
     return <Map height={220} location={data} />
   }
 
 
   parseContent(data){
-    // console.log('loaction data', data)
     if ( this.validate(data) ){
-      // console.log(data)
 
       return (
           <CardMedia  >
@@ -125,7 +120,6 @@ export default class Location extends Component {
               <Chip color={ this.isPast24Hours(data.time)} label={data.time}/> 
              </Tooltip>
             </Typography> <br /> 
-
           </CardMedia>
           )
     }

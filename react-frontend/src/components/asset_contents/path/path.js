@@ -41,7 +41,7 @@ export default class Path extends Component {
 
   decodeLocalStorage (){
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ];
+    const mostwanted = [ "customer", "password", "username" ];
 
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) )
     {
@@ -61,8 +61,8 @@ export default class Path extends Component {
     const { startTime, endTime } = this.state; 
     const mainData = this.decodeLocalStorage();
     mainData['target'] = this.props.id;
-    mainData['start'] = startTime.toString();
-    mainData['end'] = endTime.toString();
+    mainData['starttime'] = startTime.toString();
+    mainData['endtime'] = endTime.toString();
     // console.log('No params', this.props, mainData)
 
     this.setState({params: mainData });
@@ -105,16 +105,20 @@ export default class Path extends Component {
         },
         body : JSON.stringify(data)
       }
+      try {
 
-      const url = 'http://34.83.13.20/path';
-      const test_url = 'http://127.0.0.1:5000/path';
-      const fetchData = await fetch(url, options);
-      const response = await fetchData.json();
-      const gotError = 'No path data';
-      // console.log('path response',response)
-
+        const url = 'http://34.83.13.20/path';
+        const test_url = 'http://127.0.0.1:5000/path';
+        const fetchData = await fetch(test_url, options);
+        const response = await fetchData.json();
+        const gotError = 'No path data';
+        // console.log('path response',response)
       if ( this._isMounted){
         response.code === 200 ? this.setState({'pathData': this.getPath(response)}) : response.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
+      } 
+      } catch(e) {
+        // statements
+        console.log(e);
       } 
     }
   }
@@ -130,9 +134,12 @@ export default class Path extends Component {
     const bodyCount = ['source', 'time', 'speed', 'reasons'];
     const items = [{icon:<FullscreenIcon fontSize="small"/> ,name:'Fullscreen', func:()=>this.handleFullScreenOpen()}];
     const fullscreen = this.validate(isOpen) ? isOpen : false;
-    // console.log(pathData)
-    // const items = [{icon:<FullScreen handleClose={()=>this.handleCloseFullpathClose()} title={this.props.data[this.props.id].child.fleet} pathdata={pathData} type='path' data={this.props.data} fullscreen={isOpen} fontSize="small"/> ,name:'Fullscreen', func:()=>this.handleCloseFullpathOpen()},];
-
+    
+    const verifyPathData = ()=>{
+      const t = <CustomTable key={this.props.id} id={this.props.id } className="customtable" maxheight={290} head={headData} body={pathData} bodycount={bodyCount} bodylength={20} />;
+      return this.validate(pathData) ? t:'';
+    }
+  
     return (
     	<div>
     	    <DefaultCard 
@@ -141,7 +148,7 @@ export default class Path extends Component {
             handlecall={()=>this.handleApiCall(params)}
             custom={true}
             announcement={this.validate(pathData) && pathData.length > 0 ? 1:''} 
-            cardData={ <CustomTable key={this.props.id} id={this.props.id } className="customtable" maxheight={290} head={headData} body={pathData} bodycount={bodyCount} bodylength={20} /> }
+            cardData={ verifyPathData() }
           >
             {items}
           </DefaultCard>

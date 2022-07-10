@@ -36,7 +36,7 @@ export default class JbusEvents extends Component {
 
   decodeLocalStorage (){
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ]
+    const mostwanted = [ "customer", "password", "username" ]
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) ){
       for ( let i =0; i < mostwanted.length; i++ ){
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
@@ -115,7 +115,7 @@ export default class JbusEvents extends Component {
       }
       const test_url = '/jbusevents';
       const url = 'http://34.83.13.20/jbusevents';
-      const fetchData = await fetch(url, options);
+      const fetchData = await fetch(test_url, options);
 
       const response = await fetchData.json();
       const updateErrorMessage = 'No data available';

@@ -55,7 +55,7 @@ export default class TrackAndTrace extends Component {
             <GpsInfo data={assetData} id={this.props.id} gps={this.props.gps} />
             <Path  data={assetData} id={this.props.id} gps={this.props.gps} />
             <Location  data={assetData} id={this.props.id} />
-            {/*<ConnectTablet data={assetData} id={this.props.id} gps={this.props.data[this.props.id].child.gps } />*/}
+            {<ConnectTablet data={assetData} id={this.props.id} gps={this.props.data[this.props.id].child.gps } />}
           </div>
         </div>
         <button style={{ display: display}} onClick={ this.prev } className="prev">

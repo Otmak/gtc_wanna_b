@@ -24,18 +24,13 @@ export default class JbusTripFuel extends Component {
 
 
   convertB64ToStr (str) {
-    if ( this.validate(str)){
-      return decodeURIComponent(escape(window.atob( str )));
-    }
-    else{
-      return str;
-    }
+    return this.validate(str)? decodeURIComponent(escape(window.atob( str ))) : str;
   }
 
 
   decodeLocalStorage (){
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ]
+    const mostwanted = [ "customer", "password", "username" ]
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) ){
       for ( let i =0; i < mostwanted.length; i++ ){
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
@@ -111,26 +106,30 @@ export default class JbusTripFuel extends Component {
         },
         body : JSON.stringify(data)
       }
-      const url = 'http://34.83.13.20/jbustripreport';
-      const test_url = 'http://127.0.0.1:5000/jbustripreport';
-      const fetchData = await fetch(url, options);
-      // const fetchData = await fetch('http://34.127.101.3/jbustripreport', options);
-      const response = await fetchData.json();
-      const updateErrorMessage = 'No JbusTrip data';
-      // console.log('fetch done.',response)
-      if (this._isMounted ){
-        response.code === 200 ? this.setState({'jbusTripData': this.FixData(response.data) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
+
+      try {
+        const url = 'http://34.83.13.20/jbustripreport';
+        const test_url = 'http://127.0.0.1:5000/jbustripreport';
+        const fetchData = await fetch(test_url, options);
+        const response = await fetchData.json();
+        const updateErrorMessage = 'No JbusTrip data';
+
+        if (this._isMounted ){
+          response.code === 200 ? this.setState({'jbusTripData': this.FixData(response.data) }) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
         } 
+      } catch(e) {
+        return;
+      }
     } 
   }
 
   
   render(){
     const { params, jbusTripData, errorMessage } = this.state;
-    // console.log(jbusTripData)
+    const chart = this.validate(jbusTripData.data) ? (<Chart title={`${jbusTripData.measure} (s)`} type={"scatter"} labels={jbusTripData.times} data={jbusTripData.data} />):'';
     return (
       <div>
-        <DefaultCard title={`FUEL `}  message={errorMessage} handlecall={ ()=>this.handleApiCall(params)} custom={true} cardData={ <Chart title={`${jbusTripData.measure} (s)`} type={"scatter"} labels={jbusTripData.times} data={jbusTripData.data} /> } />
+        <DefaultCard title={`FUEL `}  message={errorMessage} handlecall={ ()=>this.handleApiCall(params)} custom={true} cardData={ chart } />
       </div>
     )
   }

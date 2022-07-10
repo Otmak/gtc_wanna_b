@@ -1,14 +1,15 @@
 import os
-import api_machine
+import api_machine1 as g
 from flask import Flask, request, make_response, render_template
+
 # from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+BASE_URL = 'https://omi.zonarsystems.net/interface.php?'
 
 
 @app.after_request
 def apply_caching(response):
-
     # print( response.headers["Access-Control-Allow-Origin"] )
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Credentials"] = "true"
@@ -22,38 +23,74 @@ def apply_caching(response):
 @app.route('/')
 def index():
     return "API Healthy ✅"
-    # return render_template('index.html')
-
-
-@app.route('/gendata', methods=['POST'])
-def gendata():
-    try:
-        gendata_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=gendata&start=&tstype=load&reqtype=dbid&target=&format=xml'
-        gendata_data = api_machine.create_dictionary( api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), gendata_url))))
-        return api_machine.validate_data(gendata_data)
-    except:
-        return {'error': {'message': 'exception occurred this message is from the server'}}
-
-
-@app.route('/connecttablet', methods=['POST'])
-def connecttablet():
-    try:
-        mani_url = 'https://omi.zonarsystems.net/gtc/interface.php?action=twentytwenty&username=&password=&operation=getmanifest&format=json&gpssn=&customer=&mobiledevicetypeid=2'
-        mani_data = api_machine.create_dictionary( api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), mani_url))))
-        return api_machine.validate_data(mani_data)
-    except:
-        return {'error': {'message': 'exception occurred this message is from the server'}}
 
 
 @app.route('/asset', methods=['POST', 'GET'])
 def asset():
     try:
         if request.method == 'POST':
-            asset_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=showassets&format=xml'
-            asset_data = api_machine.create_dictionary( api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), asset_url ) ) ) )
-            return  api_machine.validate_data(asset_data)
+
+            params = {
+                'action': 'showopen',
+                'operation': 'showassets',
+                'format': 'xml'
+            }
+            params.update(request.get_json())
+            peek = g.UrlMachine(BASE_URL, params)
+            url = peek.make_url()
+            api_call = peek.make_call()
+
+            conv_data = g.DataConverterTool()
+            xml_data = conv_data.byte_to_xml(api_call)
+            to_dict = conv_data.xml_to_dictionary_zpeekv3(xml_data)
+
+            return g.validate_data(to_dict)
         else:
             return "Welcome to the Assets API endpoint"
+    except:
+        return {'error': {'message': 'An exception occurred on the server'}}
+
+
+@app.route('/gendata', methods=['POST'])
+def gendata():
+    try:
+        params = {
+            'action': 'showopen',
+            'operation': 'gendata',
+            'tstype': 'load',
+            'reqtype':'dbid',
+            'format': 'xml'
+        }
+        params.update(request.get_json())
+        peek = g.UrlMachine(BASE_URL, params)
+        url = peek.make_url()
+        api_call = peek.make_call()
+
+        conv_data = g.DataConverterTool()
+        xml_data = conv_data.byte_to_xml(api_call)
+        to_dict = conv_data.xml_to_dictionary_zpeekv3(xml_data)
+
+        return g.validate_data(to_dict)
+    except:
+        return {'error': {'message': 'exception occurred this message is from the server'}}
+
+
+@app.route('/connecttablet', methods=['POST'])
+def connecttablet():
+    print(request.get_json())
+    try:
+        params = {
+            'action': 'twentytwenty',
+            'operation': 'getmanifest',
+            'format': 'json',
+            'mobiledevicetypeid': '2'
+        }
+        params.update(request.get_json())
+        peek = g.UrlMachine(BASE_URL, params)
+        url = peek.make_url()
+        api_call = peek.make_call()
+
+        return g.validate_data(api_call)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
 
@@ -62,9 +99,24 @@ def asset():
 def location():
     try:
         if request.method == 'POST':
-            location_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showposition&operation=current&format=xml&version=2&logvers=3&customer=&target=&reqtype=dbid'
-            location_data = api_machine.create_dictionary( api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), location_url))))
-            return api_machine.validate_data(location_data)
+            params = {
+                'action': 'showposition',
+                'operation': 'current',
+                'format': 'xml',
+                'version': '2',
+                'logvers': '3',
+                'reqtype': 'dbid'
+            }
+            params.update(request.get_json())
+            peek = g.UrlMachine(BASE_URL, params)
+            url = peek.make_url()
+            api_call = peek.make_call()
+
+            conv_data = g.DataConverterTool()
+            xml_data = conv_data.byte_to_xml(api_call)
+            to_dict = conv_data.xml_to_dictionary_zpeekv3(xml_data)
+
+            return g.validate_data(to_dict)
         else:
             return "introducing location API, Welcome!"
     except:
@@ -74,11 +126,21 @@ def location():
 @app.route('/path', methods=['POST'])
 def path():
     try:
-        # print('Req',request.get_json())
-        path_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showposition&operation=path&reqtype=dbid&target=&version=2&starttime=&endtime=&logvers=3.8&format=json'
-        path_data = api_machine.create_dictionary( api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api(request.get_json(), path_url))))
-        # print('data',path_data)
-        return api_machine.validate_data(path_data)
+        params = {
+            'action': 'showposition',
+            'operation': 'path',
+            'reqtype': 'dbid',
+            'version':  '2',
+            'logvers': '3.8',
+            'format': 'json'
+        }
+
+        params.update(request.get_json())
+        peek = g.UrlMachine(BASE_URL, params)
+        url = peek.make_url()
+        api_call = peek.make_call()
+
+        return g.validate_data(api_call)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
 
@@ -86,10 +148,22 @@ def path():
 @app.route('/phhm', methods=['POST'])
 def phhm():
     try:
-        phhm_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=getphonehome&target=&reqtype=dbid&startdate=&enddate=&format=xml'
-        phhm_data = api_machine.create_dictionary( api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), phhm_url))))
-        # print(phhm_data)
-        return api_machine.validate_data(phhm_data)
+        params = {
+            'action': 'showopen',
+            'operation': 'getphonehome',
+            'reqtype': 'dbid',
+            'format': 'xml'
+        }
+        params.update(request.get_json())
+        peek = g.UrlMachine(BASE_URL, params)
+        url = peek.make_url()
+        api_call = peek.make_call()
+
+        conv_data = g.DataConverterTool()
+        xml_data = conv_data.byte_to_xml(api_call)
+        to_dict = conv_data.xml_to_dictionary_zpeekv3(xml_data)
+
+        return g.validate_data(to_dict)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
 
@@ -97,10 +171,22 @@ def phhm():
 @app.route('/assetactivity', methods=['POST'])
 def assetactivity():
     try:
-        assetactivity_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showposition&operation=assetactivity&format=xml&customer=&start=&end=&vers=2'
-        assetactivity_data = api_machine.create_dictionary(
-            api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), assetactivity_url))))
-        return api_machine.validate_data(assetactivity_data)
+        params = {
+            'action': 'showposition',
+            'operation': 'assetactivity',
+            'format': 'xml',
+            'vers': '2'
+        }
+        params.update(request.get_json())
+        peek = g.UrlMachine(BASE_URL, params)
+        url = peek.make_url()
+        api_call = peek.make_call()
+
+        conv_data = g.DataConverterTool()
+        xml_data = conv_data.byte_to_xml(api_call)
+        to_dict = conv_data.xml_to_dictionary_zpeekv3(xml_data)
+
+        return g.validate_data(to_dict)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
 
@@ -108,9 +194,45 @@ def assetactivity():
 @app.route('/newinspection', methods=['POST'])
 def newinspection():
     try:
-        newinspection_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=insp&&target=&reqtype=dbid&format=xml&timestamp=&status=all'
-        newinspection_data = api_machine.create_dictionary(api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), newinspection_url))))
-        return api_machine.validate_data(newinspection_data)
+        params = {
+            'action': 'showopen',
+            'operation': 'insp',
+            'reqtype': 'dbid',
+            'format': 'xml',
+            'status': 'all'
+        }
+        params.update(request.get_json())
+        peek = g.UrlMachine(BASE_URL, params)
+        url = peek.make_url()
+        api_call = peek.make_call()
+
+        conv_data = g.DataConverterTool()
+        xml_data = conv_data.byte_to_xml(api_call)
+        to_dict = conv_data.xml_to_dictionary_zpeekv3(xml_data)
+
+        return g.validate_data(to_dict)
+    except:
+        return {'error': {'message': 'exception occurred this message is from the server'}}
+
+
+@app.route('/inspectiondetail', methods=['POST'])
+def inspectiondetail():
+    try:
+        params = {
+            'action': 'showopen',
+            'operation': 'showinsp',
+            'format': 'xml'
+        }
+        params.update(request.get_json())
+        peek = g.UrlMachine(BASE_URL, params)
+        url = peek.make_url()
+        api_call = peek.make_call()
+
+        conv_data = g.DataConverterTool()
+        xml_data = conv_data.byte_to_xml(api_call)
+        to_dict = conv_data.xml_to_dictionary_zpeekv3(xml_data)
+
+        return g.validate_data(to_dict)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
 
@@ -118,11 +240,23 @@ def newinspection():
 @app.route('/jbusevents', methods=['POST'])
 def jbusevents():
     try:
-        print(request.get_json())
-        jbusevents_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=jbusevents&version=2&format=xml&start=&end=&logvers=3'
-        jbusevents_data = api_machine.create_dictionary(api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api(request.get_json(), jbusevents_url))))
-        print('done jbus',jbusevents_data)
-        return api_machine.validate_data(jbusevents_data)
+        params = {
+            'action':'showopen',
+            'operation': 'jbusevents',
+            'version': '2',
+            'format': 'xml',
+            'logvers': '3'
+        }
+        params.update(request.get_json())
+        peek = g.UrlMachine(BASE_URL, params)
+        url = peek.make_url()
+        api_call = peek.make_call()
+
+        conv_data = g.DataConverterTool()
+        xml_data = conv_data.byte_to_xml(api_call)
+        to_dict = conv_data.xml_to_dictionary_zpeekv3(xml_data)
+
+        return g.validate_data(to_dict)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
 
@@ -130,14 +264,25 @@ def jbusevents():
 @app.route('/jbustripreport', methods=['POST'])
 def jbustripreport():
     try:
-        jbustripreport_url = 'https://omi.zonarsystems.net/interface.php?customer=&username=&password=&action=showopen&operation=jbustrip&target=&reqtype=dbid&format=xml&start=&end='
-        jbustripreport_data = api_machine.create_dictionary(api_machine.unpack_bytes( api_machine.make_call( api_machine.generate_api( request.get_json(), jbustripreport_url))))
-        return api_machine.validate_data(jbustripreport_data)
+        params = {
+            'action': 'showopen',
+            'operation': 'jbustrip',
+            'reqtype': 'dbid',
+            'format': 'xml'
+        }
+        params.update(request.get_json())
+        peek = g.UrlMachine(BASE_URL, params)
+        url = peek.make_url()
+        api_call = peek.make_call()
+
+        conv_data = g.DataConverterTool()
+        xml_data = conv_data.byte_to_xml(api_call)
+        to_dict = conv_data.xml_to_dictionary_zpeekv3(xml_data)
+
+        return g.validate_data(to_dict)
     except:
         return {'error': {'message': 'exception occurred this message is from the server'}}
 
 
 if __name__ == '__main__':
-    app.run( debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)) )
-
-
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

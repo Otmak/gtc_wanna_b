@@ -18,6 +18,7 @@ export default class ConnectTablet extends Component {
       params: '',
       tabletData: '',
       basicTabletData:'',
+      rawTabletData: '',
       errorMessage:'',
     }
   }
@@ -39,7 +40,7 @@ export default class ConnectTablet extends Component {
   decodeLocalStorage (){
 
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ]
+    const mostwanted = [ "customer", "password", "username" ]
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) )
     {
       for ( let i =0; i < mostwanted.length; i++ ){
@@ -57,15 +58,45 @@ export default class ConnectTablet extends Component {
     if (this.validate(params)){
       return;
     }
-    const mainData = this.decodeLocalStorage()
-    mainData['gpssn'] = this.props.gps
-    this.setState({params: mainData })
-    this.handleApiCall(mainData)
+    const mainData = this.decodeLocalStorage();
+
+    if (this.validate(this.props.gps)){
+      mainData['gpssn'] = this.props.gps;
+      this.setState({params: mainData });
+      return this.handleApiCall(mainData);
+    }
+
+    return this.setState({errorMessage:'No connect data'});
   }
 
 
   componentWillUnmount(){
     this._isMounted = false;
+  }
+
+
+  parseAppList(){
+    const {rawTabletData} = this.state;
+    if (this.validate(rawTabletData)){
+      const appsElems = [];
+      const t = rawTabletData.firmware.buildNumber//.split('-')[0];
+      // console.log(rawTabletData);
+      const appsList = rawTabletData.packageManifest.apps;
+      for ( let i=0; i<appsList.length; i++ ){
+          appsElems.push(
+            <Tooltip title={ `v${appsList[i].availableVersionCode}` } followCursor> 
+              <Chip label={`${appsList[i].label }`}> </Chip> 
+            </Tooltip>
+          );
+      }
+
+      return [ 
+        <Typography variant="h5" gutterBottom component="div">{`${t}  v${rawTabletData.firmware.versionCode}`}</Typography> ,
+        <br/>,<br/>,
+        <Typography variant="overline" gutterBottom component="div">{`TIME ZONE:  ${rawTabletData.organization.defaultTimezone}`}</Typography>,
+        appsElems
+      ];
+    }
   }
 
 
@@ -76,13 +107,15 @@ export default class ConnectTablet extends Component {
 	  		'FIRMWARE' : data.firmware.buildNumber,
 	  		// 'ecuVIN' : data.assetInfo.ecuVin,
 	  	}
-
 	  	const connectApps = data.packageManifest.apps;
 	  	for (let i=0; i<connectApps.length; i++){
 	  		basic[connectApps[i].label] = connectApps[i].availableVersionCode;
 	  	}
+      this.setState({rawTabletData: data});
+      // console.log(data)
 	  	return basic;
 	  }
+
   }
 
 
@@ -90,8 +123,9 @@ export default class ConnectTablet extends Component {
 
     if (this._isMounted){
 
-      this.setState({locationData:""});
+      this.setState({basicTabletData:"", rawTabletData:"" });
       const id = this.props.id;
+      // console.log('got the iD',id, data)
       const options = 
       {
         method : 'POST',
@@ -104,10 +138,10 @@ export default class ConnectTablet extends Component {
       try{
         const url = 'http://34.83.13.20/connecttablet';
         const test_url = '/connecttablet';
-        const fetchData = await fetch(url, options);
+        const fetchData = await fetch(test_url, options);
         const response = await fetchData.json();
-        const updateErrorMessage = 'No location data';
-        console.log(response)
+        const updateErrorMessage = 'No Connect data';
+        // console.log(response)
         if (this._isMounted ){
         	response.code === 200 ? this.setState({'basicTabletData':this.cleanData(response.data)}) : response.error ? this.setState({'errorMessage':response.error.message}) : this.setState({'errorMessage': updateErrorMessage })
         }
@@ -116,11 +150,6 @@ export default class ConnectTablet extends Component {
         }
     }
     return; 
-  }
-
-
-  customData(data){
-  	console.log()
   }
 
 
@@ -140,7 +169,8 @@ export default class ConnectTablet extends Component {
         	title={"CONNECT TABLET"}
         	message={errorMessage}
         	handlecall={()=>this.handleApiCall(params)}
-        	cardData={basicTabletData} />
+          custom={true}
+        	cardData={this.parseAppList()} />
       </div>
       )
   }

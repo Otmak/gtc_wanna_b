@@ -55,7 +55,6 @@ export default class EvirInspections extends Component {
           <div ref={this.carousel} className="carousel">
             <NewInspection  data={assetData} id={this.props.id} gps={this.props.gps} />
             <InspectionDetail  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
           </div>
         </div>
         <button style={{ display: display}} onClick={ this.prev } className="prev">

@@ -37,7 +37,7 @@ export default class NewInspection extends Component {
 
   decodeLocalStorage (){
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ]
+    const mostwanted = [ "customer", "password", "username" ]
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) )
     {
       for ( let i =0; i < mostwanted.length; i++ ){
@@ -50,8 +50,7 @@ export default class NewInspection extends Component {
   }
 
   fixData (data) {//tbc 
-    // console.log(data, 'from merge.********************')
-    // console.log(this)
+    
     const id = this.props.id;
     const readEpoch = (t)=>{
       let i = new Date ( t * 1000 );
@@ -81,7 +80,6 @@ export default class NewInspection extends Component {
         }
       }
     }
-    // console.log('END OF THE LINE..', main, this)
     this.setState( {errorMessage: 'No inspection data'})
     // return main;
   }
@@ -125,7 +123,7 @@ export default class NewInspection extends Component {
       const test_url = 'http://127.0.0.1:5000/newinspection'
       const url = 'http://34.83.13.20/newinspection'
 
-      const fetchData = await fetch(url, options);
+      const fetchData = await fetch(test_url, options);
       const response = await fetchData.json();
       const updateErrorMessage = 'No data available';
       // console.log('fetch done.',response)

@@ -22,7 +22,6 @@ export default class FuelAndDiagnostics extends Component {
     const gap = 5;
     const node = this.carousel.current;
     let width = node.offsetWidth;
-    // console.log('Clicked Prev >>', this, node);
     node.scrollBy(-(width + gap), 0);
   }
 
@@ -32,7 +31,6 @@ export default class FuelAndDiagnostics extends Component {
     const gap = 5;
     const node = this.carousel.current;
     let width = node.offsetWidth;
-    // console.log('Clicked NExt >>', this, node);
     node.scrollBy(width + gap, 0);
     this.setState( {'display': 'flex'});
   }
@@ -54,11 +52,9 @@ export default class FuelAndDiagnostics extends Component {
             <JbusEvents data={assetData} id={this.props.id} gps={this.props.gps} />
             <JbusTripReport data={assetData} id={this.props.id} gps={this.props.gps} />
             <JbusTripFuel data={assetData} id={this.props.id} gps={this.props.gps} />
-            <DefaultCard  data={assetData} id={this.props.id}/>
-            <DefaultCard  data={assetData} id={this.props.id}/>
           </div>
         </div>
-        <button style={{ display: display}} onClick={ this.prev } className="prev">
+  {/*      <button style={{ display: display}} onClick={ this.prev } className="prev">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -81,7 +77,7 @@ export default class FuelAndDiagnostics extends Component {
             <path fill="none" d="M0 0h24v24H0V0z" />
             <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z" />
           </svg>
-        </button>
+        </button>*/}
       </div>
       )
   }

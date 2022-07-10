@@ -23,10 +23,7 @@ export default class App extends Component {
 
 
   convertB64ToStr (str) {
-    if ( this.validate(str)){
-      return decodeURIComponent(escape(window.atob( str )));
-    }
-    return str;
+    return this.validate(str)? decodeURIComponent(escape(window.atob( str ))) : str;
   }
 
 
@@ -41,7 +38,7 @@ export default class App extends Component {
 
   decodeLocalStorage (){
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ]
+    const mostwanted = [ "customer", "password", "username" ]
 
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) )
     {
@@ -89,7 +86,7 @@ export default class App extends Component {
 
   handleLogin  = async (e) => { 
 
-    // console.log('Starting the calls')
+    console.log('Starting the calls')
     let account = e['customer'];
     let passKey = e['password'];
     const payload = {};
@@ -98,7 +95,7 @@ export default class App extends Component {
 
       payload['customer'] = account;
       payload['password'] = passKey;
-      payload['user'] = 'zonar';
+      payload['username'] = 'zonar';
 
       let options =   
       {
@@ -112,7 +109,7 @@ export default class App extends Component {
       try {
         const url = 'http://34.83.13.20/asset';
         const test_url = 'http://127.0.0.1:5000/asset';
-        const fetchData = await fetch(url, options);
+        const fetchData = await fetch(test_url, options);
         const response = await fetchData.json();
         response.code === 200 ? this.loginSuccess(response, payload ) : response.error ? this.setState({'LoginErrorMessage': response.error.message }): this.setState({'LoginErrorMessage':response.data.message })
       } catch(error) {
@@ -128,7 +125,7 @@ export default class App extends Component {
     // const activeOnlyAssetList = {};
     // localStorage.clear();
     // localStorage.setItem( 'password', this.convertStrToB64('time'));
-    // console.log(localStorage)
+    console.log(localStorage)
     const { assetData, isLoggedIn, LoginErrorMessage, whatsTheWord, LoginInfo } = this.state;
     return (
       <div>

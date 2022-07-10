@@ -24,16 +24,13 @@ export default class JbusTripFuel extends Component {
 
 
   convertB64ToStr (str) {
-    if ( this.validate(str)){
-      return decodeURIComponent(escape(window.atob( str )));
-    }
-    return str;
+    return this.validate(str)? decodeURIComponent(escape(window.atob( str ))) : str;
   }
 
 
   decodeLocalStorage (){
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ]
+    const mostwanted = [ "customer", "password", "username" ]
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) ){
       for ( let i =0; i < mostwanted.length; i++ ){
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
@@ -106,7 +103,7 @@ export default class JbusTripFuel extends Component {
       }
       const url = 'http://34.83.13.20/jbustripreport';
       const test_url = 'http://127.0.0.1:5000/jbustripreport';
-      const fetchData = await fetch(url, options);
+      const fetchData = await fetch(test_url, options);
       const response = await fetchData.json();
       const updateErrorMessage = 'No JbusTrip events';
       // console.log('fetch done.',response)
@@ -120,9 +117,10 @@ export default class JbusTripFuel extends Component {
   
   render(){
     const { params, jbusTripData, errorMessage } = this.state;
+    const chart =  this.validate(jbusTripData.data) ? ( <Chart title={"Hour (s)"} type={"bar"} labels={jbusTripData.times} data={jbusTripData.data} /> ) :'';
     return (
       <div>
-        <DefaultCard title={`ENGNE HOURS `}  message={errorMessage} handlecall={ ()=>this.handleApiCall(params)} custom={true} cardData={ <Chart title={"Hour (s)"} type={"bar"} labels={jbusTripData.times} data={jbusTripData.data} /> } />
+        <DefaultCard title={`ENGNE HOURS `}  message={errorMessage} handlecall={ ()=>this.handleApiCall(params)} custom={true} cardData={ chart } />
       </div>
     )
   }

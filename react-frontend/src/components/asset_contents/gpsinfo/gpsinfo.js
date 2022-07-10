@@ -27,20 +27,14 @@ export default class GpsInfo extends Component {
 
 
   convertB64ToStr (str) {
-
-    if ( this.validate(str)){
-      return decodeURIComponent(escape(window.atob( str )));
-    }
-    else{
-      return str;
-    }
+    return this.validate(str)? decodeURIComponent(escape(window.atob( str ))) : str;
   }
 
 
   decodeLocalStorage (){
 
     const payload = {};
-    const mostwanted = [ "customer", "password", "user" ]
+    const mostwanted = [ "customer", "password", "username" ]
     if ( this.validate(localStorage.getItem('customer')) && this.validate(localStorage.getItem('password')) ){
       for ( let i =0; i < mostwanted.length; i++ ){
         payload[mostwanted[i]] = this.convertB64ToStr( localStorage.getItem(mostwanted[i])).split('_')[0];
@@ -62,8 +56,8 @@ export default class GpsInfo extends Component {
     const mainData = this.decodeLocalStorage();
     // console.log(mainData)
     mainData['target'] = this.props.id;
-    mainData['start'] = startTime.toString();
-    mainData['end'] = endTime.toString();
+    mainData['startdate'] = startTime.toString();
+    mainData['enddate'] = endTime.toString();
     mainData['time'] = Math.round(startTime).toString();
 
     this.setState({params: mainData });
@@ -103,20 +97,20 @@ export default class GpsInfo extends Component {
         }
       }
 
-      const genData = gendata.secondary;
-      const gendataArray = [];
-      for (let i=0; i<genData.length; i++)
-      {
-        // console.log(genData[i])
-        gendataArray.push(          
-          {
-            label: genData[i].gendata.label,
-            time: this.epochToHtime(genData[i].gendata.ctimestamp),
-            string: genData[i].text
-          })
-      }
+      // const genData = gendata.secondary;
+      // const gendataArray = [];
+      // for (let i=0; i<genData.length; i++)
+      // {
+      //   // console.log(genData[i])
+      //   gendataArray.push(          
+      //     {
+      //       label: genData[i].gendata.label,
+      //       time: this.epochToHtime(genData[i].gendata.ctimestamp),
+      //       string: genData[i].text
+      //     })
+      // }
 
-      this.setState({genData: gendataArray})
+      // this.setState({genData: gendataArray})
       main['PHHM'] = this.epochToHtime(main['PHHM']);
       // console.log(main)
       return main;
@@ -155,36 +149,48 @@ export default class GpsInfo extends Component {
         },
         body : JSON.stringify(data)
       }
-      let n = ['customer','password','user', 'start','target']
+      // let n = ['customer','password','username', 'start','target']
       const genDataOptions = 
       {
         method : 'POST',
         headers: {
         'Content-Type': 'application/json'
         },
-        body : JSON.stringify(this.filterUserInfo(n,data))
+        body : JSON.stringify(data)
       }
 
 
       try 
-      {
-        const test_url = 'http://127.0.0.1:5000/phhm';
+      {// Phhm
+        const test_phhm_url = 'http://127.0.0.1:5000/phhm';
         const url = 'http://34.83.13.20/phhm';
-        const gendata_url = 'http://34.83.13.20/gendata';
-        const gendata_test_url = '/gendata';
-        const fetchPhhmData = await fetch(url, options);
-        const fetchGenData = await fetch(gendata_url, genDataOptions);
+        const fetchPhhmData = await fetch(test_phhm_url, options);
         const phhmResponse = await fetchPhhmData.json();
-        const genDataResponse = await fetchGenData.json();
         const gotError = 'No gps data';
-        // console.log('phhm ++ ' , phhmResponse, genDataResponse)
+
         if (this._isMounted){
-          phhmResponse.code === 200  ? this.setState({'gpsData': this.mergeData( phhmResponse, genDataResponse.data )}) : phhmResponse.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
+          phhmResponse.code === 200  ? this.setState({'gpsData': this.mergeData( phhmResponse )}) : phhmResponse.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
         }
       }catch(error){
         console.log('something not good happened with the request :/ Try refreshing the browser or something')
         return;
       }
+
+      // try { //Gendata
+      //   const test_gen_url = 'http://127.0.0.1:5000/gendata';
+      //   const gendata_url = 'http://34.83.13.20/gendata';
+      //   const gendata_test_url = '/gendata';
+      //   const fetchGenData = await fetch(test_gen_url, genDataOptions);
+      //   const genDataResponse = await fetchGenData.json();
+      //   const gotError = 'No Gendata';
+      //   console.log('phhm ++ ' , genDataResponse)
+      //   if (this._isMounted){
+      //     genDataResponse.code === 200  ? this.setState({'gpsData': this.mergeData( phhmResponse, genDataResponse.data )}) : phhmResponse.error ? this.setState({'errorMessage': gotError}) : this.setState({'errorMessage':gotError })
+      //   }
+      // } catch(e) {
+      //   // statements
+      //   console.log(e);
+      // }
       return;
     }
   }
