@@ -10,10 +10,18 @@ In other words gtc wanna b is an attempt at Clean, Efficient and Scalable code t
 A quick overview of what gtc_wanna_b looks like below, the idea is to display all "essential" vehicle data on a dashboard.
 
 The after you suceesfully launch, gtc_wanna_b will request for a 'code' and OMI password.\
-![Login page](https://github.com/Otmak/gtc_wanna_b/blob/b6951b7eccdcb8d4b1f71c1545aa07a65844da74/react-frontend/public/loading.png)
+\
+![Login page](https://github.com/Otmak/gtc_wanna_b/blob/2a0870ec368224fce981d387b0b7159ef9abcbe9/react-frontend/public/login.png)
 \
 Then after a succefull Login the dashboard will display the available data.\
+\
 ![dashboard](https://github.com/Otmak/gtc_wanna_b/blob/b6951b7eccdcb8d4b1f71c1545aa07a65844da74/react-frontend/public/dash.png)
 \
 When Zpeek is requesting for data you get a Loading skeleton on each card until the results are ready.\
+\
 ![Loading data](https://github.com/Otmak/gtc_wanna_b/blob/b6951b7eccdcb8d4b1f71c1545aa07a65844da74/react-frontend/public/loading.png)
+\
+
+And some extra feature like the ability to expand the cards in order to dispay in more more data e.g path below. \
+\
+![Path data]()
